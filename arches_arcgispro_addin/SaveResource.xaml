@@ -30,11 +30,11 @@
                 </TextBlock.ToolTip>
           </TextBlock>
         </DockPanel>
-        <Button Content="ResourceID?" HorizontalAlignment="Left" Margin="50,182,0,0" Grid.Row="1" VerticalAlignment="Top" Width="90" Click="Button_Click"/>
-        <ComboBox HorizontalAlignment="Left" Margin="50,53,0,0" Grid.Row="1" VerticalAlignment="Top" Width="207" SelectionChanged="ComboBox_SelectionChanged"/>
-        <Button Content="Cancel" HorizontalAlignment="Left" Margin="167,182,0,0" Grid.Row="1" VerticalAlignment="Top" Width="90" Click="Button_Click_1"/>
-        <TextBlock HorizontalAlignment="Left" Margin="50,25,0,0" Grid.Row="1" Text="Layer Name" VerticalAlignment="Top" Width="130"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="51,123,0,0" Grid.Row="1" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="206"/>
-        <TextBlock HorizontalAlignment="Left" Margin="51,101,0,0" Grid.Row="1" Text="Resource Model" VerticalAlignment="Top" Width="103"/>
+        <TextBlock HorizontalAlignment="Left" Margin="50,25,0,0" Grid.Row="1" Text="Arches Layer" VerticalAlignment="Top" Width="130"/>
+        <ComboBox HorizontalAlignment="Left" Margin="50,50,0,0" Grid.Row="1" VerticalAlignment="Top" Width="207" SelectionChanged="ComboBox_SelectionChanged"/>
+        <Button Content="Get Arches Parameters" HorizontalAlignment="Center" Margin="0,100,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" Click="Button_Click"/>
+        <TextBlock HorizontalAlignment="Left" Margin="50,150,0,0" Grid.Row="1" Text="Geometry Source Layer" VerticalAlignment="Top" Width="130"/>
+        <ComboBox HorizontalAlignment="Left" Margin="50,175,0,0" Grid.Row="1" Text="" VerticalAlignment="Top" Width="206" RenderTransformOrigin="0.504,0.466"/>
+        <Button Content="Submit to Arches" HorizontalAlignment="Center" Margin="0,225,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" Click="Button_Click_1" RenderTransformOrigin="0.741,1.819"/>
     </Grid>
 </UserControl>
