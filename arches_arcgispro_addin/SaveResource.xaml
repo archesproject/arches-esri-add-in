@@ -31,10 +31,10 @@
           </TextBlock>
         </DockPanel>
         <TextBlock HorizontalAlignment="Left" Margin="50,25,0,0" Grid.Row="1" Text="Arches Layer" VerticalAlignment="Top" Width="130"/>
-        <ComboBox HorizontalAlignment="Left" Margin="50,50,0,0" Grid.Row="1" VerticalAlignment="Top" Width="207" SelectionChanged="ComboBox_SelectionChanged"/>
+        <ComboBox HorizontalAlignment="Left" Margin="50,50,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" />
         <Button Content="Get Arches Parameters" HorizontalAlignment="Center" Margin="0,100,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" Click="Button_Click"/>
         <TextBlock HorizontalAlignment="Left" Margin="50,150,0,0" Grid.Row="1" Text="Geometry Source Layer" VerticalAlignment="Top" Width="130"/>
-        <ComboBox HorizontalAlignment="Left" Margin="50,175,0,0" Grid.Row="1" Text="" VerticalAlignment="Top" Width="206" RenderTransformOrigin="0.504,0.466"/>
+        <ComboBox HorizontalAlignment="Left" Margin="50,175,0,0" Grid.Row="1" Text="" VerticalAlignment="Top" Width="200" />
         <Button Content="Submit to Arches" HorizontalAlignment="Center" Margin="0,225,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" Click="Button_Click_1" RenderTransformOrigin="0.741,1.819"/>
     </Grid>
 </UserControl>

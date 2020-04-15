@@ -1,4 +1,6 @@
-﻿using ArcGIS.Desktop.Framework.Threading.Tasks;
+﻿using ArcGIS.Desktop.Editing.Attributes;
+using ArcGIS.Desktop.Framework.Threading.Tasks;
+using ArcGIS.Desktop.Mapping;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,32 +29,49 @@ namespace arches_arcgispro_addin
             InitializeComponent();
         }
 
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void GetAttribute()
         {
-
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Task t = QueuedTask.Run(() =>
+            await QueuedTask.Run(() =>
             {
-                try
-                {
-                    var selectedFeatures = ArcGIS.Desktop.Mapping.MapView.Active.Map.GetSelection();
-                    var firstSelectionSet = selectedFeatures.First();
-                    var inspector = new ArcGIS.Desktop.Editing.Attributes.Inspector();
-                    inspector.Load(firstSelectionSet.Key, firstSelectionSet.Value);
-                    var currentResourceID = inspector["resourceinstanceid"];
-                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("The ResourceID of the selected feature is " + currentResourceID);
-                }
-                catch {
-                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make sure you selected only one feature!");
-                }
+                var selectedFeatures = MapView.Active.Map.GetSelection();
+                var firstSelectionSet = selectedFeatures.First();
+                var archesInspector = new Inspector();
+                archesInspector.Load(firstSelectionSet.Key, firstSelectionSet.Value);
+                var archesGeometry = archesInspector.Shape;
+                var archesResourceid = archesInspector["resourceinstanceid"];
+                StaticVariables.archesTileid = archesInspector["tileid"].ToString();
+                //StaticVariables.archesNodeid = archesInspector["nodeid"].ToString();
+                StaticVariables.archesNodeid = "8d41e4d6-a250-11e9-accd-00224800b26d";
+
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
+                    "NodeID: " + StaticVariables.archesNodeid +
+                    "\nTileID: " + StaticVariables.archesTileid +
+                    "\nGeometry type: " + archesGeometry.GeometryType +
+                    "\nGeometry JSON: " + archesGeometry.ToJson());
             });
         }
+
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            // Check for an active mapview
+            try
+            {
+                if (MapView.Active == null)
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No MapView currently active. Exiting...", "Info");
+                    return;
+                }
+                GetAttribute();
+            }
+            catch (Exception ex)
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Exception: " + ex.Message);
+            }
+        }
+
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("You Clicked the Cancel Button in the Save Resources Dockpane");
+            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("You Clicked the Submit Button in the Save Resources Dockpane");
         }
     }
 }
