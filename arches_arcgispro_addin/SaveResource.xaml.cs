@@ -4,8 +4,10 @@ using ArcGIS.Desktop.Mapping;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -24,6 +26,8 @@ namespace arches_arcgispro_addin
     /// </summary>
     public partial class SaveResourceView : UserControl
     {
+        static readonly HttpClient client = new HttpClient();
+
         public SaveResourceView()
         {
             InitializeComponent();
@@ -51,6 +55,60 @@ namespace arches_arcgispro_addin
             });
         }
 
+        private async Task<string> GetGeometryString()
+        {
+            ArcGIS.Core.Geometry.Geometry archesGeometry;
+            string archesGeometryString;
+
+            var args = await QueuedTask.Run(() =>
+            {
+                var selectedFeatures = MapView.Active.Map.GetSelection();
+                var firstSelectionSet = selectedFeatures.First();
+                var archesInspector = new Inspector();
+                archesInspector.Load(firstSelectionSet.Key, firstSelectionSet.Value);
+                archesGeometry = archesInspector.Shape;
+                archesGeometryString = archesGeometry.ToJson();
+
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
+                    "Geometry type: " + archesGeometry.GeometryType +
+                    "\nGeometry JSON: " + archesGeometry.ToJson());
+
+                return archesGeometryString;
+
+            });
+
+            return args;
+        }
+
+        private async Task<Dictionary<string, string>> SubmitToArches(string tileid, string nodeid, string data, string geojson)
+        {
+            Dictionary<String, String> result = new Dictionary<String, String>();
+
+            try
+            {
+                var serializer = new JavaScriptSerializer();
+                var stringContent = new FormUrlEncodedContent(new[]
+                    {
+                            new KeyValuePair<string, string>("tileid", tileid),
+                            new KeyValuePair<string, string>("nodeid", nodeid),
+                            new KeyValuePair<string, string>(data, geojson),
+                        });
+                // var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "api/tiles/"), stringContent);
+                var response = await client.PostAsync(System.IO.Path.Combine("http://localhost:8000/api/tiles/"), stringContent);
+
+                response.EnsureSuccessStatusCode();
+                string responseBody = await response.Content.ReadAsStringAsync();
+                dynamic responseJSON = serializer.Deserialize<dynamic>(@responseBody);
+                result.Add("results", responseJSON["results"]);
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("\nException Caught!");
+                Console.WriteLine("Message :{0} ", e.Message);
+            }
+            return result;
+        }
+
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             // Check for an active mapview
@@ -69,9 +127,27 @@ namespace arches_arcgispro_addin
             }
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("You Clicked the Submit Button in the Save Resources Dockpane");
+            try
+            {
+                if (MapView.Active == null)
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No MapView currently active. Exiting...", "Info");
+                    return;
+                }
+
+                string archesGeometryString = await GetGeometryString();
+                string archesData = "data";
+                var result = await SubmitToArches(StaticVariables.archesTileid.ToString(), StaticVariables.archesNodeid, archesData, archesGeometryString);
+                var message = result["results"];
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message +
+                    $"\n{archesGeometryString} is submitted");
+            }
+            catch (Exception ex)
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Exception: " + ex.Message);
+            }
         }
     }
 }
