@@ -24,14 +24,16 @@ namespace arches_arcgispro_addin
     /// Interaction logic for MainDockpaneView.xaml
     /// </summary>
 
-    public static class StaticVariables {
+    public static class StaticVariables
+    {
         public static Dictionary<string, string> myToken;
         public static string myClientid;
         public static string myInstanceURL;
         public static string myUsername;
         public static string myPassword;
+        public static string archesTileid;
+        public static string archesNodeid;
     };
-
     public partial class MainDockpaneView : UserControl
     {
         // HttpClient is intended to be instantiated once per application, rather than per-use. See Remarks.
