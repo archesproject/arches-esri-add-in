@@ -27,7 +27,11 @@
           <button refID="arches_arcgispro_addin_MainDockpane_ShowButton" size="large" />
           <button refID="arches_arcgispro_addin_ResourceModelDockpane_ShowButton" size="large" />
           <button refID="arches_arcgispro_addin_SaveResource_ShowButton" size="large" />
-          <button refID="arches_arcgispro_addin_AttributeTable_ShowButton" size="large" />
+          <button refID="arches_arcgispro_addin_AttributeTable_ShowButton" size="large" />b 
+          <button refID="esri_mapping_addDataGallery" size="large" />
+          <button refID="esri_mapping_selectContext" size="large" />
+          <button refID="esri_editing_ShowAttributes" size="middle" />
+          <button refID="esri_mapping_clearSelectionButton" size="middle" />
         </group>
       </groups>
       <controls>
