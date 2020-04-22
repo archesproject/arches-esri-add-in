@@ -6,7 +6,7 @@
              xmlns:ui="clr-namespace:arches_arcgispro_addin"
              xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="300"
+             d:DesignHeight="500" d:DesignWidth="300"
              d:DataContext="{Binding Path=ui.Dockpane1ViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -36,12 +36,17 @@
         <ComboBox HorizontalAlignment="Center" Margin="0,100,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" 
                   ItemsSource="{Binding FeatureLayers}" DisplayMemberPath="Name" 
                   SelectedItem="{Binding SelectedFeatureLayer}" />
-        <Button Content="Get Arches Parameters" HorizontalAlignment="Center" Margin="0,140,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" Click="Button_Click"/>
-        <TextBlock HorizontalAlignment="Left" Margin="50,190,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
-            Text="2. Select a geometry and click the Submit button to replace Arches geometry" />
 
-        <TextBlock HorizontalAlignment="Left" Margin="50,260,0,0" Grid.Row="1" Text="Geometry Source Layer" VerticalAlignment="Top" Width="130"/>
-        <ComboBox HorizontalAlignment="Center" Margin="0,280,0,0" Grid.Row="1" Text="" VerticalAlignment="Top" Width="200" />
-        <Button Content="Submit to Arches" HorizontalAlignment="Center" Margin="0,320,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" Click="Button_Click_1" RenderTransformOrigin="0.741,1.819"/>
+        <TextBlock HorizontalAlignment="Left" FontWeight="bold"  Margin="50,125,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
+                   Text ="{Binding ResourceID}" />
+
+        <Button Content="Get Arches Parameters" HorizontalAlignment="Center" Margin="0,150,0,0" Grid.Row="1" VerticalAlignment="Top" Width="180" Click="Button_Click"/>
+        <Button Content="Unregister Arches Instance" HorizontalAlignment="Center" Margin="0,180,0,0" Grid.Row="1" VerticalAlignment="Top" Width="180" Click="Button_Click_1" />
+
+        <TextBlock HorizontalAlignment="Left" Margin="50,220,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
+            Text="2. Select a geometry and click the Submit button to replace Arches geometry" />
+        <TextBlock HorizontalAlignment="Left" Margin="50,290,0,0" Grid.Row="1" Text="Geometry Source Layer" VerticalAlignment="Top" Width="130"/>
+        <ComboBox HorizontalAlignment="Center" Margin="0,310,0,0" Grid.Row="1" Text="" VerticalAlignment="Top" Width="200" />
+        <Button Content="Submit to Arches" HorizontalAlignment="Center" Margin="0,350,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" Click="Button_Click_2" RenderTransformOrigin="0.741,1.819"/>
     </Grid>
 </UserControl>

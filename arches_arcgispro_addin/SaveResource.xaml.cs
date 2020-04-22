@@ -42,7 +42,7 @@ namespace arches_arcgispro_addin
                 var archesInspector = new Inspector();
                 archesInspector.Load(firstSelectionSet.Key, firstSelectionSet.Value);
                 var archesGeometry = archesInspector.Shape;
-                var archesResourceid = archesInspector["resourceinstanceid"];
+                StaticVariables.archesResourceid = archesInspector["resourceinstanceid"].ToString();
                 StaticVariables.archesTileid = archesInspector["tileid"].ToString();
                 //StaticVariables.archesNodeid = archesInspector["nodeid"].ToString();
                 StaticVariables.archesNodeid = "8d41e4d6-a250-11e9-accd-00224800b26d";
@@ -120,6 +120,12 @@ namespace arches_arcgispro_addin
                     return;
                 }
                 GetAttribute();
+
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"" +
+                    $"Resource ID: {StaticVariables.archesResourceid} " +
+                    $"\nTile ID: {StaticVariables.archesTileid} " +
+                    $"\nNode ID: {StaticVariables.archesNodeid} ");
+
             }
             catch (Exception ex)
             {
@@ -127,7 +133,19 @@ namespace arches_arcgispro_addin
             }
         }
 
-        private async void Button_Click_1(object sender, RoutedEventArgs e)
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            StaticVariables.archesNodeid = "";
+            StaticVariables.archesTileid = "";
+            StaticVariables.archesResourceid = "";
+
+            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"" +
+                $"Resource ID: {StaticVariables.archesResourceid} " +
+                $"\nTile ID: {StaticVariables.archesTileid} " +
+                $"\nNode ID: {StaticVariables.archesNodeid} ");
+        }
+
+        private async void Button_Click_2(object sender, RoutedEventArgs e)
         {
             try
             {
