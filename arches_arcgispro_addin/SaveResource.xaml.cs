@@ -1,5 +1,6 @@
 ﻿using ArcGIS.Desktop.Editing.Attributes;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
+using ArcGIS.Desktop.Internal.Models.Utilities;
 using ArcGIS.Desktop.Mapping;
 using System;
 using System.Collections.Generic;
@@ -59,20 +60,29 @@ namespace arches_arcgispro_addin
         {
             ArcGIS.Core.Geometry.Geometry archesGeometry;
             string archesGeometryString;
+            List<string> archesGeometryCollection = new List<string>();
 
             var args = await QueuedTask.Run(() =>
             {
-                var selectedFeatures = MapView.Active.Map.GetSelection();
-                var firstSelectionSet = selectedFeatures.First();
-                var archesInspector = new Inspector();
-                archesInspector.Load(firstSelectionSet.Key, firstSelectionSet.Value);
-                archesGeometry = archesInspector.Shape;
-                archesGeometryString = archesGeometry.ToJson();
+                var selectedFeatures = ArcGIS.Desktop.Mapping.MapView.Active.Map.GetSelection();
+                foreach (var selectedFeature in selectedFeatures)
+                {
+                    foreach (var selected in selectedFeature.Value)
+                    {
+                        var archesInspector = new ArcGIS.Desktop.Editing.Attributes.Inspector();
+                        archesInspector.Load(selectedFeature.Key, selected);
+                        archesGeometry = archesInspector.Shape;
+                        archesGeometryCollection.Add(archesGeometry.ToJson());
+                        ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
+                            "Geometry: " + archesGeometry.ToJson() + " is added");
+                    }
+                }
 
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                //archesGeometryString = jsonSerializer.Serialize(archesGeometryCollection);
+                archesGeometryString = String.Join(",", archesGeometryCollection);
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
-                    "Geometry type: " + archesGeometry.GeometryType +
-                    "\nGeometry JSON: " + archesGeometry.ToJson());
-
+                    "Geometry Collection: " + archesGeometryString);
                 return archesGeometryString;
 
             });
