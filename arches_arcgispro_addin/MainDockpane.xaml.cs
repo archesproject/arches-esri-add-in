@@ -187,19 +187,16 @@ namespace arches_arcgispro_addin
                 StaticVariables.myPassword = Password.Password;
                 StaticVariables.myToken = await GetToken(StaticVariables.myClientid);
 
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"" +
+                /*ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"" +
                     $"clientid: {StaticVariables.myClientid} " +
                     $"\naccess token: {StaticVariables.myToken["access_token"]} " +
-                    $"\nrefresh token: {StaticVariables.myToken["refresh_token"]} " /*+
-                $"\ngraph: {resource["graphid"]}" +
-                $"\nresource: {resource["resourceid"]}" +
-                $"\nresource name: {resource["displayname"]}"*/);
+                    $"\nrefresh token: {StaticVariables.myToken["refresh_token"]} ");*/
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Successfully Logged in to {StaticVariables.myInstanceURL}");
 
                 DockPane pane = FrameworkApplication.DockPaneManager.Find("arches_arcgispro_addin_SaveResource");
                 if (pane == null)
                     return;
                 pane.Activate();
-
             }
             catch {
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Check the Instance URL and/or the Credentials");
