@@ -119,7 +119,15 @@ namespace arches_arcgispro_addin
             return result;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void RefreshMapView()
+        {
+            await QueuedTask.Run(() =>
+            {
+                MapView.Active.Redraw(true);
+            });
+        }
+
+            private void Button_Click(object sender, RoutedEventArgs e)
         {
             // Check for an active mapview
             try
@@ -155,6 +163,8 @@ namespace arches_arcgispro_addin
                 $"\nNode ID: {StaticVariables.archesNodeid} ");
         }
 
+
+
         private async void Button_Click_2(object sender, RoutedEventArgs e)
         {
             try
@@ -181,6 +191,7 @@ namespace arches_arcgispro_addin
                 var message = result["results"];
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message +
                     $"\n{archesGeometryString} is submitted");
+                RefreshMapView();
             }
             catch (Exception ex)
             {
