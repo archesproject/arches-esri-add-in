@@ -83,12 +83,18 @@ namespace arches_arcgispro_addin
                         var archesInspector = new ArcGIS.Desktop.Editing.Attributes.Inspector();
                         archesInspector.Load(selectedFeature.Key, selected);
                         archesGeometry = archesInspector.Shape;
-                        ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
-                            "Geometry: " + archesGeometry.ToJson() + " is added");
+                        if (archesGeometry.SpatialReference.Wkid == 4326)
+                        {
+                            archesGeometryCollection.Add(archesGeometry.ToJson());
+                        }
+                        else {
+                            var reprojectedGeometry = SRTransform(archesGeometry, archesGeometry.SpatialReference.Wkid, 4326);
+                            archesGeometryCollection.Add(reprojectedGeometry.ToJson());
+                        }
                     }
                 }
 
-                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                //JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
                 //archesGeometryString = jsonSerializer.Serialize(archesGeometryCollection);
                 archesGeometryString = String.Join(",", archesGeometryCollection);
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
