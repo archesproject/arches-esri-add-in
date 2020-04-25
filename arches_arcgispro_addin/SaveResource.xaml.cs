@@ -57,6 +57,16 @@ namespace arches_arcgispro_addin
             });
         }
 
+        private ArcGIS.Core.Geometry.Geometry SRTransform(ArcGIS.Core.Geometry.Geometry inGeometry, int inSRID, int outSRID)
+        {
+            ArcGIS.Core.Geometry.Geometry outGeometry;
+            SpatialReference inSR = SpatialReferenceBuilder.CreateSpatialReference(inSRID);
+            SpatialReference outSR = SpatialReferenceBuilder.CreateSpatialReference(outSRID);
+            ProjectionTransformation transformer = ProjectionTransformation.Create(inSR, outSR);
+            outGeometry = GeometryEngine.Instance.ProjectEx(inGeometry, transformer);
+            return outGeometry;
+        }
+
         private async Task<string> GetGeometryString()
         {
             ArcGIS.Core.Geometry.Geometry archesGeometry;
@@ -75,7 +85,6 @@ namespace arches_arcgispro_addin
                         archesGeometry = archesInspector.Shape;
                         ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
                             "Geometry: " + archesGeometry.ToJson() + " is added");
-                        archesGeometryCollection.Add(archesGeometry.ToJson());
                     }
                 }
 
