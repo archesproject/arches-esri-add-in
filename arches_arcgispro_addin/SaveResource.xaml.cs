@@ -56,6 +56,7 @@ namespace arches_arcgispro_addin
                     "\nGeometry JSON: " + archesGeometry.ToJson());
             });
         }
+
         private async Task<string> GetGeometryString()
         {
             ArcGIS.Core.Geometry.Geometry archesGeometry;
@@ -197,6 +198,23 @@ namespace arches_arcgispro_addin
             {
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Exception: " + ex.Message);
             }
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
+                return;
+            }
+            if (StaticVariables.archesResourceid == "" | StaticVariables.archesResourceid == null)
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Register the Resource to Edit...");
+                return;
+            }
+            string editorAddress = StaticVariables.myInstanceURL + $"resource/{StaticVariables.archesResourceid}";
+            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("opening... \n" + editorAddress);
+            System.Diagnostics.Process.Start(editorAddress);
         }
     }
 }
