@@ -16,7 +16,8 @@ using System.Windows.Shapes;
 using System.Net;
 using System.Net.Http;
 using System.Web.Script.Serialization;
-
+using ArcGIS.Desktop.Framework.Contracts;
+using ArcGIS.Desktop.Framework;
 
 namespace arches_arcgispro_addin
 {
@@ -193,7 +194,14 @@ namespace arches_arcgispro_addin
                 $"\ngraph: {resource["graphid"]}" +
                 $"\nresource: {resource["resourceid"]}" +
                 $"\nresource name: {resource["displayname"]}"*/);
-            } catch {
+
+                DockPane pane = FrameworkApplication.DockPaneManager.Find("arches_arcgispro_addin_SaveResource");
+                if (pane == null)
+                    return;
+                pane.Activate();
+
+            }
+            catch {
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Check the Instance URL and/or the Credentials");
             }
         }
