@@ -1,4 +1,5 @@
-﻿using ArcGIS.Desktop.Editing.Attributes;
+﻿using ArcGIS.Core.Geometry;
+using ArcGIS.Desktop.Editing.Attributes;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Internal.Models.Utilities;
 using ArcGIS.Desktop.Mapping;
@@ -72,9 +73,9 @@ namespace arches_arcgispro_addin
                         var archesInspector = new ArcGIS.Desktop.Editing.Attributes.Inspector();
                         archesInspector.Load(selectedFeature.Key, selected);
                         archesGeometry = archesInspector.Shape;
-                        archesGeometryCollection.Add(archesGeometry.ToJson());
                         ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
                             "Geometry: " + archesGeometry.ToJson() + " is added");
+                        archesGeometryCollection.Add(archesGeometry.ToJson());
                     }
                 }
 
@@ -99,12 +100,12 @@ namespace arches_arcgispro_addin
                 var serializer = new JavaScriptSerializer();
                 var stringContent = new FormUrlEncodedContent(new[]
                     {
-                            new KeyValuePair<string, string>("tileid", tileid),
-                            new KeyValuePair<string, string>("nodeid", nodeid),
-                            new KeyValuePair<string, string>(data, geojson),
-                        });
-                // var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "api/tiles/"), stringContent);
-                var response = await client.PostAsync(System.IO.Path.Combine("http://localhost:8000/api/tiles/"), stringContent);
+                        new KeyValuePair<string, string>("tileid", tileid),
+                        new KeyValuePair<string, string>("nodeid", nodeid),
+                        new KeyValuePair<string, string>(data, geojson),
+                    });
+                var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "api/tiles/"), stringContent);
+                //var response = await client.PostAsync(System.IO.Path.Combine("http://localhost:8000/api/tiles/"), stringContent);
 
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
@@ -119,7 +120,15 @@ namespace arches_arcgispro_addin
             return result;
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private async void RefreshMapView()
+        {
+            await QueuedTask.Run(() =>
+            {
+                MapView.Active.Redraw(true);
+            });
+        }
+
+            private void Button_Click(object sender, RoutedEventArgs e)
         {
             // Check for an active mapview
             try
@@ -155,6 +164,8 @@ namespace arches_arcgispro_addin
                 $"\nNode ID: {StaticVariables.archesNodeid} ");
         }
 
+
+
         private async void Button_Click_2(object sender, RoutedEventArgs e)
         {
             try
@@ -164,6 +175,16 @@ namespace arches_arcgispro_addin
                     ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No MapView currently active. Exiting...", "Info");
                     return;
                 }
+                if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
+                    return;
+                }
+                if (StaticVariables.archesResourceid == "" | StaticVariables.archesResourceid == null)
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Register the Resource to Edit...");
+                    return;
+                }
 
                 string archesGeometryString = await GetGeometryString();
                 string archesData = "data";
@@ -171,11 +192,29 @@ namespace arches_arcgispro_addin
                 var message = result["results"];
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message +
                     $"\n{archesGeometryString} is submitted");
+                RefreshMapView();
             }
             catch (Exception ex)
             {
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Exception: " + ex.Message);
             }
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
+                return;
+            }
+            if (StaticVariables.archesResourceid == "" | StaticVariables.archesResourceid == null)
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Register the Resource to Edit...");
+                return;
+            }
+            string editorAddress = StaticVariables.myInstanceURL + $"resource/{StaticVariables.archesResourceid}";
+            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("opening... \n" + editorAddress);
+            System.Diagnostics.Process.Start(editorAddress);
         }
     }
 }

@@ -88,8 +88,6 @@ namespace arches_arcgispro_addin
                             new KeyValuePair<string, string>("password", StaticVariables.myPassword),
                         });
                 var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "auth/get_client_id"), stringContent);
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(System.IO.Path.Combine(StaticVariables.myInstanceURL, "auth/get_client_id"));
-
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 dynamic responseJSON = serializer.Deserialize<dynamic>(@responseBody);
@@ -181,7 +179,7 @@ namespace arches_arcgispro_addin
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             try {
-                await GetInstances();
+                //await GetInstances();
                 StaticVariables.myClientid = await GetClientId();
                 StaticVariables.myInstanceURL = InstanceURL.Text;
                 StaticVariables.myUsername = Username.Text;
