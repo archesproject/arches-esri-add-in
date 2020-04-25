@@ -191,6 +191,14 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\ArchesIcon16.png" />
+    <AddInContent Include="Images\ArchesIcon32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\Stormtrooper16.png" />
+    <AddInContent Include="Images\Stormtrooper32.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!--
   PackageAction can be:

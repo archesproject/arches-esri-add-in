@@ -16,32 +16,40 @@
       <tabs>
         <tab id="arches_arcgispro_addin_Tab1" caption="Arches Project">
           <group refID="arches_arcgispro_addin_Group1" />
+          <group refID="arches_arcgispro_addin_Group2" />
         </tab>
       </tabs>
       <groups>
         <!-- comment this out if you have no controls on the Addin tab to avoid
               an empty group-->
-        <group id="arches_arcgispro_addin_Group1" caption="Login" appearsOnAddInTab="false">
+        <group id="arches_arcgispro_addin_Group1" caption="Arches Connections" appearsOnAddInTab="false">
           <!-- host controls within groups -->
           <button refID="arches_arcgispro_addin_Login" size="large" />
           <button refID="arches_arcgispro_addin_MainDockpane_ShowButton" size="large" />
-          <button refID="arches_arcgispro_addin_ResourceModelDockpane_ShowButton" size="large" />
           <button refID="arches_arcgispro_addin_SaveResource_ShowButton" size="large" />
+          <button refID="arches_arcgispro_addin_ResourceModelDockpane_ShowButton" size="large" />
           <button refID="arches_arcgispro_addin_AttributeTable_ShowButton" size="large" />
+        </group>
+        <group id="arches_arcgispro_addin_Group2" caption="ArcGIS Pro Tools" appearsOnAddInTab="false">
+          <button refID="esri_mapping_addDataGallery" size="large" />
+          <button refID="esri_mapping_exploreSplitButton" size="large" />
+          <button refID="esri_mapping_selectToolPalette" size="large" />
+          <button refID="esri_editing_ShowAttributes" size="middle" />
+          <button refID="esri_mapping_clearSelectionButton" size="middle" />
         </group>
       </groups>
       <controls>
         <!-- add your controls here -->
-        <button id="arches_arcgispro_addin_Login" caption="Login" className="Login" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png">
+        <button id="arches_arcgispro_addin_Login" caption="Test" className="Login" loadOnClick="true" largeImage="Images\Stormtrooper32.png" smallImage="Images\Stormtrooper16.png">
           <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
         </button>
-        <button id="arches_arcgispro_addin_MainDockpane_ShowButton" caption="Arches Connection" className="MainDockpane_ShowButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple32.png">
+        <button id="arches_arcgispro_addin_MainDockpane_ShowButton" caption="Arches Connection" className="MainDockpane_ShowButton" loadOnClick="true" largeImage="Images\ArchesIcon32.png" smallImage="Images\ArchesIcon16.png">
           <tooltip heading="Arches Instance">Connect to Arches Instance<disabledText /></tooltip>
         </button>
         <button id="arches_arcgispro_addin_ResourceModelDockpane_ShowButton" caption="Import Resource" className="ResourceModelDockpane_ShowButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple32.png">
           <tooltip heading="Import Resources">Import resources from the selected resource model<disabledText /></tooltip>
         </button>
-        <button id="arches_arcgispro_addin_SaveResource_ShowButton" caption="Save Resource" className="SaveResource_ShowButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple32.png">
+        <button id="arches_arcgispro_addin_SaveResource_ShowButton" caption="Save Resource" className="SaveResource_ShowButton" loadOnClick="true" largeImage="Images\AddinDesktop32.png" smallImage="Images\AddinDesktop16.png">
           <tooltip heading="Save Resources">Save resources to the selected reousrce model<disabledText /></tooltip>
         </button>
         <button id="arches_arcgispro_addin_AttributeTable_ShowButton" caption="Show AttributeTable" className="AttributeTable_ShowButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple32.png">

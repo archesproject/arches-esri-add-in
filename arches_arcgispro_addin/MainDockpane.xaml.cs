@@ -33,6 +33,7 @@ namespace arches_arcgispro_addin
         public static string myPassword;
         public static string archesTileid;
         public static string archesNodeid;
+        public static string archesResourceid;
     };
     public partial class MainDockpaneView : UserControl
     {
