@@ -19,6 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ArcGIS.Desktop.Framework.Contracts;
 
 
 namespace arches_arcgispro_addin
@@ -171,7 +172,7 @@ namespace arches_arcgispro_addin
         {
             StaticVariables.archesNodeid = "";
             StaticVariables.archesTileid = "";
-            StaticVariables.archesResourceid = "";
+            StaticVariables.archesResourceid = "No Resource is Registered";
 
             ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"" +
                 $"Resource ID: {StaticVariables.archesResourceid} " +
