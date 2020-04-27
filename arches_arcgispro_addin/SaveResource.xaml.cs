@@ -57,6 +57,16 @@ namespace arches_arcgispro_addin
             });
         }
 
+        private ArcGIS.Core.Geometry.Geometry SRTransform(ArcGIS.Core.Geometry.Geometry inGeometry, int inSRID, int outSRID)
+        {
+            ArcGIS.Core.Geometry.Geometry outGeometry;
+            SpatialReference inSR = SpatialReferenceBuilder.CreateSpatialReference(inSRID);
+            SpatialReference outSR = SpatialReferenceBuilder.CreateSpatialReference(outSRID);
+            ProjectionTransformation transformer = ProjectionTransformation.Create(inSR, outSR);
+            outGeometry = GeometryEngine.Instance.ProjectEx(inGeometry, transformer);
+            return outGeometry;
+        }
+
         private async Task<string> GetGeometryString()
         {
             ArcGIS.Core.Geometry.Geometry archesGeometry;
@@ -73,13 +83,18 @@ namespace arches_arcgispro_addin
                         var archesInspector = new ArcGIS.Desktop.Editing.Attributes.Inspector();
                         archesInspector.Load(selectedFeature.Key, selected);
                         archesGeometry = archesInspector.Shape;
-                        ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
-                            "Geometry: " + archesGeometry.ToJson() + " is added");
-                        archesGeometryCollection.Add(archesGeometry.ToJson());
+                        if (archesGeometry.SpatialReference.Wkid == 4326)
+                        {
+                            archesGeometryCollection.Add(archesGeometry.ToJson());
+                        }
+                        else {
+                            var reprojectedGeometry = SRTransform(archesGeometry, archesGeometry.SpatialReference.Wkid, 4326);
+                            archesGeometryCollection.Add(reprojectedGeometry.ToJson());
+                        }
                     }
                 }
 
-                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                //JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
                 //archesGeometryString = jsonSerializer.Serialize(archesGeometryCollection);
                 archesGeometryString = String.Join(",", archesGeometryCollection);
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
