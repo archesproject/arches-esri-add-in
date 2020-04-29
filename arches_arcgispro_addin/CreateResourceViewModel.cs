@@ -40,7 +40,7 @@ namespace arches_arcgispro_addin
         /// <summary>
         /// Text shown near the top of the DockPane.
         /// </summary>
-        private string _heading = "My DockPane";
+        private string _heading = "Create a Resource";
         public string Heading
         {
             get { return _heading; }
