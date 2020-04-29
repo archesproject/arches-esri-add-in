@@ -47,8 +47,7 @@ namespace arches_arcgispro_addin
                 var archesGeometry = archesInspector.Shape;
                 StaticVariables.archesResourceid = archesInspector["resourceinstanceid"].ToString();
                 StaticVariables.archesTileid = archesInspector["tileid"].ToString();
-                //StaticVariables.archesNodeid = archesInspector["nodeid"].ToString();
-                StaticVariables.archesNodeid = "8d41e4d6-a250-11e9-accd-00224800b26d";
+                StaticVariables.archesNodeid = archesInspector["nodeid"].ToString();
 
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
                     "NodeID: " + StaticVariables.archesNodeid +
