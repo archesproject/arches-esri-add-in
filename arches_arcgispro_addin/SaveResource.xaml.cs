@@ -24,7 +24,7 @@ using System.Windows.Shapes;
 namespace arches_arcgispro_addin
 {
     /// <summary>
-    /// Interaction logic for Dockpane1View.xaml
+    /// Interaction logic for SaveResourceView.xaml
     /// </summary>
     public partial class SaveResourceView : UserControl
     {
@@ -56,7 +56,7 @@ namespace arches_arcgispro_addin
             });
         }
 
-        private ArcGIS.Core.Geometry.Geometry SRTransform(ArcGIS.Core.Geometry.Geometry inGeometry, int inSRID, int outSRID)
+        private static ArcGIS.Core.Geometry.Geometry SRTransform(ArcGIS.Core.Geometry.Geometry inGeometry, int inSRID, int outSRID)
         {
             ArcGIS.Core.Geometry.Geometry outGeometry;
             SpatialReference inSR = SpatialReferenceBuilder.CreateSpatialReference(inSRID);
@@ -66,7 +66,7 @@ namespace arches_arcgispro_addin
             return outGeometry;
         }
 
-        private async Task<string> GetGeometryString()
+        public static async Task<string> GetGeometryString()
         {
             ArcGIS.Core.Geometry.Geometry archesGeometry;
             string archesGeometryString;
@@ -105,7 +105,7 @@ namespace arches_arcgispro_addin
             return args;
         }
 
-        private async Task<Dictionary<string, string>> SubmitToArches(string tileid, string nodeid, string data, string geojson)
+        public static async Task<Dictionary<string, string>> SubmitToArches(string tileid, string nodeid, string data, string geojson)
         {
             Dictionary<String, String> result = new Dictionary<String, String>();
 
@@ -134,7 +134,7 @@ namespace arches_arcgispro_addin
             return result;
         }
 
-        private async void RefreshMapView()
+        public static async void RefreshMapView()
         {
             await QueuedTask.Run(() =>
             {
@@ -142,7 +142,7 @@ namespace arches_arcgispro_addin
             });
         }
 
-            private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             // Check for an active mapview
             try
