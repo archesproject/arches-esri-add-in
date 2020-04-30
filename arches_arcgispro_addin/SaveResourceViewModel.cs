@@ -105,6 +105,15 @@ namespace arches_arcgispro_addin
             NotifyPropertyChanged(() => FeatureLayers);
         }
 
+        public string ResourceIDEdited
+        {
+            get { return StaticVariables.archesResourceid; }
+            set
+            {
+                SetProperty(ref StaticVariables.archesResourceid, value, () => ResourceIDEdited);
+            }
+        }
+
         /// <summary>
         /// Show the DockPane.
         /// </summary>

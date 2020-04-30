@@ -16,7 +16,8 @@ using System.Windows.Shapes;
 using System.Net;
 using System.Net.Http;
 using System.Web.Script.Serialization;
-
+using ArcGIS.Desktop.Framework.Contracts;
+using ArcGIS.Desktop.Framework;
 
 namespace arches_arcgispro_addin
 {
@@ -33,7 +34,7 @@ namespace arches_arcgispro_addin
         public static string myPassword;
         public static string archesTileid;
         public static string archesNodeid;
-        public static string archesResourceid;
+        public static string archesResourceid = "No Resource is Registered";
     };
     public partial class MainDockpaneView : UserControl
     {
@@ -186,14 +187,18 @@ namespace arches_arcgispro_addin
                 StaticVariables.myPassword = Password.Password;
                 StaticVariables.myToken = await GetToken(StaticVariables.myClientid);
 
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"" +
+                /*ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"" +
                     $"clientid: {StaticVariables.myClientid} " +
                     $"\naccess token: {StaticVariables.myToken["access_token"]} " +
-                    $"\nrefresh token: {StaticVariables.myToken["refresh_token"]} " /*+
-                $"\ngraph: {resource["graphid"]}" +
-                $"\nresource: {resource["resourceid"]}" +
-                $"\nresource name: {resource["displayname"]}"*/);
-            } catch {
+                    $"\nrefresh token: {StaticVariables.myToken["refresh_token"]} ");*/
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Successfully Logged in to {StaticVariables.myInstanceURL}");
+
+                DockPane pane = FrameworkApplication.DockPaneManager.Find("arches_arcgispro_addin_SaveResource");
+                if (pane == null)
+                    return;
+                pane.Activate();
+            }
+            catch {
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Check the Instance URL and/or the Credentials");
             }
         }
