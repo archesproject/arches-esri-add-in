@@ -130,6 +130,10 @@
       <DependentUpon>AttributeTable.xaml</DependentUpon>
     </Compile>
     <Compile Include="AttributeTableViewModel.cs" />
+    <Compile Include="CreateResource.xaml.cs">
+      <DependentUpon>CreateResource.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CreateResourceViewModel.cs" />
     <Compile Include="SaveResource.xaml.cs">
       <DependentUpon>SaveResource.xaml</DependentUpon>
     </Compile>
@@ -160,6 +164,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="AttributeTable.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CreateResource.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
