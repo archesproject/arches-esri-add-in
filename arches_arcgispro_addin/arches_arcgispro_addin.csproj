@@ -126,10 +126,6 @@
     <AddInContent Include="DarkImages\AddInDesktop32.png" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AttributeTable.xaml.cs">
-      <DependentUpon>AttributeTable.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="AttributeTableViewModel.cs" />
     <Compile Include="CreateResource.xaml.cs">
       <DependentUpon>CreateResource.xaml</DependentUpon>
     </Compile>
@@ -145,10 +141,6 @@
     <Compile Include="MainDockpaneViewModel.cs" />
     <Compile Include="Module1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ResourceModelDockpane.xaml.cs">
-      <DependentUpon>ResourceModelDockpane.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ResourceModelDockpaneViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <AddInContent Include="Images\GenericButtonBlue16.png" />
@@ -163,10 +155,6 @@
     <AddInContent Include="DarkImages\GenericButtonBlue32.png" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="AttributeTable.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="CreateResource.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -176,10 +164,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainDockpane.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ResourceModelDockpane.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
