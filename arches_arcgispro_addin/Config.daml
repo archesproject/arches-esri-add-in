@@ -17,6 +17,7 @@
         <tab id="arches_arcgispro_addin_Tab1" caption="Arches Project">
           <group refID="arches_arcgispro_addin_Group1" />
           <group refID="arches_arcgispro_addin_Group2" />
+          <group refID="arches_arcgispro_addin_Group3" />
         </tab>
       </tabs>
       <groups>
@@ -38,6 +39,9 @@
           <button refID="esri_editing_ShowAttributes" size="middle" />
           <button refID="esri_mapping_clearSelectionButton" size="middle" />
         </group>
+        <group id="arches_arcgispro_addin_Group3" caption="Chromium Pane" appearsOnAddInTab="false">
+          <button refID="arches_arcgispro_addin_UI_ChromePane_OpenButton" size="large" />
+        </group>
       </groups>
       <controls>
         <!-- add your controls here -->
@@ -54,6 +58,10 @@
         <button id="arches_arcgispro_addin_CreateResource_ShowButton" caption="Create Resource" className="CreateResource_ShowButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple32.png">
           <tooltip heading="Show Dockpane">Create a New Resource<disabledText /></tooltip>
         </button>
+        <button id="arches_arcgispro_addin_UI_ChromePane_OpenButton" caption="Open Chromium Pane" className="arches_arcgispro_addin.UI.ChromePane_OpenButton" loadOnClick="true" smallImage="Images\chromium16.png" largeImage="Images\chromium32.png">
+          <tooltip heading="Open Chromium Pane">Open Chromium Pane<disabledText /></tooltip>
+        </button>
+        
         <!--button id="arches_arcgispro_addin_ResourceModelDockpane_ShowButton" caption="Import Resource" className="ResourceModelDockpane_ShowButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple32.png">
           <tooltip heading="Import Resources">Import resources from the selected resource model<disabledText /></tooltip>
         </button>
@@ -79,6 +87,11 @@
           <content className="AttributeTableView" />
         </dockPane-->
       </dockPanes>
+      <panes>
+        <pane id="arches_arcgispro_addin_UI_ChromePane" caption="ChromePane" className="arches_arcgispro_addin.UI.ChromePaneViewModel" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonGreen16.png" defaultTab="esri_mapping_homeTab" defaultTool="esri_mapping_navigateTool">
+          <content className="arches_arcgispro_addin.UI.ChromePaneView" />
+        </pane>
+      </panes>
     </insertModule>
   </modules>
 </ArcGIS>
