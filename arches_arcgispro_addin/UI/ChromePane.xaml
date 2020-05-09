@@ -22,7 +22,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
-						 xmlns:chrome"clr-namespace:ArcGIS.Desktop.Framework.Controls;assembly=ArcGIS.Desktop.Framework"
+						 xmlns:chrome="clr-namespace:ArcGIS.Desktop.Framework.Controls;assembly=ArcGIS.Desktop.Framework"
 						 xmlns:wpf="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
 						 xmlns:cef="clr-namespace:CefSharp;assembly=CefSharp.Core"
 						 xmlns:ui="clr-namespace:arches_arcgispro_addin.UI"
