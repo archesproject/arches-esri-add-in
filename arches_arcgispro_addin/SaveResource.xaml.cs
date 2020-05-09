@@ -229,7 +229,7 @@ namespace arches_arcgispro_addin
             }
             string editorAddress = StaticVariables.myInstanceURL + $"resource/{StaticVariables.archesResourceid}";
             ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("opening... \n" + editorAddress);
-            System.Diagnostics.Process.Start(editorAddress);
+            UI.ChromePaneViewModel.OpenChromePane(editorAddress);
         }
     }
 }

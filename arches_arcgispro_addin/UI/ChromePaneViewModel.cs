@@ -58,7 +58,13 @@ namespace arches_arcgispro_addin.UI
 
 		#region Properties
 
-		private string _browserAddress = @"http://github.com/esri/arcgis-pro-sdk-community-samples"; // @"file:///E:/Data/SDK/Documents/lab4.pdf"; //"www.google.com";
+		private static string _browserAddress = StaticVariables.myInstanceURL;
+		public static void OpenChromePane(string newAddress)
+		{
+			_browserAddress = newAddress;
+			Create();
+		}
+
 		public string BrowserAddress
 		{
 			get
