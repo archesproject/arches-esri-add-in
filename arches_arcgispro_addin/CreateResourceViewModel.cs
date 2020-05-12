@@ -47,7 +47,7 @@ namespace arches_arcgispro_addin
             }
         }*/
 
-        public static void GetGeometryNodes()
+        public static void CreateNodeList()
         {
             _geometryNodes.Clear();
             foreach (var geometryNode in StaticVariables.geometryNodes)

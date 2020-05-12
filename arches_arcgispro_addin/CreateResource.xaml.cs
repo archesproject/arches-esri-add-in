@@ -74,7 +74,7 @@ namespace arches_arcgispro_addin
                 }
                 StaticVariables.geometryNodes = await GetGeometryNode();
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"The 1st member: {StaticVariables.geometryNodes.ElementAt(0).Name}\nThe 1st member: {StaticVariables.geometryNodes.ElementAt(0).Id}");
-                CreateResourceViewModel.GetGeometryNodes();
+                CreateResourceViewModel.CreateNodeList();
             }
             catch (Exception ex)
             {
@@ -135,7 +135,7 @@ namespace arches_arcgispro_addin
             }
             string editorAddress = StaticVariables.myInstanceURL + $"resource/{StaticVariables.archesResourceid}";
             ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("opening... \n" + editorAddress);
-            System.Diagnostics.Process.Start(editorAddress);
+            UI.ChromePaneViewModel.OpenChromePane(editorAddress);
 
         }
 
