@@ -39,7 +39,6 @@ namespace arches_arcgispro_addin
             try
             {
                 HttpResponseMessage response = await client.GetAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "api/nodes/?datatype=geojson-feature-collection"));
-                //HttpResponseMessage response = await client.GetAsync("http://localhost:8000/api/nodes/?datatype=geojson-feature-collection");
                 //response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 var serializer = new JavaScriptSerializer();
@@ -108,7 +107,6 @@ namespace arches_arcgispro_addin
                 string archesGeometryString = await SaveResourceView.GetGeometryString();
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"{archesGeometryString} is submitted" +
                                                                  $"\n to {StaticVariables.archesNodeid}");
-                //CreateResourceViewModel.AssignGeometryNodeid();
                 /*string archesData = "data";
                 var result = await SaveResourceView.SubmitToArches("", StaticVariables.archesNodeid, archesData, archesGeometryString);
                 StaticVariables.archesResourceid = result["results"];

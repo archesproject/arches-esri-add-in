@@ -97,8 +97,6 @@ namespace arches_arcgispro_addin
                 //JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
                 //archesGeometryString = jsonSerializer.Serialize(archesGeometryCollection);
                 archesGeometryString = String.Join(",", archesGeometryCollection);
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
-                    "Geometry Collection: " + archesGeometryString);
                 return archesGeometryString;
 
             });
