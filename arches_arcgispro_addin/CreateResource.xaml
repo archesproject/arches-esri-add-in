@@ -1,14 +1,14 @@
 ﻿<UserControl x:Class="arches_arcgispro_addin.CreateResourceView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"   
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ui="clr-namespace:arches_arcgispro_addin"
              xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="500" d:DesignWidth="300"
              d:DataContext="{Binding Path=ui.CreateResourceViewModel}">
-     <UserControl.Resources>
+    <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <extensions:DesignOnlyResourceDictionary Source="pack://application:,,,/ArcGIS.Desktop.Framework;component\Themes\Default.xaml"/>
@@ -31,21 +31,27 @@
       </TextBlock>
         </DockPanel>
 
-        <TextBlock HorizontalAlignment="Left" Margin="50,20,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
+        <TextBlock HorizontalAlignment="Center" Margin="0,20,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
             Text="1. To Start creating, select a Geometry Node from the resource model to create a new resource instance click the Select button"/>
-        <TextBlock HorizontalAlignment="Left" Margin="50,100,0,0" Grid.Row="1" Text="Available Geometry Nodes" VerticalAlignment="Top"/>
-        <ComboBox HorizontalAlignment="Left" Margin="50,120,0,0" Grid.Row="1" VerticalAlignment="Top" Width="210"/>
 
-        <TextBlock HorizontalAlignment="Left" Margin="50,160,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
+        <Button Content="Get Geometry Node Info" HorizontalAlignment="Center" Margin="0,100,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" Click="Button_Click" />
+
+        <TextBlock HorizontalAlignment="Center" Margin="0,138,0,0" Grid.Row="1" Text="Available Geometry Nodes" VerticalAlignment="Top"/>
+
+        <ComboBox HorizontalAlignment="Center" Margin="0,158,0,0" Grid.Row="1" VerticalAlignment="Top" Width="210" SelectionChanged="ComboBox_SelectionChanged"
+                ItemsSource="{Binding GeometryNodes}" DisplayMemberPath="Id"
+                SelectedItem="{Binding SelectedGeometryNode, Mode=TwoWay}" />
+
+        <TextBlock HorizontalAlignment="Center" Margin="0,198,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
             Text="2. Select a geometry and click the Submit button to create Arches geometry" />
-        <Button Content="Submit to Arches" HorizontalAlignment="Center" Margin="0,220,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" Click="Button_Click" />
-        
-        <TextBlock HorizontalAlignment="Left" Margin="50,250,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
+        <Button Content="Submit to Arches" HorizontalAlignment="Center" Margin="0,258,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" Click="Button_Click_1" />
+
+        <TextBlock HorizontalAlignment="Center" Margin="0,288,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
             Text="3. Continue editing attributes using Arches Resource Editor" />
-        <TextBlock HorizontalAlignment="Left" FontWeight="bold"  Margin="50,290,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
+        <TextBlock HorizontalAlignment="Center" FontWeight="bold"  Margin="0,328,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
                    Text="Resouce Instance ID being edited: " />
-        <TextBlock HorizontalAlignment="Left" FontWeight="bold"  Margin="50,310,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
+        <TextBlock HorizontalAlignment="Center" FontWeight="bold"  Margin="0,348,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
                    Text="{Binding ResourceIDEdited}" />
-        <Button Content="Edit using Arches Resource Editor" HorizontalAlignment="Center" Margin="0,340,0,0" Grid.Row="1" VerticalAlignment="Top" Width="180" Click="Button_Click_1" />
+        <Button Content="Edit using Arches Resource Editor" HorizontalAlignment="Center" Margin="0,378,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" Click="Button_Click_2" />
     </Grid>
 </UserControl>
