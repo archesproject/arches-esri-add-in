@@ -4,6 +4,7 @@ using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Mapping;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -31,8 +32,57 @@ namespace arches_arcgispro_addin
         {
             InitializeComponent();
         }
+        static readonly HttpClient client = new HttpClient();
+        private async Task<List<GeometryNode>> GetGeometryNode()
+        {
+            List<GeometryNode> nodeidResponse = new List<GeometryNode>();
+            try
+            {
+                HttpResponseMessage response = await client.GetAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "api/nodes/?datatype=geojson-feature-collection"));
+                //HttpResponseMessage response = await client.GetAsync("http://localhost:8000/api/nodes/?datatype=geojson-feature-collection");
+                //response.EnsureSuccessStatusCode();
+                string responseBody = await response.Content.ReadAsStringAsync();
+                var serializer = new JavaScriptSerializer();
+                dynamic results = serializer.Deserialize<dynamic>(@responseBody);
+
+                foreach (dynamic element in results)
+                {
+                    nodeidResponse.Add(new GeometryNode(element["name"], element["nodeid"]));
+                }
+            }
+            catch (HttpRequestException e)
+            {
+                System.ArgumentException argEx = new System.ArgumentException("The nodeid cannot be retrieved from the Arches server", e);
+                throw argEx;
+            }
+            return nodeidResponse;
+        }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (MapView.Active == null)
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No MapView currently active. Exiting...", "Info");
+                    return;
+                }
+                if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
+                    return;
+                }
+                StaticVariables.geometryNodes = await GetGeometryNode();
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"The 1st member: {StaticVariables.geometryNodes.ElementAt(0).Name}\nThe 1st member: {StaticVariables.geometryNodes.ElementAt(0).Id}");
+                CreateResourceViewModel.GetGeometryNodes();
+            }
+            catch (Exception ex)
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Exception: " + ex.Message);
+            }
+        }
+
+        private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -55,13 +105,15 @@ namespace arches_arcgispro_addin
                 {
                     StaticVariables.archesResourceid = "";
                 }
-
                 string archesGeometryString = await SaveResourceView.GetGeometryString();
-                string archesData = "data";
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"{archesGeometryString} is submitted" +
+                                                                 $"\n to {StaticVariables.archesNodeid}");
+                //CreateResourceViewModel.AssignGeometryNodeid();
+                /*string archesData = "data";
                 var result = await SaveResourceView.SubmitToArches("", StaticVariables.archesNodeid, archesData, archesGeometryString);
                 StaticVariables.archesResourceid = result["results"];
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"A resource id: \n{StaticVariables.archesResourceid} is assigned");
-                SaveResourceView.RefreshMapView();
+                SaveResourceView.RefreshMapView();*/
             }
             catch (Exception ex)
             {
@@ -69,7 +121,7 @@ namespace arches_arcgispro_addin
             }
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
             {
@@ -84,6 +136,11 @@ namespace arches_arcgispro_addin
             string editorAddress = StaticVariables.myInstanceURL + $"resource/{StaticVariables.archesResourceid}";
             ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("opening... \n" + editorAddress);
             System.Diagnostics.Process.Start(editorAddress);
+
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
 
         }
     }

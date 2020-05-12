@@ -18,6 +18,7 @@ using System.Net.Http;
 using System.Web.Script.Serialization;
 using ArcGIS.Desktop.Framework.Contracts;
 using ArcGIS.Desktop.Framework;
+using System.Collections.ObjectModel;
 
 namespace arches_arcgispro_addin
 {
@@ -25,6 +26,21 @@ namespace arches_arcgispro_addin
     /// Interaction logic for MainDockpaneView.xaml
     /// </summary>
 
+    public class GeometryNode
+    {
+        public string Name { get; }
+        public string Id { get; }
+        public GeometryNode(string inId)
+        {
+            Name = inId;
+            Id = inId;
+        }
+        public GeometryNode(string inName, string inId)
+        {
+            Name = inName;
+            Id = inId;
+        }
+    }
     public static class StaticVariables
     {
         public static Dictionary<string, string> myToken;
@@ -34,7 +50,8 @@ namespace arches_arcgispro_addin
         public static string myPassword;
         public static string archesTileid;
         public static string archesNodeid;
-        public static string archesResourceid = "No Resource is Registered";
+        public static string archesResourceid;
+        public static List<GeometryNode> geometryNodes = new List<GeometryNode>();
     };
     public partial class MainDockpaneView : UserControl
     {
