@@ -28,26 +28,12 @@ namespace arches_arcgispro_addin
     {
         private const string _dockPaneID = "arches_arcgispro_addin_CreateResource";
 
-        private readonly object _lockCollection = new object();
         public static ObservableCollection<GeometryNode> _geometryNodes = new ObservableCollection<GeometryNode>();
-        public ReadOnlyObservableCollection<GeometryNode> _readOnlyGeometryNodes;
 
         protected CreateResourceViewModel() {
-            _readOnlyGeometryNodes = new ReadOnlyObservableCollection<GeometryNode>(_geometryNodes);
-            BindingOperations.EnableCollectionSynchronization(_readOnlyGeometryNodes, _lockCollection);
-            //CollectionChanged.Subscribe(OnProjectCollectionChanged, false);
         }
 
-        /*private async void OnProjectCollectionChanged(ProjectItemsChangedEventArgs args)
-        {
-            _geometryNodes.Clear();
-            foreach (var geometryNode in StaticVariables.geometryNodes)
-            {
-                _geometryNodes.Add(geometryNode);
-            }
-        }*/
-
-        public static void GetGeometryNodes()
+        public static void CreateNodeList()
         {
             _geometryNodes.Clear();
             foreach (var geometryNode in StaticVariables.geometryNodes)
@@ -56,13 +42,11 @@ namespace arches_arcgispro_addin
             }
         }
 
-        public ReadOnlyObservableCollection<GeometryNode> ReadOnlyGeometryNodes => _readOnlyGeometryNodes;
         public ObservableCollection<GeometryNode> GeometryNodes
         {
             set
             {
                 SetProperty(ref _geometryNodes, value, () => GeometryNodes);
-                //NotifyPropertyChanged(() => GeometryNodes);
             }
 
             get { return _geometryNodes; }
@@ -78,11 +62,6 @@ namespace arches_arcgispro_addin
                 SetProperty(ref _selectedGeometryNode, value, () => SelectedGeometryNode);
                 StaticVariables.archesNodeid = _selectedGeometryNode.Id;
             }
-        }
-
-        public void AssignGeometryNodeid()
-        {
-            StaticVariables.archesNodeid = SelectedGeometryNode.Id;
         }
 
         /// <summary>

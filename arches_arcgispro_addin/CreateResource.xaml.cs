@@ -39,7 +39,6 @@ namespace arches_arcgispro_addin
             try
             {
                 HttpResponseMessage response = await client.GetAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "api/nodes/?datatype=geojson-feature-collection"));
-                //HttpResponseMessage response = await client.GetAsync("http://localhost:8000/api/nodes/?datatype=geojson-feature-collection");
                 //response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 var serializer = new JavaScriptSerializer();
@@ -74,7 +73,7 @@ namespace arches_arcgispro_addin
                 }
                 StaticVariables.geometryNodes = await GetGeometryNode();
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"The 1st member: {StaticVariables.geometryNodes.ElementAt(0).Name}\nThe 1st member: {StaticVariables.geometryNodes.ElementAt(0).Id}");
-                CreateResourceViewModel.GetGeometryNodes();
+                CreateResourceViewModel.CreateNodeList();
             }
             catch (Exception ex)
             {
@@ -108,12 +107,11 @@ namespace arches_arcgispro_addin
                 string archesGeometryString = await SaveResourceView.GetGeometryString();
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"{archesGeometryString} is submitted" +
                                                                  $"\n to {StaticVariables.archesNodeid}");
-                //CreateResourceViewModel.AssignGeometryNodeid();
-                /*string archesData = "data";
-                var result = await SaveResourceView.SubmitToArches("", StaticVariables.archesNodeid, archesData, archesGeometryString);
-                StaticVariables.archesResourceid = result["results"];
+                string archesData = "data";
+                var result = await SaveResourceView.SubmitToArches(null, StaticVariables.archesNodeid, archesData, archesGeometryString);
+                StaticVariables.archesResourceid = result["resourceinstance_id"];
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"A resource id: \n{StaticVariables.archesResourceid} is assigned");
-                SaveResourceView.RefreshMapView();*/
+                SaveResourceView.RefreshMapView();
             }
             catch (Exception ex)
             {
@@ -135,7 +133,7 @@ namespace arches_arcgispro_addin
             }
             string editorAddress = StaticVariables.myInstanceURL + $"resource/{StaticVariables.archesResourceid}";
             ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("opening... \n" + editorAddress);
-            System.Diagnostics.Process.Start(editorAddress);
+            UI.ChromePaneViewModel.OpenChromePane(editorAddress);
 
         }
 

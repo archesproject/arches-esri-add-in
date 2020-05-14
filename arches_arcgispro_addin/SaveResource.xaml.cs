@@ -97,8 +97,6 @@ namespace arches_arcgispro_addin
                 //JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
                 //archesGeometryString = jsonSerializer.Serialize(archesGeometryCollection);
                 archesGeometryString = String.Join(",", archesGeometryCollection);
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
-                    "Geometry Collection: " + archesGeometryString);
                 return archesGeometryString;
 
             });
@@ -106,7 +104,7 @@ namespace arches_arcgispro_addin
             return args;
         }
 
-        public static async Task<Dictionary<string, string>> SubmitToArches(string tileid, string nodeid, string data, string geojson)
+        public static async Task<Dictionary<string, string>> SubmitToArches(string tileid, string nodeid, string data, string esrijson)
         {
             Dictionary<String, String> result = new Dictionary<String, String>();
 
@@ -117,15 +115,24 @@ namespace arches_arcgispro_addin
                     {
                         new KeyValuePair<string, string>("tileid", tileid),
                         new KeyValuePair<string, string>("nodeid", nodeid),
-                        new KeyValuePair<string, string>(data, geojson),
+                        new KeyValuePair<string, string>(data, esrijson),
                     });
                 var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "api/tiles/"), stringContent);
                 //var response = await client.PostAsync(System.IO.Path.Combine("http://localhost:8000/api/tiles/"), stringContent);
 
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(response.StatusCode.ToString());
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(response.ToString());
+
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 dynamic responseJSON = serializer.Deserialize<dynamic>(@responseBody);
-                result.Add("results", responseJSON["results"]);
+
+                if (responseJSON.ContainsKey("nodegroup_id")) { result.Add("nodegroup_id", responseJSON["nodegroup_id"]); }
+                if (responseJSON.ContainsKey("resourceinstance_id")) { result.Add("resourceinstance_id", responseJSON["resourceinstance_id"]); }
+                if (responseJSON.ContainsKey("tileid")) { result.Add("tileid", responseJSON["tileid"]); }
+
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(result["resourceinstance_id"]);
+
             }
             catch (HttpRequestException e)
             {
