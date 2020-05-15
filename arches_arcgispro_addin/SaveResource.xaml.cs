@@ -82,7 +82,7 @@ namespace arches_arcgispro_addin
             });
         }
 
-        private static ArcGIS.Core.Geometry.Geometry SRTransform(ArcGIS.Core.Geometry.Geometry inGeometry, int inSRID, int outSRID)
+        public static ArcGIS.Core.Geometry.Geometry SRTransform(ArcGIS.Core.Geometry.Geometry inGeometry, int inSRID, int outSRID)
         {
             ArcGIS.Core.Geometry.Geometry outGeometry;
             SpatialReference inSR = SpatialReferenceBuilder.CreateSpatialReference(inSRID);

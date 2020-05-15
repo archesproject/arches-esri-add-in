@@ -53,5 +53,6 @@
         <TextBlock HorizontalAlignment="Center" FontWeight="bold"  Margin="0,348,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
                    Text="{Binding ResourceIDEdited}" />
         <Button Content="Edit using Arches Resource Editor" HorizontalAlignment="Center" Margin="0,378,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" Click="Button_Click_2" />
+        <Button Content="Bulk Loading to Arches" HorizontalAlignment="Center" Margin="50,419,50,0" Grid.Row="1" VerticalAlignment="Top" Width="200" Click="Button_Click_3" />
     </Grid>
 </UserControl>

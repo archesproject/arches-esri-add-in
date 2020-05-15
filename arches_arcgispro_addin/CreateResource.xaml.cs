@@ -141,5 +141,40 @@ namespace arches_arcgispro_addin
         {
 
         }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            ArcGIS.Core.Geometry.Geometry archesGeometry;
+            string archesData = "data";
+
+            Task t = QueuedTask.Run(() =>
+            {
+                var selectedFeatures = ArcGIS.Desktop.Mapping.MapView.Active.Map.GetSelection();
+
+                foreach (var selectedFeature in selectedFeatures)
+                {
+                    foreach (var selected in selectedFeature.Value)
+                    {
+                        var archesInspector = new ArcGIS.Desktop.Editing.Attributes.Inspector();
+                        archesInspector.Load(selectedFeature.Key, selected);
+                        archesGeometry = archesInspector.Shape;
+                        if (archesGeometry.SpatialReference.Wkid == 4326)
+                        {
+                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"{archesGeometry} is submitted" +
+                                                                             $"\n to {StaticVariables.archesNodeid}");
+                        }
+                        else
+                        {
+                            var reprojectedGeometry = SaveResourceView.SRTransform(archesGeometry, archesGeometry.SpatialReference.Wkid, 4326);
+                            archesGeometry = reprojectedGeometry;
+                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"{archesGeometry} is submitted" +
+                                                                             $"\n to {StaticVariables.archesNodeid}");
+                        }
+                        var result = SaveResourceView.SubmitToArches(null, StaticVariables.archesNodeid, archesData, archesGeometry.ToJson());
+                    }
+                }
+                SaveResourceView.RefreshMapView();
+            });
+        }
     }
 }
