@@ -214,6 +214,12 @@ namespace arches_arcgispro_addin
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
+            if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
+                return;
+            }
+            
             DockPane pane = FrameworkApplication.DockPaneManager.Find("arches_arcgispro_addin_CreateResource");
             if (pane == null)
                 return;
@@ -222,6 +228,12 @@ namespace arches_arcgispro_addin
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
+            if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
+                return;
+            }
+            
             DockPane pane = FrameworkApplication.DockPaneManager.Find("arches_arcgispro_addin_SaveResource");
             if (pane == null)
                 return;
