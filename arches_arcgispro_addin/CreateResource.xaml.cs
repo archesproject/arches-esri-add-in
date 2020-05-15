@@ -137,11 +137,6 @@ namespace arches_arcgispro_addin
 
         }
 
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
             ArcGIS.Core.Geometry.Geometry archesGeometry;

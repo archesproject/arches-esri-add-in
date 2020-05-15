@@ -36,23 +36,23 @@
 
         <Button Content="Get Geometry Node Info" HorizontalAlignment="Center" Margin="0,100,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" Click="Button_Click" />
 
-        <TextBlock HorizontalAlignment="Center" Margin="0,138,0,0" Grid.Row="1" Text="Available Geometry Nodes" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Center" Margin="0,140,0,0" Grid.Row="1" Text="Available Geometry Nodes" VerticalAlignment="Top"/>
 
-        <ComboBox HorizontalAlignment="Center" Margin="0,158,0,0" Grid.Row="1" VerticalAlignment="Top" Width="210" SelectionChanged="ComboBox_SelectionChanged"
+        <ComboBox HorizontalAlignment="Center" Margin="0,160,0,0" Grid.Row="1" VerticalAlignment="Top" Width="210"
                 ItemsSource="{Binding GeometryNodes}" DisplayMemberPath="Id"
                 SelectedItem="{Binding SelectedGeometryNode, Mode=TwoWay}" />
 
-        <TextBlock HorizontalAlignment="Center" Margin="0,198,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
+        <TextBlock HorizontalAlignment="Center" Margin="0,200,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
             Text="2. Select a geometry and click the Submit button to create Arches geometry" />
-        <Button Content="Submit to Arches" HorizontalAlignment="Center" Margin="0,258,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" Click="Button_Click_1" />
+        <Button Content="Submit to Arches" HorizontalAlignment="Center" Margin="0,260,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" Click="Button_Click_1" />
+        <Button Content="Bulk Loading" HorizontalAlignment="Center" Margin="50,290,50,0" Grid.Row="1" VerticalAlignment="Top" Width="200" Click="Button_Click_3" />
 
-        <TextBlock HorizontalAlignment="Center" Margin="0,288,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
+        <TextBlock HorizontalAlignment="Center" Margin="50,340,50,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
             Text="3. Continue editing attributes using Arches Resource Editor" />
-        <TextBlock HorizontalAlignment="Center" FontWeight="bold"  Margin="0,328,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
+        <TextBlock HorizontalAlignment="Center" FontWeight="bold"  Margin="50,380,50,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
                    Text="Resouce Instance ID being edited: " />
-        <TextBlock HorizontalAlignment="Center" FontWeight="bold"  Margin="0,348,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
+        <TextBlock HorizontalAlignment="Center" FontWeight="bold"  Margin="50,400,50,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
                    Text="{Binding ResourceIDEdited}" />
-        <Button Content="Edit using Arches Resource Editor" HorizontalAlignment="Center" Margin="0,378,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" Click="Button_Click_2" />
-        <Button Content="Bulk Loading to Arches" HorizontalAlignment="Center" Margin="50,419,50,0" Grid.Row="1" VerticalAlignment="Top" Width="200" Click="Button_Click_3" />
+        <Button Content="Edit using Arches Resource Editor" HorizontalAlignment="Center" Margin="50,430,50,0" Grid.Row="1" VerticalAlignment="Top" Width="200" Click="Button_Click_2" />
     </Grid>
 </UserControl>
