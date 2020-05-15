@@ -41,19 +41,44 @@ namespace arches_arcgispro_addin
             await QueuedTask.Run(() =>
             {
                 var selectedFeatures = MapView.Active.Map.GetSelection();
-                var firstSelectionSet = selectedFeatures.First();
-                var archesInspector = new Inspector();
-                archesInspector.Load(firstSelectionSet.Key, firstSelectionSet.Value);
-                var archesGeometry = archesInspector.Shape;
-                StaticVariables.archesResourceid = archesInspector["resourceinstanceid"].ToString();
-                StaticVariables.archesTileid = archesInspector["tileid"].ToString();
-                StaticVariables.archesNodeid = archesInspector["nodeid"].ToString();
+                if (selectedFeatures.Count == 1)
+                {
+                    var firstSelectionSet = selectedFeatures.First();
+                    if (firstSelectionSet.Value.Count == 1)
+                    {
+                        var archesInspector = new Inspector();
+                        archesInspector.Load(firstSelectionSet.Key, firstSelectionSet.Value);
+                        var archesGeometry = archesInspector.Shape;
+                        try
+                        {
+                            StaticVariables.archesResourceid = archesInspector["resourceinstanceid"].ToString();
+                            StaticVariables.archesTileid = archesInspector["tileid"].ToString();
+                            StaticVariables.archesNodeid = archesInspector["nodeid"].ToString();
 
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
-                    "NodeID: " + StaticVariables.archesNodeid +
-                    "\nTileID: " + StaticVariables.archesTileid +
-                    "\nGeometry type: " + archesGeometry.GeometryType +
-                    "\nGeometry JSON: " + archesGeometry.ToJson());
+                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
+                                "NodeID: " + StaticVariables.archesNodeid +
+                                "\nTileID: " + StaticVariables.archesTileid +
+                                "\nGeometry type: " + archesGeometry.GeometryType +
+                                "\nGeometry JSON: " + archesGeometry.ToJson());
+
+                        }
+                        catch
+                        {
+                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select from a valid Arches Layer");
+                        }
+                    }
+                    else
+                    {
+                        ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select ONE valid geometry");
+                    }
+
+                }
+                else 
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select from ONE Arches Layer");
+                }
+
+
             });
         }
 
@@ -118,10 +143,6 @@ namespace arches_arcgispro_addin
                         new KeyValuePair<string, string>(data, esrijson),
                     });
                 var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "api/tiles/"), stringContent);
-                //var response = await client.PostAsync(System.IO.Path.Combine("http://localhost:8000/api/tiles/"), stringContent);
-
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(response.StatusCode.ToString());
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(response.ToString());
 
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
@@ -131,13 +152,10 @@ namespace arches_arcgispro_addin
                 if (responseJSON.ContainsKey("resourceinstance_id")) { result.Add("resourceinstance_id", responseJSON["resourceinstance_id"]); }
                 if (responseJSON.ContainsKey("tileid")) { result.Add("tileid", responseJSON["tileid"]); }
 
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(result["resourceinstance_id"]);
-
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException ex)
             {
-                Console.WriteLine("\nException Caught!");
-                Console.WriteLine("Message :{0} ", e.Message);
+                throw new System.ArgumentException("The nodeid cannot be retrieved from the Arches server\n" + ex.Message, ex);
             }
             return result;
         }
@@ -161,11 +179,6 @@ namespace arches_arcgispro_addin
                     return;
                 }
                 GetAttribute();
-
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"" +
-                    $"Resource ID: {StaticVariables.archesResourceid} " +
-                    $"\nTile ID: {StaticVariables.archesTileid} " +
-                    $"\nNode ID: {StaticVariables.archesNodeid} ");
 
             }
             catch (Exception ex)

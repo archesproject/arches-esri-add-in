@@ -59,7 +59,6 @@ namespace arches_arcgispro_addin
         static readonly HttpClient client = new HttpClient();
         private async Task GetInstances()
         {
-            StaticVariables.myInstanceURL = InstanceURL.Text;
             try
             {
                 HttpResponseMessage response = await client.GetAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "search/resources"));
@@ -81,20 +80,14 @@ namespace arches_arcgispro_addin
                 }
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"{count} Instances:\n{names}");
             }
-            catch (HttpRequestException e)
+            catch (Exception ex)
             {
-                Console.WriteLine("\nException Caught!");
-                Console.WriteLine("Message :{0} ", e.Message);
-                System.ArgumentException argEx = new System.ArgumentException("Addres is wrong", e);
-                throw argEx;
+                throw new System.ArgumentException("Address is wrong", ex);
             }
         }
 
         private async Task<string> GetClientId()
         {
-            StaticVariables.myInstanceURL = InstanceURL.Text;
-            StaticVariables.myUsername = Username.Text;
-            StaticVariables.myPassword = Password.Password;
             string clientid = "";
 
             try
@@ -112,19 +105,15 @@ namespace arches_arcgispro_addin
                 dynamic results = responseJSON;
                 clientid = results["clientid"];
             }
-            catch (HttpRequestException e)
+            catch (Exception ex)
             {
-                Console.WriteLine("\nException Caught!");
-                Console.WriteLine("Message :{0} ", e.Message);
+                throw new System.ArgumentException("Failed to get a client ID", ex);
             }
             return clientid;
         }
 
         private async Task<Dictionary<string, string>> GetToken(string clientid)
         {
-            StaticVariables.myInstanceURL = InstanceURL.Text;
-            StaticVariables.myUsername = Username.Text;
-            StaticVariables.myPassword = Password.Password;
 
             Dictionary<String, String> result = new Dictionary<String, String>();
 
@@ -147,10 +136,9 @@ namespace arches_arcgispro_addin
                 result.Add("access_token", results["access_token"]);
                 result.Add("refresh_token", results["refresh_token"]);
             }
-            catch (HttpRequestException e)
+            catch (Exception ex)
             {
-                Console.WriteLine("\nException Caught!");
-                Console.WriteLine("Message :{0} ", e.Message);
+                throw new System.ArgumentException("Failed to get tokens", ex);
             }
             return result;
         }
@@ -197,26 +185,18 @@ namespace arches_arcgispro_addin
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             try {
-                //await GetInstances();
-                StaticVariables.myClientid = await GetClientId();
                 StaticVariables.myInstanceURL = InstanceURL.Text;
                 StaticVariables.myUsername = Username.Text;
                 StaticVariables.myPassword = Password.Password;
+                StaticVariables.myClientid = await GetClientId();
                 StaticVariables.myToken = await GetToken(StaticVariables.myClientid);
 
-                /*ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"" +
-                    $"clientid: {StaticVariables.myClientid} " +
-                    $"\naccess token: {StaticVariables.myToken["access_token"]} " +
-                    $"\nrefresh token: {StaticVariables.myToken["refresh_token"]} ");*/
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Successfully Logged in to {StaticVariables.myInstanceURL}");
 
-                DockPane pane = FrameworkApplication.DockPaneManager.Find("arches_arcgispro_addin_SaveResource");
-                if (pane == null)
-                    return;
-                pane.Activate();
             }
-            catch {
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Check the Instance URL and/or the Credentials");
+            catch (Exception ex)
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(ex.Message + "\nCheck the Instance URL and/or the Credentials");
             }
         }
 
@@ -225,21 +205,39 @@ namespace arches_arcgispro_addin
             InitializeComponent();
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        /*
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-        }
-        */
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             InstanceURL.Text = "";
             Username.Text = "";
             Password.Password = "";
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
+                return;
+            }
+            
+            DockPane pane = FrameworkApplication.DockPaneManager.Find("arches_arcgispro_addin_CreateResource");
+            if (pane == null)
+                return;
+            pane.Activate();
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
+                return;
+            }
+            
+            DockPane pane = FrameworkApplication.DockPaneManager.Find("arches_arcgispro_addin_SaveResource");
+            if (pane == null)
+                return;
+            pane.Activate();
         }
     }
 }

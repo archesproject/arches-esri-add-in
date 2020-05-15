@@ -6,7 +6,7 @@
              xmlns:ui="clr-namespace:arches_arcgispro_addin"
              xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignHeight="450" d:DesignWidth="300"
              d:DataContext="{Binding Path=ui.MainDockpaneViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -30,7 +30,7 @@
                 </TextBlock.ToolTip>
             </TextBlock>
         </DockPanel>
-        <TextBox Name="InstanceURL" HorizontalAlignment="Left" Height="23" Margin="30,55,0,0" Grid.Row="1" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="250" TextChanged="TextBox_TextChanged"/>
+        <TextBox Name="InstanceURL" HorizontalAlignment="Left" Height="23" Margin="30,55,0,0" Grid.Row="1" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="250"/>
         <TextBox Name="Username" HorizontalAlignment="Left" Height="23" Margin="30,105,0,0" Grid.Row="1" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="250"/>
         <PasswordBox Name="Password" HorizontalAlignment="Left" Height="23" Margin="30,155,0,0" Grid.Row="1" Password="" VerticalAlignment="Top" Width="250"/>
         <TextBlock HorizontalAlignment="Left" Margin="30,15,0,0" Grid.Row="1" Text="Instance URL" VerticalAlignment="Top" Width="250"/>
@@ -39,5 +39,7 @@
         <TextBlock HorizontalAlignment="Left" Margin="30,135,0,0" Grid.Row="1" Text="Password" VerticalAlignment="Top" Width="250"/>
         <Button Content="Connect" HorizontalAlignment="Left" Margin="40,200,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100" Click="Button_Click"/>
         <Button Content="Cancel" HorizontalAlignment="Left" Margin="170,200,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100" Click="Button_Click_1"/>
+        <Button Content="Create New Resource Instance" HorizontalAlignment="Left" Margin="65,260,0,0" Grid.Row="1" VerticalAlignment="Top" Width="180" Click="Button_Click_2"/>
+        <Button Content="Edit Existing Resource Instance" HorizontalAlignment="Left" Margin="65,300,0,0" Grid.Row="1" VerticalAlignment="Top" Width="180" Click="Button_Click_3"/>
     </Grid>
 </UserControl>
