@@ -20,7 +20,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ArcGIS.Desktop.Framework.Contracts;
-
+using System.Net.Http.Headers;
 
 namespace arches_arcgispro_addin
 {
@@ -142,6 +142,8 @@ namespace arches_arcgispro_addin
                         new KeyValuePair<string, string>("nodeid", nodeid),
                         new KeyValuePair<string, string>(data, esrijson),
                     });
+                client.DefaultRequestHeaders.Authorization = 
+                    new AuthenticationHeaderValue("Bearer", StaticVariables.myToken["access_token"]);
                 var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "api/tiles/"), stringContent);
 
                 response.EnsureSuccessStatusCode();
