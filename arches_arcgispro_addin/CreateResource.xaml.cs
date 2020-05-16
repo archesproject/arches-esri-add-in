@@ -39,7 +39,7 @@ namespace arches_arcgispro_addin
             try
             {
                 HttpResponseMessage response = await client.GetAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "api/nodes/?datatype=geojson-feature-collection"));
-                //response.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 var serializer = new JavaScriptSerializer();
                 dynamic results = serializer.Deserialize<dynamic>(@responseBody);
@@ -72,7 +72,7 @@ namespace arches_arcgispro_addin
                     return;
                 }
                 StaticVariables.geometryNodes = await GetGeometryNode();
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"The 1st member: {StaticVariables.geometryNodes.ElementAt(0).Name}\nThe 1st member: {StaticVariables.geometryNodes.ElementAt(0).Id}");
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"{StaticVariables.geometryNodes.Count} nodes are Avaiable");
                 CreateResourceViewModel.CreateNodeList();
             }
             catch (Exception ex)
@@ -144,8 +144,8 @@ namespace arches_arcgispro_addin
 
             Task t = QueuedTask.Run(() =>
             {
+                int i = 0;
                 var selectedFeatures = ArcGIS.Desktop.Mapping.MapView.Active.Map.GetSelection();
-
                 foreach (var selectedFeature in selectedFeatures)
                 {
                     foreach (var selected in selectedFeature.Value)
@@ -153,21 +153,16 @@ namespace arches_arcgispro_addin
                         var archesInspector = new ArcGIS.Desktop.Editing.Attributes.Inspector();
                         archesInspector.Load(selectedFeature.Key, selected);
                         archesGeometry = archesInspector.Shape;
-                        if (archesGeometry.SpatialReference.Wkid == 4326)
-                        {
-                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"{archesGeometry} is submitted" +
-                                                                             $"\n to {StaticVariables.archesNodeid}");
-                        }
-                        else
+                        if (archesGeometry.SpatialReference.Wkid != 4326)
                         {
                             var reprojectedGeometry = SaveResourceView.SRTransform(archesGeometry, archesGeometry.SpatialReference.Wkid, 4326);
                             archesGeometry = reprojectedGeometry;
-                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"{archesGeometry} is submitted" +
-                                                                             $"\n to {StaticVariables.archesNodeid}");
                         }
                         var result = SaveResourceView.SubmitToArches(null, StaticVariables.archesNodeid, archesData, archesGeometry.ToJson());
+                        i += 1;
                     }
                 }
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"{i} geometries have been submitted to Arches as individual Resource Instances");
                 SaveResourceView.RefreshMapView();
             });
         }
