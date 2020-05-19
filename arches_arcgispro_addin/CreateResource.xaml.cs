@@ -1,5 +1,7 @@
 ﻿using ArcGIS.Core.Geometry;
 using ArcGIS.Desktop.Editing.Attributes;
+using ArcGIS.Desktop.Framework;
+using ArcGIS.Desktop.Framework.Contracts;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Mapping;
 using System;
@@ -73,6 +75,11 @@ namespace arches_arcgispro_addin
                 if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
                 {
                     ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
+
+                    DockPane pane = FrameworkApplication.DockPaneManager.Find("arches_arcgispro_addin_MainDockpane");
+                    if (pane == null)
+                        return;
+                    pane.Activate();
                     return;
                 }
                 StaticVariables.geometryNodes = await GetGeometryNode();
@@ -97,6 +104,11 @@ namespace arches_arcgispro_addin
                 if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
                 {
                     ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
+
+                    DockPane pane = FrameworkApplication.DockPaneManager.Find("arches_arcgispro_addin_MainDockpane");
+                    if (pane == null)
+                        return;
+                    pane.Activate();
                     return;
                 }
                 if (StaticVariables.archesNodeid == "" | StaticVariables.archesNodeid == null)
@@ -128,6 +140,11 @@ namespace arches_arcgispro_addin
             if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
             {
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
+
+                DockPane pane = FrameworkApplication.DockPaneManager.Find("arches_arcgispro_addin_MainDockpane");
+                if (pane == null)
+                    return;
+                pane.Activate();
                 return;
             }
             if (StaticVariables.archesResourceid == "" | StaticVariables.archesResourceid == null)

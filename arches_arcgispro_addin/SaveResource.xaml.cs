@@ -21,6 +21,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ArcGIS.Desktop.Framework.Contracts;
 using System.Net.Http.Headers;
+using ArcGIS.Desktop.Framework;
 
 namespace arches_arcgispro_addin
 {
@@ -215,6 +216,11 @@ namespace arches_arcgispro_addin
                 if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
                 {
                     ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
+
+                    DockPane pane = FrameworkApplication.DockPaneManager.Find("arches_arcgispro_addin_MainDockpane");
+                    if (pane == null)
+                        return;
+                    pane.Activate();
                     return;
                 }
                 if (StaticVariables.archesResourceid == "" | StaticVariables.archesResourceid == null)
@@ -242,6 +248,11 @@ namespace arches_arcgispro_addin
             if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
             {
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
+
+                DockPane pane = FrameworkApplication.DockPaneManager.Find("arches_arcgispro_addin_MainDockpane");
+                if (pane == null)
+                    return;
+                pane.Activate();
                 return;
             }
             if (StaticVariables.archesResourceid == "" | StaticVariables.archesResourceid == null)
