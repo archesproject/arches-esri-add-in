@@ -190,6 +190,7 @@ namespace arches_arcgispro_addin
                 StaticVariables.myPassword = Password.Password;
                 StaticVariables.myClientid = await GetClientId();
                 StaticVariables.myToken = await GetToken(StaticVariables.myClientid);
+                FrameworkApplication.State.Activate("token_state");
 
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Successfully Logged in to {StaticVariables.myInstanceURL}");
 
@@ -210,6 +211,8 @@ namespace arches_arcgispro_addin
             InstanceURL.Text = "";
             Username.Text = "";
             Password.Password = "";
+
+            FrameworkApplication.State.Deactivate("token_state");
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)

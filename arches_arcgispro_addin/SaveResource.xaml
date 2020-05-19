@@ -37,7 +37,7 @@
                   ItemsSource="{Binding FeatureLayers}" DisplayMemberPath="Name" 
                   SelectedItem="{Binding SelectedFeatureLayer}" /-->
 
-        <Button Content="Get Arches Parameters" HorizontalAlignment="Center" Margin="0,80,0,0" Grid.Row="1" VerticalAlignment="Top" Width="180" Click="Button_Click"/>
+        <Button Content="Register Arches Instance to Edit" HorizontalAlignment="Center" Margin="0,80,0,0" Grid.Row="1" VerticalAlignment="Top" Width="180" Click="Button_Click"/>
         <TextBlock HorizontalAlignment="Left" Margin="50,120,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
             Text="If you want to unregister the resource being edited click the Unregister"/>
         <Button Content="Unregister Arches Instance" HorizontalAlignment="Center" Margin="0,170,0,0" Grid.Row="1" VerticalAlignment="Top" Width="180" Click="Button_Click_1" />

@@ -11,7 +11,7 @@
                     Content, Framework, Editing, Geodatabase, Geometry, Geoprocessing, Layouts, Map Authoring, Map Exploration -->
   </AddInInfo>
   <modules>
-    <insertModule id="arches_arcgispro_addin_Module" className="Module1" autoLoad="false" caption="Module1">
+    <insertModule id="arches_arcgispro_addin_Module" className="Module1" autoLoad="true" caption="Module1">
       <!-- uncomment to have the control hosted on a separate tab-->
       <tabs>
         <tab id="arches_arcgispro_addin_Tab1" caption="Arches Project">
@@ -21,16 +21,10 @@
         </tab>
       </tabs>
       <groups>
-        <!-- comment this out if you have no controls on the Addin tab to avoid
-              an empty group-->
         <group id="arches_arcgispro_addin_Group1" caption="Arches Project Tools" appearsOnAddInTab="false">
-          <!-- host controls within groups -->
-          <!--button refID="arches_arcgispro_addin_Login" size="large" /-->
           <button refID="arches_arcgispro_addin_MainDockpane_ShowButton" size="large" />
           <button refID="arches_arcgispro_addin_SaveResource_ShowButton" size="large" />
           <button refID="arches_arcgispro_addin_CreateResource_ShowButton" size="large" />
-          <!--button refID="arches_arcgispro_addin_ResourceModelDockpane_ShowButton" size="large" />
-          <button refID="arches_arcgispro_addin_AttributeTable_ShowButton" size="large" /-->
         </group>
         <group id="arches_arcgispro_addin_Group2" caption="ArcGIS Pro Tools" appearsOnAddInTab="false">
           <button refID="esri_mapping_addDataGallery" size="large" />
@@ -43,32 +37,27 @@
           <button refID="arches_arcgispro_addin_UI_ChromePane_OpenButton" size="large" />
         </group>
       </groups>
+
+      <conditions>
+        <insertCondition id="token_condition" caption="token state">
+          <state id="token_state" />
+        </insertCondition>
+      </conditions>
+      
       <controls>
-        <!-- add your controls here -->
-        <!--button id="arches_arcgispro_addin_Login" caption="Test" className="Login" loadOnClick="true" largeImage="Images\Stormtrooper32.png" smallImage="Images\Stormtrooper16.png">
-          <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
-        </button-->
         <button id="arches_arcgispro_addin_MainDockpane_ShowButton" caption="Arches Connection" className="MainDockpane_ShowButton" loadOnClick="true" largeImage="Images\ArchesIcon32.png" smallImage="Images\ArchesIcon16.png">
           <tooltip heading="Arches Instance">Connect to Arches Instance<disabledText /></tooltip>
         </button>
-        <button id="arches_arcgispro_addin_SaveResource_ShowButton" caption="Save Resource" className="SaveResource_ShowButton" loadOnClick="true" largeImage="Images\AddinDesktop32.png" smallImage="Images\AddinDesktop16.png">
+        <button id="arches_arcgispro_addin_SaveResource_ShowButton" caption="Save Resource" className="SaveResource_ShowButton" loadOnClick="true" largeImage="Images\AddinDesktop32.png" smallImage="Images\AddinDesktop16.png" condition = "token_condition">
           <tooltip heading="Save Resources">Save Geometry to the selected reousrce instance<disabledText />
           </tooltip>
         </button>
-        <button id="arches_arcgispro_addin_CreateResource_ShowButton" caption="Create Resource" className="CreateResource_ShowButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple32.png">
+        <button id="arches_arcgispro_addin_CreateResource_ShowButton" caption="Create Resource" className="CreateResource_ShowButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple32.png" condition = "token_condition">
           <tooltip heading="Show Dockpane">Create a New Resource<disabledText /></tooltip>
         </button>
         <button id="arches_arcgispro_addin_UI_ChromePane_OpenButton" caption="Open Chromium Pane" className="arches_arcgispro_addin.UI.ChromePane_OpenButton" loadOnClick="true" smallImage="Images\chromium16.png" largeImage="Images\chromium32.png">
           <tooltip heading="Open Chromium Pane">Open Chromium Pane<disabledText /></tooltip>
         </button>
-        
-        <!--button id="arches_arcgispro_addin_ResourceModelDockpane_ShowButton" caption="Import Resource" className="ResourceModelDockpane_ShowButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple32.png">
-          <tooltip heading="Import Resources">Import resources from the selected resource model<disabledText /></tooltip>
-        </button>
-        <button id="arches_arcgispro_addin_AttributeTable_ShowButton" caption="Show AttributeTable" className="AttributeTable_ShowButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple32.png">
-          <tooltip heading="Show Attributes">Show Attributes<disabledText />
-          </tooltip>
-        </button-->
       </controls>
       <dockPanes>
         <dockPane id="arches_arcgispro_addin_MainDockpane" caption="Arches Connection" className="MainDockpaneViewModel" dock="group" dockWith="esri_core_contentsDockPane">
@@ -80,12 +69,6 @@
         <dockPane id="arches_arcgispro_addin_CreateResource" caption="Create Resource" className="CreateResourceViewModel" dock="group" dockWith="esri_core_contentsDockPane">
           <content className="CreateResourceView" />
         </dockPane>
-        <!--dockPane id="arches_arcgispro_addin_ResourceModelDockpane" caption="ResourceModelDockpane" className="ResourceModelDockpaneViewModel" dock="group" dockWith="esri_core_contentsDockPane">
-          <content className="ResourceModelDockpaneView" />
-        </dockPane>
-        <dockPane id="arches_arcgispro_addin_AttributeTable" caption="AttributeTable" className="AttributeTableViewModel" dock="group" dockWith="esri_core_contentsDockPane">
-          <content className="AttributeTableView" />
-        </dockPane-->
       </dockPanes>
       <panes>
         <pane id="arches_arcgispro_addin_UI_ChromePane" caption="ChromePane" className="arches_arcgispro_addin.UI.ChromePaneViewModel" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonGreen16.png" defaultTab="esri_mapping_homeTab" defaultTool="esri_mapping_navigateTool">
