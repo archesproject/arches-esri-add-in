@@ -63,10 +63,10 @@
         <dockPane id="arches_arcgispro_addin_MainDockpane" caption="Arches Connection" className="MainDockpaneViewModel" dock="group" dockWith="esri_core_contentsDockPane">
           <content className="MainDockpaneView" />
         </dockPane>
-        <dockPane id="arches_arcgispro_addin_SaveResource" caption="Save Resource" className="SaveResourceViewModel" dock="group" dockWith="esri_core_contentsDockPane" condition = "token_condition">
+        <dockPane id="arches_arcgispro_addin_SaveResource" caption="Save Resource" className="SaveResourceViewModel" dock="group" dockWith="esri_core_contentsDockPane">
           <content className="SaveResourceView" />
         </dockPane>
-        <dockPane id="arches_arcgispro_addin_CreateResource" caption="Create Resource" className="CreateResourceViewModel" dock="group" dockWith="esri_core_contentsDockPane" condition = "token_condition">
+        <dockPane id="arches_arcgispro_addin_CreateResource" caption="Create Resource" className="CreateResourceViewModel" dock="group" dockWith="esri_core_contentsDockPane">
           <content className="CreateResourceView" />
         </dockPane>
       </dockPanes>
