@@ -83,7 +83,7 @@ namespace arches_arcgispro_addin
                     return;
                 }
                 StaticVariables.geometryNodes = await GetGeometryNode();
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"The 1st member: {StaticVariables.geometryNodes.ElementAt(0).Name}\nThe 1st member: {StaticVariables.geometryNodes.ElementAt(0).Id}");
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"{StaticVariables.geometryNodes.Count} nodes are Avaiable");
                 CreateResourceViewModel.CreateNodeList();
             }
             catch (Exception ex)

@@ -56,12 +56,7 @@ namespace arches_arcgispro_addin
                             StaticVariables.archesTileid = archesInspector["tileid"].ToString();
                             StaticVariables.archesNodeid = archesInspector["nodeid"].ToString();
 
-                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
-                                "NodeID: " + StaticVariables.archesNodeid +
-                                "\nTileID: " + StaticVariables.archesTileid +
-                                "\nGeometry type: " + archesGeometry.GeometryType +
-                                "\nGeometry JSON: " + archesGeometry.ToJson());
-
+                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Resource Instance is registered: \n{StaticVariables.archesResourceid}");
                         }
                         catch
                         {
@@ -72,14 +67,11 @@ namespace arches_arcgispro_addin
                     {
                         ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select ONE valid geometry");
                     }
-
                 }
                 else 
                 {
                     ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select from ONE Arches Layer");
                 }
-
-
             });
         }
 
@@ -158,7 +150,7 @@ namespace arches_arcgispro_addin
             }
             catch (HttpRequestException ex)
             {
-                throw new System.ArgumentException("The nodeid cannot be retrieved from the Arches server\n" + ex.Message, ex);
+                throw new System.ArgumentException(ex.Message, ex);
             }
             return result;
         }
@@ -193,12 +185,9 @@ namespace arches_arcgispro_addin
         {
             StaticVariables.archesNodeid = "";
             StaticVariables.archesTileid = "";
-            StaticVariables.archesResourceid = "No Resource is Registered";
+            StaticVariables.archesResourceid = "";
 
-            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"" +
-                $"Resource ID: {StaticVariables.archesResourceid} " +
-                $"\nTile ID: {StaticVariables.archesTileid} " +
-                $"\nNode ID: {StaticVariables.archesNodeid} ");
+            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Resource Instance is unregistered");
         }
 
         private async void Button_Click_2(object sender, RoutedEventArgs e)
