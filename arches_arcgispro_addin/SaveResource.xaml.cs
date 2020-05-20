@@ -130,7 +130,7 @@ namespace arches_arcgispro_addin
             return args;
         }
 
-        public static async Task<Dictionary<string, string>> SubmitToArches(string tileid, string nodeid, string data, string esrijson)
+        public static async Task<Dictionary<string, string>> SubmitToArches(string tileid, string nodeid, string esrijson, string geometryFormat)
         {
             Dictionary<String, String> result = new Dictionary<String, String>();
 
@@ -141,7 +141,8 @@ namespace arches_arcgispro_addin
                     {
                         new KeyValuePair<string, string>("tileid", tileid),
                         new KeyValuePair<string, string>("nodeid", nodeid),
-                        new KeyValuePair<string, string>(data, esrijson),
+                        new KeyValuePair<string, string>("data", esrijson),
+                        new KeyValuePair<string, string>("format", geometryFormat),
                     });
                 client.DefaultRequestHeaders.Authorization = 
                     new AuthenticationHeaderValue("Bearer", StaticVariables.myToken["access_token"]);
@@ -154,7 +155,6 @@ namespace arches_arcgispro_addin
                 if (responseJSON.ContainsKey("nodegroup_id")) { result.Add("nodegroup_id", responseJSON["nodegroup_id"]); }
                 if (responseJSON.ContainsKey("resourceinstance_id")) { result.Add("resourceinstance_id", responseJSON["resourceinstance_id"]); }
                 if (responseJSON.ContainsKey("tileid")) { result.Add("tileid", responseJSON["tileid"]); }
-
             }
             catch (HttpRequestException ex)
             {
@@ -182,7 +182,6 @@ namespace arches_arcgispro_addin
                     return;
                 }
                 GetAttribute();
-
             }
             catch (Exception ex)
             {
@@ -201,8 +200,6 @@ namespace arches_arcgispro_addin
                 $"\nTile ID: {StaticVariables.archesTileid} " +
                 $"\nNode ID: {StaticVariables.archesNodeid} ");
         }
-
-
 
         private async void Button_Click_2(object sender, RoutedEventArgs e)
         {
@@ -230,11 +227,10 @@ namespace arches_arcgispro_addin
                 }
 
                 string archesGeometryString = await GetGeometryString();
-                string archesData = "data";
-                var result = await SubmitToArches(StaticVariables.archesTileid.ToString(), StaticVariables.archesNodeid, archesData, archesGeometryString);
-                var message = result["results"];
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message +
-                    $"\n{archesGeometryString} is submitted");
+                string geometryFormat = "esrijson";
+                var result = await SubmitToArches(StaticVariables.archesTileid.ToString(), StaticVariables.archesNodeid, archesGeometryString, geometryFormat);
+                //var message = result["results"];
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"\n{archesGeometryString} is submitted");
                 RefreshMapView();
             }
             catch (Exception ex)
