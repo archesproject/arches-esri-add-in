@@ -37,7 +37,7 @@ namespace arches_arcgispro_addin
             InitializeComponent();
         }
 
-        private async void GetAttribute()
+        /*private async void GetAttribute()
         {
             await QueuedTask.Run(() =>
             {
@@ -58,9 +58,10 @@ namespace arches_arcgispro_addin
 
                             ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Resource Instance is registered: \n{StaticVariables.archesResourceid}");
                         }
-                        catch
+                        catch (Exception ex)
                         {
-                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select from a valid Arches Layer");
+                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select a Geometry from a valid Arches Layer");
+                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(ex.Message);
                         }
                     }
                     else
@@ -73,7 +74,7 @@ namespace arches_arcgispro_addin
                     ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select from ONE Arches Layer");
                 }
             });
-        }
+        }*/
 
         private static ArcGIS.Core.Geometry.Geometry SRTransform(ArcGIS.Core.Geometry.Geometry inGeometry, int inSRID, int outSRID)
         {
@@ -161,33 +162,6 @@ namespace arches_arcgispro_addin
             {
                 MapView.Active.Redraw(true);
             });
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            // Check for an active mapview
-            try
-            {
-                if (MapView.Active == null)
-                {
-                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No MapView currently active. Exiting...", "Info");
-                    return;
-                }
-                GetAttribute();
-            }
-            catch (Exception ex)
-            {
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Exception: " + ex.Message);
-            }
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            StaticVariables.archesNodeid = "";
-            StaticVariables.archesTileid = "";
-            StaticVariables.archesResourceid = "";
-
-            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Resource Instance is unregistered");
         }
 
         private async void Button_Click_2(object sender, RoutedEventArgs e)

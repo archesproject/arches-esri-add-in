@@ -28,8 +28,8 @@ namespace arches_arcgispro_addin
 
     public class GeometryNode
     {
-        public string Name { get; }
-        public string Id { get; }
+        public string Name { get; set; }
+        public string Id { get; set; }
         public GeometryNode(string inId)
         {
             Name = inId;
@@ -50,7 +50,7 @@ namespace arches_arcgispro_addin
         public static string myPassword;
         public static string archesTileid;
         public static string archesNodeid;
-        public static string archesResourceid;
+        public static string archesResourceid = "No Resource is Selected";
         public static List<GeometryNode> geometryNodes = new List<GeometryNode>();
     };
     public partial class MainDockpaneView : UserControl
@@ -62,7 +62,6 @@ namespace arches_arcgispro_addin
             try
             {
                 HttpResponseMessage response = await client.GetAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "search/resources"));
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(System.IO.Path.Combine(StaticVariables.myInstanceURL, "search/resources"));
 
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
@@ -163,9 +162,7 @@ namespace arches_arcgispro_addin
                 {
                     Console.WriteLine("Message :{0} ", e.Message);
                 }
-                //var response = await client.GetAsync($"http://qa.archesproject.org/resources/{resourceid}?format=json");
                 var response = await client.GetAsync(StaticVariables.myInstanceURL + $"resources/{resourceid}?format=json");
-                //ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"http://qa.archesproject.org/resources/{resourceid}?format=json");
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(StaticVariables.myInstanceURL + $"resources/{resourceid}?format=json");
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
