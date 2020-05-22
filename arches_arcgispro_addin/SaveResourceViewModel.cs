@@ -25,24 +25,8 @@ namespace arches_arcgispro_addin
     {
         private const string _dockPaneID = "arches_arcgispro_addin_SaveResource";
 
-        private FeatureLayer _selectedFeatureLayer;
-
-        /// <summary>
-        /// used to lock collections for use by multiple threads
-        /// </summary>
-        private readonly object _lockCollections = new object();
-        /// <summary>
-        /// UI lists, read-only collections, and properties
-        /// </summary>
-        private readonly ObservableCollection<FeatureLayer> _featureLayers = new ObservableCollection<FeatureLayer>();
-        private readonly ReadOnlyObservableCollection<FeatureLayer> _readOnlyFeatureLayers;
-
         protected SaveResourceViewModel()
         {
-            _readOnlyFeatureLayers = new ReadOnlyObservableCollection<FeatureLayer>(_featureLayers);
-            BindingOperations.EnableCollectionSynchronization(_readOnlyFeatureLayers, _lockCollections);
-
-            ActiveMapViewChangedEvent.Subscribe(OnActiveMapViewChanged);
         }
 
         /// <summary>
@@ -53,56 +37,7 @@ namespace arches_arcgispro_addin
         /// </returns>
         protected override Task InitializeAsync()
         {
-            GetFeatureLayers();
             return base.InitializeAsync();
-        }
-
-        /// <summary>
-        /// List of the current active map's feature layers
-        /// </summary>
-        public ReadOnlyObservableCollection<FeatureLayer> FeatureLayers
-        {
-            get { return _readOnlyFeatureLayers; }
-        }
-
-        /// <summary>
-        /// The selected feature layer
-        /// </summary>
-        public FeatureLayer SelectedFeatureLayer
-        {
-            get { return _selectedFeatureLayer; }
-            set
-            {
-                SetProperty(ref _selectedFeatureLayer, value, () => SelectedFeatureLayer);
-            }
-        }
-
-        /// <summary>
-        /// The active map view changed therefore we refresh the feature layer drop-down
-        /// </summary>
-        /// <param name="args"></param>
-        private void OnActiveMapViewChanged(ActiveMapViewChangedEventArgs args)
-        {
-            if (args.IncomingView == null) return;
-            GetFeatureLayers();
-        }
-
-        /// <summary>
-        /// This method is called to use the current active mapview and retrieve all 
-        /// feature layers that are part of the map layers in the current map view.
-        /// </summary>
-        private void GetFeatureLayers()
-        {
-            //Get the active map view.
-            var mapView = MapView.Active;
-            if (mapView == null) return;
-            var featureLayers = mapView.Map.Layers.OfType<FeatureLayer>();
-            lock (_lockCollections)
-            {
-                _featureLayers.Clear();
-                foreach (var featureLayer in featureLayers) _featureLayers.Add(featureLayer);
-            }
-            NotifyPropertyChanged(() => FeatureLayers);
         }
 
         public string ResourceIDEdited
