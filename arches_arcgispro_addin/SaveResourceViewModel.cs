@@ -151,7 +151,7 @@ namespace arches_arcgispro_addin
         /// <summary>
         /// Text shown near the top of the DockPane.
         /// </summary>
-        private string _heading = "Save Resources";
+        private string _heading = "Edit Resources";
         public string Heading
         {
             get { return _heading; }

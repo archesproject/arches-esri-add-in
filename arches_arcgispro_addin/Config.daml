@@ -48,12 +48,12 @@
         <button id="arches_arcgispro_addin_MainDockpane_ShowButton" caption="Arches Connection" className="MainDockpane_ShowButton" loadOnClick="true" largeImage="Images\ArchesIcon32.png" smallImage="Images\ArchesIcon16.png">
           <tooltip heading="Arches Instance">Connect to Arches Instance<disabledText /></tooltip>
         </button>
-        <button id="arches_arcgispro_addin_SaveResource_ShowButton" caption="Save Resource" className="SaveResource_ShowButton" loadOnClick="true" largeImage="Images\AddinDesktop32.png" smallImage="Images\AddinDesktop16.png" condition = "token_condition">
-          <tooltip heading="Save Resources">Save Geometry to the selected reousrce instance<disabledText />
+        <button id="arches_arcgispro_addin_SaveResource_ShowButton" caption="Edit Resources" className="SaveResource_ShowButton" loadOnClick="true" largeImage="Images\AddinDesktop32.png" smallImage="Images\AddinDesktop16.png" condition = "token_condition">
+          <tooltip heading="Edit Resources">Save Geometry to the selected reousrce instance<disabledText />
           </tooltip>
         </button>
-        <button id="arches_arcgispro_addin_CreateResource_ShowButton" caption="Create Resource" className="CreateResource_ShowButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple32.png" condition = "token_condition">
-          <tooltip heading="Show Dockpane">Create a New Resource<disabledText /></tooltip>
+        <button id="arches_arcgispro_addin_CreateResource_ShowButton" caption="Create Resources" className="CreateResource_ShowButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple32.png" condition = "token_condition">
+          <tooltip heading="Create Resources">Create a New Resource<disabledText /></tooltip>
         </button>
         <button id="arches_arcgispro_addin_UI_ChromePane_OpenButton" caption="Open Chromium Pane" className="arches_arcgispro_addin.UI.ChromePane_OpenButton" loadOnClick="true" smallImage="Images\chromium16.png" largeImage="Images\chromium32.png">
           <tooltip heading="Open Chromium Pane">Open Chromium Pane<disabledText /></tooltip>
@@ -63,10 +63,10 @@
         <dockPane id="arches_arcgispro_addin_MainDockpane" caption="Arches Connection" className="MainDockpaneViewModel" dock="group" dockWith="esri_core_contentsDockPane">
           <content className="MainDockpaneView" />
         </dockPane>
-        <dockPane id="arches_arcgispro_addin_SaveResource" caption="Save Resource" className="SaveResourceViewModel" dock="group" dockWith="esri_core_contentsDockPane">
+        <dockPane id="arches_arcgispro_addin_SaveResource" caption="Edit Resources" className="SaveResourceViewModel" dock="group" dockWith="esri_core_contentsDockPane">
           <content className="SaveResourceView" />
         </dockPane>
-        <dockPane id="arches_arcgispro_addin_CreateResource" caption="Create Resource" className="CreateResourceViewModel" dock="group" dockWith="esri_core_contentsDockPane">
+        <dockPane id="arches_arcgispro_addin_CreateResource" caption="Create Resources" className="CreateResourceViewModel" dock="group" dockWith="esri_core_contentsDockPane">
           <content className="CreateResourceView" />
         </dockPane>
       </dockPanes>
