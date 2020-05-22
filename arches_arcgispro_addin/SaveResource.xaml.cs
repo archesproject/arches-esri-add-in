@@ -37,45 +37,6 @@ namespace arches_arcgispro_addin
             InitializeComponent();
         }
 
-        /*private async void GetAttribute()
-        {
-            await QueuedTask.Run(() =>
-            {
-                var selectedFeatures = MapView.Active.Map.GetSelection();
-                if (selectedFeatures.Count == 1)
-                {
-                    var firstSelectionSet = selectedFeatures.First();
-                    if (firstSelectionSet.Value.Count == 1)
-                    {
-                        var archesInspector = new Inspector();
-                        archesInspector.Load(firstSelectionSet.Key, firstSelectionSet.Value);
-                        var archesGeometry = archesInspector.Shape;
-                        try
-                        {
-                            StaticVariables.archesResourceid = archesInspector["resourceinstanceid"].ToString();
-                            StaticVariables.archesTileid = archesInspector["tileid"].ToString();
-                            StaticVariables.archesNodeid = archesInspector["nodeid"].ToString();
-
-                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Resource Instance is registered: \n{StaticVariables.archesResourceid}");
-                        }
-                        catch (Exception ex)
-                        {
-                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select a Geometry from a valid Arches Layer");
-                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(ex.Message);
-                        }
-                    }
-                    else
-                    {
-                        ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select ONE valid geometry");
-                    }
-                }
-                else 
-                {
-                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select from ONE Arches Layer");
-                }
-            });
-        }*/
-
         private static ArcGIS.Core.Geometry.Geometry SRTransform(ArcGIS.Core.Geometry.Geometry inGeometry, int inSRID, int outSRID)
         {
             ArcGIS.Core.Geometry.Geometry outGeometry;

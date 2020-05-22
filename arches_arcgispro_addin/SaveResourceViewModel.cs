@@ -45,13 +45,6 @@ namespace arches_arcgispro_addin
         }
 
         /// <summary>
-        /// Called when the pane is first created to give it the opportunity to initialize itself asynchronously.
-        /// </summary>
-        /// <returns>
-        /// A task that represents the work queued to execute in the ThreadPool.
-        /// </returns>
-
-        /// <summary>
         /// Show the DockPane.
         /// </summary>
         internal static void Show()
