@@ -23,6 +23,17 @@ using ArcGIS.Desktop.Mapping.Events;
 
 namespace arches_arcgispro_addin
 {
+    public class AttributeValue
+    {
+        public string Field { get; set; }
+        public string Value { get; set; }
+        public AttributeValue(string inField, string inValue)
+        {
+            Field = inField;
+            Value = inValue;
+        }
+    }
+
     internal class SaveResourceViewModel : DockPane
     {
         private const string _dockPaneID = "arches_arcgispro_addin_SaveResource";
@@ -30,6 +41,47 @@ namespace arches_arcgispro_addin
         private string _resourceIdEdited;
         private ICommand _buttonClick;
         private ICommand _buttonClick2;
+        private static readonly object _lockCollections = new object();
+        public static ObservableCollection<AttributeValue> _attributeValues = new ObservableCollection<AttributeValue>();
+
+        public ObservableCollection<AttributeValue> AttributeValues
+        {
+            set
+            {
+                SetProperty(ref _attributeValues, value, () => AttributeValues);
+            }
+            get { return _attributeValues; }
+        }
+
+        public async void GetAttributeValues()
+        {
+            lock (_lockCollections) ;
+            await QueuedTask.Run(() =>
+            {
+                var selectedFeatures = MapView.Active.Map.GetSelection();
+                var firstSelectionSet = selectedFeatures.First();
+                var archesInspector = new Inspector();
+                archesInspector.Load(firstSelectionSet.Key, firstSelectionSet.Value);
+                _attributeValues.Clear();
+                try
+                {
+                    foreach (var attribute in archesInspector) {
+                        AttributeValue newAttribute = new AttributeValue(attribute.FieldAlias, attribute.CurrentValue.ToString());
+                        _attributeValues.Add(newAttribute);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(ex.Message);
+                }
+            });
+        }
+
+        public static void ClearAttributeValues()
+        {
+            lock (_lockCollections) ;
+            _attributeValues.Clear();
+        }
 
         public string ResourceIdEdited
         {
@@ -42,6 +94,7 @@ namespace arches_arcgispro_addin
 
         protected SaveResourceViewModel()
         {
+            BindingOperations.EnableCollectionSynchronization(_attributeValues, _lockCollections);
         }
 
         /// <summary>
@@ -74,8 +127,6 @@ namespace arches_arcgispro_addin
                             StaticVariables.archesResourceid = archesInspector["resourceinstanceid"].ToString();
                             StaticVariables.archesTileid = archesInspector["tileid"].ToString();
                             StaticVariables.archesNodeid = archesInspector["nodeid"].ToString();
-
-                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Resource Instance is registered: \n{StaticVariables.archesResourceid}");
                             ResourceIdEdited = StaticVariables.archesResourceid;
                         }
                         catch (Exception ex)
@@ -109,6 +160,7 @@ namespace arches_arcgispro_addin
                             return;
                         }
                         GetAttribute();
+                        GetAttributeValues();
                     }
                     catch (Exception ex)
                     {
@@ -130,8 +182,7 @@ namespace arches_arcgispro_addin
                         StaticVariables.archesTileid = "";
                         StaticVariables.archesResourceid = "No Resource is Selected";
                         ResourceIdEdited = StaticVariables.archesResourceid;
-
-                        ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Resource Instance is unregistered");
+                        ClearAttributeValues();
                     }
                     catch (Exception ex)
                     {

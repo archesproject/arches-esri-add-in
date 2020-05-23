@@ -48,10 +48,19 @@
 
         <TextBlock HorizontalAlignment="Left" Margin="50,310,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
             Text="3. Continue editing attributes using Arches Resource Editor" />
-        <TextBlock HorizontalAlignment="Left" FontWeight="bold"  Margin="50,350,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
+        
+        <TextBlock HorizontalAlignment="Left" FontWeight="bold"  Margin="50,400,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
                    Text="Resouce Instance ID being edited: " />
-        <TextBox HorizontalAlignment="Left" FontWeight="bold"  Margin="20,375,0,0" Grid.Row="1" VerticalAlignment="Top" Width="250" TextWrapping="WrapWithOverflow"
+        <TextBox HorizontalAlignment="Left" FontWeight="bold"  Margin="20,430,0,0" Grid.Row="1" VerticalAlignment="Top" Width="250" TextWrapping="WrapWithOverflow"
                    Text="{Binding ResourceIdEdited}" />
-        <Button Content="Edit using Arches Resource Editor" HorizontalAlignment="Center" Margin="0,430,0,0" Grid.Row="1" VerticalAlignment="Top" Width="180" RenderTransformOrigin="0.741,1.819" Click="Button_Click_3"/>
+        <Button Content="Edit using Arches Resource Editor" HorizontalAlignment="Center" Margin="0,370,0,0" Grid.Row="1" VerticalAlignment="Top" Width="180" RenderTransformOrigin="0.741,1.819" Click="Button_Click_3"/>
+
+        <TextBlock HorizontalAlignment="Left" FontWeight="bold"  Margin="50,460,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
+                   Text="Attributes" />
+
+        <DataGrid HorizontalAlignment="Stretch" Height="Auto" Margin="0,480,0,0" Grid.Row="1" VerticalAlignment="Top" Width="Auto"
+              ItemsSource="{Binding AttributeValues}" Style="{DynamicResource Esri_DataGrid}" 
+              HeadersVisibility="None" AutoGenerateColumns="True" IsReadOnly="True" SelectionMode="Single" RowHeaderWidth="0"/>
+
     </Grid>
 </UserControl>
