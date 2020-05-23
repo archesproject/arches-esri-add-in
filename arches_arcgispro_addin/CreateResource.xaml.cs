@@ -126,8 +126,10 @@ namespace arches_arcgispro_addin
                 string geometryFormat = "esrijson";
                 var result = await SaveResourceView.SubmitToArches(null, StaticVariables.archesNodeid, archesGeometryString, geometryFormat);
                 StaticVariables.archesResourceid = result["resourceinstance_id"];
+                CreateResourceViewModel.GetResourceIdsCreated();
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"A resource id: \n{StaticVariables.archesResourceid} is assigned");
                 SaveResourceView.RefreshMapView();
+                OpenChromiumButton.IsEnabled = true;
             }
             catch (Exception ex)
             {
@@ -135,32 +137,10 @@ namespace arches_arcgispro_addin
             }
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
-            {
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
-
-                DockPane pane = FrameworkApplication.DockPaneManager.Find("arches_arcgispro_addin_MainDockpane");
-                if (pane == null)
-                    return;
-                pane.Activate();
-                return;
-            }
-            if (StaticVariables.archesResourceid == "" | StaticVariables.archesResourceid == null)
-            {
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Submit a Geometry to Arches to Create a Resource...");
-                return;
-            }
-            string editorAddress = StaticVariables.myInstanceURL + $"resource/{StaticVariables.archesResourceid}";
-            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("opening... \n" + editorAddress);
-            UI.ChromePaneViewModel.OpenChromePane(editorAddress);
-
-        }
-
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
+            CreateResourceViewModel.ClearResourceIdsCreated();
+            OpenChromiumButton.IsEnabled = false;
         }
     }
 }
