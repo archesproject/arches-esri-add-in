@@ -73,7 +73,6 @@ namespace arches_arcgispro_addin
                         }
                     }
                 }
-
                 archesGeometryString = String.Join(",", archesGeometryCollection);
                 return archesGeometryString;
 
