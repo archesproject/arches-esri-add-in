@@ -58,18 +58,8 @@ namespace arches_arcgispro_addin
             {
                 var selectedFeatures = ArcGIS.Desktop.Mapping.MapView.Active.Map.GetSelection();
 
-                if (GeometryBeReplaced)
-                {
-                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Replacing...");
-                }
-                else
-                {
-                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Appending...");
-                }
-
                 if (!GeometryBeReplaced)
                 {
-                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Adding Original: \n" + StaticVariables.archesGeometry.ToJson());
                     selectedGeometryCollection.Add(StaticVariables.archesGeometry.ToJson());
                 }
 
