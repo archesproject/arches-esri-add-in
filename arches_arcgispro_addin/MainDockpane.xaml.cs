@@ -51,6 +51,7 @@ namespace arches_arcgispro_addin
         public static string archesTileid;
         public static string archesNodeid;
         public static string archesResourceid = "No Resource is Selected";
+        public static ArcGIS.Core.Geometry.Geometry archesGeometry;
         public static List<GeometryNode> geometryNodes = new List<GeometryNode>();
     };
     public partial class MainDockpaneView : UserControl

@@ -31,6 +31,7 @@ namespace arches_arcgispro_addin
     public partial class SaveResourceView : UserControl
     {
         static readonly HttpClient client = new HttpClient();
+        public static Boolean GeometryBeReplaced;
 
         public SaveResourceView()
         {
@@ -49,32 +50,48 @@ namespace arches_arcgispro_addin
 
         public static async Task<string> GetGeometryString()
         {
-            ArcGIS.Core.Geometry.Geometry archesGeometry;
-            string archesGeometryString;
-            List<string> archesGeometryCollection = new List<string>();
+            ArcGIS.Core.Geometry.Geometry selectedGeometry;
+            string selectedGeometryString;
+            List<string> selectedGeometryCollection = new List<string>();
 
             var args = await QueuedTask.Run(() =>
             {
                 var selectedFeatures = ArcGIS.Desktop.Mapping.MapView.Active.Map.GetSelection();
+
+                if (GeometryBeReplaced)
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Replacing...");
+                }
+                else
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Appending...");
+                }
+
+                if (!GeometryBeReplaced)
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Adding Original: \n" + StaticVariables.archesGeometry.ToJson());
+                    selectedGeometryCollection.Add(StaticVariables.archesGeometry.ToJson());
+                }
+
                 foreach (var selectedFeature in selectedFeatures)
                 {
                     foreach (var selected in selectedFeature.Value)
                     {
-                        var archesInspector = new ArcGIS.Desktop.Editing.Attributes.Inspector();
-                        archesInspector.Load(selectedFeature.Key, selected);
-                        archesGeometry = archesInspector.Shape;
-                        if (archesGeometry.SpatialReference.Wkid == 4326)
+                        var selectedInspector = new ArcGIS.Desktop.Editing.Attributes.Inspector();
+                        selectedInspector.Load(selectedFeature.Key, selected);
+                        selectedGeometry = selectedInspector.Shape;
+                        if (selectedGeometry.SpatialReference.Wkid == 4326)
                         {
-                            archesGeometryCollection.Add(archesGeometry.ToJson());
+                            selectedGeometryCollection.Add(selectedGeometry.ToJson());
                         }
                         else {
-                            var reprojectedGeometry = SRTransform(archesGeometry, archesGeometry.SpatialReference.Wkid, 4326);
-                            archesGeometryCollection.Add(reprojectedGeometry.ToJson());
+                            var reprojectedGeometry = SRTransform(selectedGeometry, selectedGeometry.SpatialReference.Wkid, 4326);
+                            selectedGeometryCollection.Add(reprojectedGeometry.ToJson());
                         }
                     }
                 }
-                archesGeometryString = String.Join(",", archesGeometryCollection);
-                return archesGeometryString;
+                selectedGeometryString = String.Join(",", selectedGeometryCollection);
+                return selectedGeometryString;
 
             });
 
@@ -180,6 +197,11 @@ namespace arches_arcgispro_addin
             string editorAddress = StaticVariables.myInstanceURL + $"resource/{StaticVariables.archesResourceid}";
             ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("opening... \n" + editorAddress);
             UI.ChromePaneViewModel.OpenChromePane(editorAddress);
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            GeometryBeReplaced = true;
         }
     }
 }
