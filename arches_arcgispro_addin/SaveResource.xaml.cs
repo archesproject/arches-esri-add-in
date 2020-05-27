@@ -73,9 +73,6 @@ namespace arches_arcgispro_addin
                         }
                     }
                 }
-
-                //JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-                //archesGeometryString = jsonSerializer.Serialize(archesGeometryCollection);
                 archesGeometryString = String.Join(",", archesGeometryCollection);
                 return archesGeometryString;
 

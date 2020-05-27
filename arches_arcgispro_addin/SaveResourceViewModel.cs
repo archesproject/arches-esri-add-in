@@ -23,13 +23,49 @@ using ArcGIS.Desktop.Mapping.Events;
 
 namespace arches_arcgispro_addin
 {
+    public class AttributeValue
+    {
+        public string Field { get; set; }
+        public string Value { get; set; }
+        public AttributeValue(string inField, string inValue)
+        {
+            Field = inField;
+            Value = inValue;
+        }
+    }
+
     internal class SaveResourceViewModel : DockPane
     {
         private const string _dockPaneID = "arches_arcgispro_addin_SaveResource";
 
         private string _resourceIdEdited;
         private ICommand _buttonClick;
-        private ICommand _buttonClick2;
+        private ICommand _buttonClick1;
+        private static readonly object _lockCollections = new object();
+        public static ObservableCollection<AttributeValue> _attributeValues = new ObservableCollection<AttributeValue>();
+
+        public ObservableCollection<AttributeValue> AttributeValues
+        {
+            set
+            {
+                SetProperty(ref _attributeValues, value, () => AttributeValues);
+            }
+            get { return _attributeValues; }
+        }
+
+        public void ClearAttribute()
+        {
+            StaticVariables.archesNodeid = "";
+            StaticVariables.archesTileid = "";
+            StaticVariables.archesResourceid = "No Resource is Selected";
+            ResourceIdEdited = StaticVariables.archesResourceid;
+        }
+
+        public void ClearAttributeValues()
+        {
+            lock (_lockCollections) ;
+            _attributeValues.Clear();
+        }
 
         public string ResourceIdEdited
         {
@@ -42,6 +78,7 @@ namespace arches_arcgispro_addin
 
         protected SaveResourceViewModel()
         {
+            BindingOperations.EnableCollectionSynchronization(_attributeValues, _lockCollections);
         }
 
         /// <summary>
@@ -68,29 +105,39 @@ namespace arches_arcgispro_addin
                     {
                         var archesInspector = new Inspector();
                         archesInspector.Load(firstSelectionSet.Key, firstSelectionSet.Value);
-                        var archesGeometry = archesInspector.Shape;
+                        _attributeValues.Clear();
                         try
                         {
-                            StaticVariables.archesResourceid = archesInspector["resourceinstanceid"].ToString();
-                            StaticVariables.archesTileid = archesInspector["tileid"].ToString();
-                            StaticVariables.archesNodeid = archesInspector["nodeid"].ToString();
+                            foreach (var attribute in archesInspector)
+                            {
+                                AttributeValue newAttribute = new AttributeValue(attribute.FieldAlias, attribute.CurrentValue.ToString());
+                                _attributeValues.Add(newAttribute);
 
-                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Resource Instance is registered: \n{StaticVariables.archesResourceid}");
-                            ResourceIdEdited = StaticVariables.archesResourceid;
+                                StaticVariables.archesResourceid = archesInspector["resourceinstanceid"].ToString();
+                                StaticVariables.archesTileid = archesInspector["tileid"].ToString();
+                                StaticVariables.archesNodeid = archesInspector["nodeid"].ToString();
+                                ResourceIdEdited = StaticVariables.archesResourceid;
+                            }
                         }
                         catch (Exception ex)
                         {
+                            ClearAttribute();
+                            ClearAttributeValues();
                             ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select a Geometry from a valid Arches Layer");
                             ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(ex.Message);
                         }
                     }
                     else
                     {
+                        ClearAttribute();
+                        ClearAttributeValues();
                         ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select ONE valid geometry");
                     }
                 }
                 else
                 {
+                    ClearAttribute();
+                    ClearAttributeValues();
                     ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select from ONE Arches Layer");
                 }
             });
@@ -118,20 +165,16 @@ namespace arches_arcgispro_addin
             }
         }
 
-        public ICommand ButtonClick2
+        public ICommand ButtonClick1
         {
             get
             {
-                return _buttonClick2 ?? (_buttonClick2 = new RelayCommand(() =>
+                return _buttonClick1 ?? (_buttonClick1 = new RelayCommand(() =>
                 {
                     try
                     {
-                        StaticVariables.archesNodeid = "";
-                        StaticVariables.archesTileid = "";
-                        StaticVariables.archesResourceid = "No Resource is Selected";
-                        ResourceIdEdited = StaticVariables.archesResourceid;
-
-                        ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Resource Instance is unregistered");
+                        ClearAttribute();
+                        ClearAttributeValues();
                     }
                     catch (Exception ex)
                     {
