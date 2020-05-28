@@ -58,11 +58,6 @@ namespace arches_arcgispro_addin
             {
                 var selectedFeatures = ArcGIS.Desktop.Mapping.MapView.Active.Map.GetSelection();
 
-                if (!GeometryBeReplaced)
-                {
-                    selectedGeometryCollection.Add(StaticVariables.archesGeometry.ToJson());
-                }
-
                 foreach (var selectedFeature in selectedFeatures)
                 {
                     foreach (var selected in selectedFeature.Value)
@@ -91,17 +86,20 @@ namespace arches_arcgispro_addin
         public static async Task<Dictionary<string, string>> SubmitToArches(string tileid, string nodeid, string esrijson, string geometryFormat)
         {
             Dictionary<String, String> result = new Dictionary<String, String>();
-
             try
             {
                 var serializer = new JavaScriptSerializer();
+                string submitOperation = (GeometryBeReplaced) ? "replace" : "append";
+
                 var stringContent = new FormUrlEncodedContent(new[]
                     {
                         new KeyValuePair<string, string>("tileid", tileid),
                         new KeyValuePair<string, string>("nodeid", nodeid),
                         new KeyValuePair<string, string>("data", esrijson),
                         new KeyValuePair<string, string>("format", geometryFormat),
+                        new KeyValuePair<string, string>("operation", submitOperation),
                     });
+
                 client.DefaultRequestHeaders.Authorization = 
                     new AuthenticationHeaderValue("Bearer", StaticVariables.myToken["access_token"]);
                 var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "api/tiles/"), stringContent);
@@ -192,6 +190,11 @@ namespace arches_arcgispro_addin
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             GeometryBeReplaced = true;
+        }
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            GeometryBeReplaced = false;
         }
     }
 }
