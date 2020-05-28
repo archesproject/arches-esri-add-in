@@ -124,7 +124,8 @@ namespace arches_arcgispro_addin
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"{archesGeometryString} is submitted" +
                                                                  $"\n to {StaticVariables.archesNodeid}");
                 string geometryFormat = "esrijson";
-                var result = await SaveResourceView.SubmitToArches(null, StaticVariables.archesNodeid, archesGeometryString, geometryFormat);
+                string submitOperation = "create";
+                var result = await SaveResourceView.SubmitToArches(null, StaticVariables.archesNodeid, archesGeometryString, geometryFormat, submitOperation);
                 StaticVariables.archesResourceid = result["resourceinstance_id"];
                 CreateResourceViewModel.GetResourceIdsCreated();
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"A resource id: \n{StaticVariables.archesResourceid} is assigned");

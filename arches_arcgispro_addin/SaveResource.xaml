@@ -39,10 +39,11 @@
         <Button Content="Unregister Arches Instance" HorizontalAlignment="Center" Margin="0,170,0,0" Grid.Row="1" VerticalAlignment="Top" Width="180" Command="{Binding ButtonClick1}" />
 
         <TextBlock HorizontalAlignment="Left" Margin="50,210,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
-            Text="2. Select a geometry and click the Submit button to replace Arches geometry" />
-        <Button Content="Submit to Arches" HorizontalAlignment="Center" Margin="0,270,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" Click="Button_Click_2" RenderTransformOrigin="0.741,1.819"/>
+            Text="2. Select a geometry and click the Submit button to Add" />
+        <CheckBox Content="Replace the Exsiting Geometry?" HorizontalAlignment="Left" Margin="50,250,0,0" Grid.Row="1" VerticalAlignment="Top" Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked" RenderTransformOrigin="0.121,0.4"/>
+        <Button Content="Submit to Arches" HorizontalAlignment="Center" Margin="0,290,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" Click="Button_Click_2" RenderTransformOrigin="0.741,1.819"/>
 
-        <TextBlock HorizontalAlignment="Left" Margin="50,310,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
+        <TextBlock HorizontalAlignment="Left" Margin="50,330,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
             Text="3. Continue editing attributes using Arches Resource Editor" />
         
         <TextBlock HorizontalAlignment="Left" FontWeight="bold"  Margin="50,400,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
