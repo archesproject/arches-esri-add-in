@@ -83,14 +83,12 @@ namespace arches_arcgispro_addin
             return args;
         }
 
-        public static async Task<Dictionary<string, string>> SubmitToArches(string tileid, string nodeid, string esrijson, string geometryFormat)
+        public static async Task<Dictionary<string, string>> SubmitToArches(string tileid, string nodeid, string esrijson, string geometryFormat, string submitOperation)
         {
             Dictionary<String, String> result = new Dictionary<String, String>();
             try
             {
                 var serializer = new JavaScriptSerializer();
-                string submitOperation = (GeometryBeReplaced) ? "replace" : "append";
-
                 var stringContent = new FormUrlEncodedContent(new[]
                     {
                         new KeyValuePair<string, string>("tileid", tileid),
@@ -154,7 +152,9 @@ namespace arches_arcgispro_addin
 
                 string archesGeometryString = await GetGeometryString();
                 string geometryFormat = "esrijson";
-                var result = await SubmitToArches(StaticVariables.archesTileid.ToString(), StaticVariables.archesNodeid, archesGeometryString, geometryFormat);
+                string submitOperation = (GeometryBeReplaced) ? "replace" : "append";
+
+                var result = await SubmitToArches(StaticVariables.archesTileid.ToString(), StaticVariables.archesNodeid, archesGeometryString, geometryFormat, submitOperation);
                 //var message = result["results"];
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"\n{archesGeometryString} is submitted");
                 RefreshMapView();
