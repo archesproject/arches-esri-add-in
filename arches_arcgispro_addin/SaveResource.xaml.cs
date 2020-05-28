@@ -154,10 +154,22 @@ namespace arches_arcgispro_addin
                 string geometryFormat = "esrijson";
                 string submitOperation = (GeometryBeReplaced) ? "replace" : "append";
 
-                var result = await SubmitToArches(StaticVariables.archesTileid.ToString(), StaticVariables.archesNodeid, archesGeometryString, geometryFormat, submitOperation);
-                //var message = result["results"];
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"\n{archesGeometryString} is submitted");
-                RefreshMapView();
+                MessageBoxResult messageBoxResult = ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
+                        $"Are you sure you want to {submitOperation.ToUpper()}?\n{archesGeometryString}",
+                        "Submit to Arches",
+                        MessageBoxButton.OKCancel, MessageBoxImage.Question);
+
+                if (messageBoxResult.ToString() == "OK") 
+                {
+                    var result = await SubmitToArches(StaticVariables.archesTileid.ToString(), StaticVariables.archesNodeid, archesGeometryString, geometryFormat, submitOperation);
+                    //var message = result["results"];
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"\n{archesGeometryString} is submitted");
+                    RefreshMapView();
+                }
+                else
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Submission is Cancelled");
+                }
             }
             catch (Exception ex)
             {
