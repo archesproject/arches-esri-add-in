@@ -39,7 +39,7 @@
         <TextBlock HorizontalAlignment="Center" Margin="0,140,0,0" Grid.Row="1" Text="Available Geometry Nodes" VerticalAlignment="Top"/>
 
         <ComboBox HorizontalAlignment="Center" Margin="0,160,0,0" Grid.Row="1" VerticalAlignment="Top" Width="210"
-                ItemsSource="{Binding GeometryNodes}" DisplayMemberPath="Id"
+                ItemsSource="{Binding GeometryNodes}" DisplayMemberPath="Name"
                 SelectedItem="{Binding SelectedGeometryNode, Mode=TwoWay}" />
 
         <TextBlock HorizontalAlignment="Center" Margin="0,200,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
@@ -51,7 +51,7 @@
             Text="3. Continue editing attributes using Arches Resource Editor" />
 
         <ComboBox HorizontalAlignment="Center" Margin="0,400,0,0" Grid.Row="1" VerticalAlignment="Top" Width="210"
-                ItemsSource="{Binding ResourceIdsCreated}" DisplayMemberPath="Id"
+                ItemsSource="{Binding ResourceIdsCreated}" DisplayMemberPath="Name"
                 SelectedItem="{Binding SelectedResourceId, Mode=TwoWay}" />
 
         <Button Name="OpenChromiumButton" Content="Edit using Arches Resource Editor" HorizontalAlignment="Center" Margin="0,370,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" 

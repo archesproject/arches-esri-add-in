@@ -32,12 +32,16 @@ namespace arches_arcgispro_addin
         public string Id { get; set; }
         public GeometryNode(string inId)
         {
-            Name = inId;
             Id = inId;
         }
         public GeometryNode(string inName, string inId)
         {
             Name = inName;
+            Id = inId;
+        }
+        public GeometryNode(string inModel, string inName, string inId)
+        {
+            Name = String.Format("{0} - {1}", inModel, inName);
             Id = inId;
         }
     }

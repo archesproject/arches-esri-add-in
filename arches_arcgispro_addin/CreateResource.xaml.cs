@@ -52,7 +52,7 @@ namespace arches_arcgispro_addin
 
                 foreach (dynamic element in results)
                 {
-                    nodeidResponse.Add(new GeometryNode(element["name"], element["nodeid"]));
+                    nodeidResponse.Add(new GeometryNode(element["resourcemodelname"], element["name"], element["nodeid"]));
                 }
             }
             catch (HttpRequestException e)
@@ -83,7 +83,6 @@ namespace arches_arcgispro_addin
                     return;
                 }
                 StaticVariables.geometryNodes = await GetGeometryNode();
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"{StaticVariables.geometryNodes.Count} nodes are Avaiable");
                 CreateResourceViewModel.CreateNodeList();
             }
             catch (Exception ex)
