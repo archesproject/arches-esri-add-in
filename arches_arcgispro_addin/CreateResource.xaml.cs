@@ -119,17 +119,29 @@ namespace arches_arcgispro_addin
                 {
                     StaticVariables.archesResourceid = "";
                 }
+                
                 string archesGeometryString = await SaveResourceView.GetGeometryString();
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"{archesGeometryString} is submitted" +
-                                                                 $"\n to {StaticVariables.archesNodeid}");
-                string geometryFormat = "esrijson";
-                string submitOperation = "create";
-                var result = await SaveResourceView.SubmitToArches(null, StaticVariables.archesNodeid, archesGeometryString, geometryFormat, submitOperation);
-                StaticVariables.archesResourceid = result["resourceinstance_id"];
-                CreateResourceViewModel.GetResourceIdsCreated();
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"A resource id: \n{StaticVariables.archesResourceid} is assigned");
-                SaveResourceView.RefreshMapView();
-                OpenChromiumButton.IsEnabled = true;
+
+                MessageBoxResult messageBoxResult = ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
+                    $"Are you sure you want to submit the selected geometry to create a new resource instance?" +
+                    $"\n\n{archesGeometryString}",
+                    "Submit to Arches", MessageBoxButton.OKCancel, MessageBoxImage.Question);
+
+                if (messageBoxResult.ToString() == "OK")
+                {
+                    string geometryFormat = "esrijson";
+                    string submitOperation = "create";
+                    var result = await SaveResourceView.SubmitToArches(null, StaticVariables.archesNodeid, archesGeometryString, geometryFormat, submitOperation);
+                    StaticVariables.archesResourceid = result["resourceinstance_id"];
+                    CreateResourceViewModel.GetResourceIdsCreated();
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"A resource id: \n{StaticVariables.archesResourceid} is assigned");
+                    SaveResourceView.RefreshMapView();
+                    OpenChromiumButton.IsEnabled = true;
+                }
+                else
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("The submission is cancelled");
+                }
             }
             catch (Exception ex)
             {
