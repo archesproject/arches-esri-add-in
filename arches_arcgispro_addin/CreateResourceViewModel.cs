@@ -119,7 +119,10 @@ namespace arches_arcgispro_addin
             set
             {
                 SetProperty(ref _selectedGeometryNode, value, () => SelectedGeometryNode);
-                StaticVariables.archesNodeid = _selectedGeometryNode.Id;
+                if (_selectedGeometryNode != null)
+                {
+                    StaticVariables.archesNodeid = _selectedGeometryNode.Id;
+                }
             }
         }
 
