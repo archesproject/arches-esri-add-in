@@ -40,7 +40,7 @@
 
         <ComboBox HorizontalAlignment="Left" Margin="50,170,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200"
                 ItemsSource="{Binding GeometryNodes}" DisplayMemberPath="Name"
-                SelectedItem="{Binding SelectedGeometryNode, Mode=TwoWay}" />
+                SelectedItem="{Binding SelectedGeometryNode, Mode=TwoWay}" SelectedIndex="0" />
 
         <TextBlock HorizontalAlignment="Left" Margin="20,210,0,0" Grid.Row="1" VerticalAlignment="Top" TextWrapping="WrapWithOverflow"
             Text="2. Select a geometry and click the Submit button to create Arches geometry" />
@@ -55,7 +55,7 @@
 
         <ComboBox HorizontalAlignment="Left" Margin="50,440,0,0" Grid.Row="1" VerticalAlignment="Top" Width="210"
                 ItemsSource="{Binding ResourceIdsCreated}" DisplayMemberPath="Name"
-                SelectedItem="{Binding SelectedResourceId, Mode=TwoWay}" />
+                SelectedItem="{Binding SelectedResourceId, Mode=TwoWay}" SelectedIndex="0" />
 
         <TextBlock HorizontalAlignment="Left" Margin="20,490,0,0" Grid.Row="1" VerticalAlignment="Top" Width="125" TextWrapping="WrapWithOverflow"
             Text="The Resources Created" />
