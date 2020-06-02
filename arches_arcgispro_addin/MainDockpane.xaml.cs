@@ -32,7 +32,9 @@ namespace arches_arcgispro_addin
         public string Id { get; set; }
         public GeometryNode(string inId)
         {
+            Name = inId;
             Id = inId;
+
         }
         public GeometryNode(string inName, string inId)
         {

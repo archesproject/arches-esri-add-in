@@ -101,7 +101,7 @@ namespace arches_arcgispro_addin
             }
         }
 
-    public ObservableCollection<GeometryNode> GeometryNodes
+        public ObservableCollection<GeometryNode> GeometryNodes
         {
             set
             {
