@@ -7,6 +7,7 @@ using ArcGIS.Desktop.Mapping;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -41,10 +42,15 @@ namespace arches_arcgispro_addin
             List<GeometryNode> nodeidResponse = new List<GeometryNode>();
             try
             {
+                if ((DateTime.Now - StaticVariables.myToken["timestamp"]).TotalSeconds > (StaticVariables.myToken["expires_in"] - 300)) 
+                {
+                    StaticVariables.myToken = await MainDockpaneView.RefreshToken(StaticVariables.myClientid);
+                }
+
                 client.DefaultRequestHeaders.Authorization =
                         new AuthenticationHeaderValue("Bearer", StaticVariables.myToken["access_token"]);
-                HttpResponseMessage response = await client.GetAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "api/nodes/?datatype=geojson-feature-collection"));
-                
+                HttpResponseMessage response = await client.GetAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "api/nodes/?datatype=geojson-feature-collection&perms=write_nodegroup"));
+
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 var serializer = new JavaScriptSerializer();
