@@ -41,8 +41,8 @@ namespace arches_arcgispro_addin
             {
                 client.DefaultRequestHeaders.Authorization =
                         new AuthenticationHeaderValue("Bearer", StaticVariables.myToken["access_token"]);
-                HttpResponseMessage response = await client.GetAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "api/nodes/?datatype=geojson-feature-collection"));
-                
+                HttpResponseMessage response = await client.GetAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "api/nodes/?datatype=geojson-feature-collection&perms=write_nodegroup"));
+
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 var serializer = new JavaScriptSerializer();
