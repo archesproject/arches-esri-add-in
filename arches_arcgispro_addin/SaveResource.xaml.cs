@@ -88,6 +88,11 @@ namespace arches_arcgispro_addin
             Dictionary<String, String> result = new Dictionary<String, String>();
             try
             {
+                if ((DateTime.Now - StaticVariables.myToken["timestamp"]).TotalSeconds > (StaticVariables.myToken["expires_in"] - 300))
+                {
+                    StaticVariables.myToken = await MainDockpaneView.RefreshToken(StaticVariables.myClientid);
+                }
+
                 var serializer = new JavaScriptSerializer();
                 var stringContent = new FormUrlEncodedContent(new[]
                     {

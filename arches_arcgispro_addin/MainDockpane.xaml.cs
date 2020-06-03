@@ -19,6 +19,7 @@ using System.Web.Script.Serialization;
 using ArcGIS.Desktop.Framework.Contracts;
 using ArcGIS.Desktop.Framework;
 using System.Collections.ObjectModel;
+using ArcGIS.Core.Data.UtilityNetwork.Trace;
 
 namespace arches_arcgispro_addin
 {
@@ -47,7 +48,7 @@ namespace arches_arcgispro_addin
     }
     public static class StaticVariables
     {
-        public static Dictionary<string, string> myToken;
+        public static Dictionary<string, dynamic> myToken;
         public static string myClientid;
         public static string myInstanceURL;
         public static string myUsername;
@@ -116,10 +117,10 @@ namespace arches_arcgispro_addin
             return clientid;
         }
 
-        private async Task<Dictionary<string, string>> GetToken(string clientid)
+        private async Task<Dictionary<string, dynamic>> GetToken(string clientid)
         {
 
-            Dictionary<String, String> result = new Dictionary<String, String>();
+            Dictionary<string, dynamic> result = new Dictionary<string, dynamic>();
 
             try
             {
@@ -139,10 +140,48 @@ namespace arches_arcgispro_addin
                 dynamic results = responseJSON;
                 result.Add("access_token", results["access_token"]);
                 result.Add("refresh_token", results["refresh_token"]);
+                result.Add("expires_in", results["expires_in"]);
+                result.Add("token_type", results["token_type"]);
+                result.Add("scope", results["scope"]);
+                result.Add("timestamp", DateTime.Now);
             }
             catch (Exception ex)
             {
-                throw new System.ArgumentException("Failed to get tokens", ex);
+                throw new System.ArgumentException($"Failed to get the Token: {ex.Message}", ex);
+            }
+            return result;
+        }
+
+        public static async Task<Dictionary<string, dynamic>> RefreshToken(string clientid)
+        {
+
+            Dictionary<string, dynamic> result = new Dictionary<string, dynamic>();
+
+            try
+            {
+                var serializer = new JavaScriptSerializer();
+                var stringContent = new FormUrlEncodedContent(new[]
+                    {
+                            new KeyValuePair<string, string>("refresh_token", StaticVariables.myToken["refresh_token"]),
+                            new KeyValuePair<string, string>("client_id", clientid),
+                            new KeyValuePair<string, string>("grant_type", "refresh_token"),
+                        });
+                var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "o/token/"), stringContent);
+
+                response.EnsureSuccessStatusCode();
+                string responseBody = await response.Content.ReadAsStringAsync();
+                dynamic responseJSON = serializer.Deserialize<dynamic>(@responseBody);
+                dynamic results = responseJSON;
+                result.Add("access_token", results["access_token"]);
+                result.Add("refresh_token", results["refresh_token"]);
+                result.Add("expires_in", results["expires_in"]);
+                result.Add("token_type", results["token_type"]);
+                result.Add("scope", results["scope"]);
+                result.Add("timestamp", DateTime.Now);
+            }
+            catch (Exception ex)
+            {
+                throw new System.ArgumentException($"Failed to refresh the Token: {ex.Message}", ex);
             }
             return result;
         }
