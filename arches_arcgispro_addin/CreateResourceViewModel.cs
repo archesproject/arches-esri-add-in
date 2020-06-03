@@ -53,6 +53,16 @@ namespace arches_arcgispro_addin
         private static readonly object _lockCollections = new object();
         private static int counter_created = 1;
 
+        private bool _nodeSelected = false;
+        public bool NodeSelected
+        {
+            get { return _nodeSelected; }
+            set
+            {
+                SetProperty(ref _nodeSelected, value, () => NodeSelected);
+            }
+        }
+
         protected CreateResourceViewModel()
         {
             BindingOperations.EnableCollectionSynchronization(_resourceIdsCreated, _lockCollections);
@@ -119,9 +129,14 @@ namespace arches_arcgispro_addin
             set
             {
                 SetProperty(ref _selectedGeometryNode, value, () => SelectedGeometryNode);
-                if (_selectedGeometryNode != null)
+                if (_selectedGeometryNode == null)
+                {
+                    NodeSelected = false;
+                }
+                else
                 {
                     StaticVariables.archesNodeid = _selectedGeometryNode.Id;
+                    NodeSelected = true;
                 }
             }
         }

@@ -45,7 +45,7 @@
         <TextBlock HorizontalAlignment="Left" Margin="20,210,0,0" Grid.Row="1" VerticalAlignment="Top" TextWrapping="WrapWithOverflow"
             Text="2. Select a geometry and click the Submit button to create Arches geometry" />
         <Button Name="SubmitButton" Content="Submit to Arches" HorizontalAlignment="Left" Margin="50,270,0,0" Grid.Row="1" VerticalAlignment="Top" Height="30" Width="200"
-                IsEnabled="True" Click="Button_Click_1" />
+                IsEnabled="{Binding NodeSelected}" Click="Button_Click_1" />
 
         <TextBlock HorizontalAlignment="Left" Margin="20,310,0,0" Grid.Row="1" VerticalAlignment="Top" TextWrapping="WrapWithOverflow"
             Text="3. Continue editing attributes using Arches Resource Editor" />

@@ -193,7 +193,8 @@ namespace arches_arcgispro_addin
                 StaticVariables.myClientid = await GetClientId();
                 StaticVariables.myToken = await GetToken(StaticVariables.myClientid);
                 FrameworkApplication.State.Activate("token_state");
-
+                CreateResourceButton.IsEnabled = true;
+                EditResourceButton.IsEnabled = true;
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Successfully Logged in to {StaticVariables.myInstanceURL}");
 
             }
@@ -215,6 +216,8 @@ namespace arches_arcgispro_addin
             Password.Password = "";
 
             FrameworkApplication.State.Deactivate("token_state");
+            CreateResourceButton.IsEnabled = false;
+            EditResourceButton.IsEnabled = false;
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
