@@ -21,6 +21,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ArcGIS.Desktop.Framework.Contracts;
 using System.Net.Http.Headers;
+using ArcGIS.Desktop.Framework;
 
 namespace arches_arcgispro_addin
 {
@@ -30,56 +31,11 @@ namespace arches_arcgispro_addin
     public partial class SaveResourceView : UserControl
     {
         static readonly HttpClient client = new HttpClient();
+        public static Boolean GeometryBeReplaced;
 
         public SaveResourceView()
         {
             InitializeComponent();
-        }
-
-        private async void GetAttribute()
-        {
-            await QueuedTask.Run(() =>
-            {
-                var selectedFeatures = MapView.Active.Map.GetSelection();
-                if (selectedFeatures.Count == 1)
-                {
-                    var firstSelectionSet = selectedFeatures.First();
-                    if (firstSelectionSet.Value.Count == 1)
-                    {
-                        var archesInspector = new Inspector();
-                        archesInspector.Load(firstSelectionSet.Key, firstSelectionSet.Value);
-                        var archesGeometry = archesInspector.Shape;
-                        try
-                        {
-                            StaticVariables.archesResourceid = archesInspector["resourceinstanceid"].ToString();
-                            StaticVariables.archesTileid = archesInspector["tileid"].ToString();
-                            StaticVariables.archesNodeid = archesInspector["nodeid"].ToString();
-
-                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
-                                "NodeID: " + StaticVariables.archesNodeid +
-                                "\nTileID: " + StaticVariables.archesTileid +
-                                "\nGeometry type: " + archesGeometry.GeometryType +
-                                "\nGeometry JSON: " + archesGeometry.ToJson());
-
-                        }
-                        catch
-                        {
-                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select from a valid Arches Layer");
-                        }
-                    }
-                    else
-                    {
-                        ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select ONE valid geometry");
-                    }
-
-                }
-                else 
-                {
-                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select from ONE Arches Layer");
-                }
-
-
-            });
         }
 
         private static ArcGIS.Core.Geometry.Geometry SRTransform(ArcGIS.Core.Geometry.Geometry inGeometry, int inSRID, int outSRID)
@@ -94,45 +50,42 @@ namespace arches_arcgispro_addin
 
         public static async Task<string> GetGeometryString()
         {
-            ArcGIS.Core.Geometry.Geometry archesGeometry;
-            string archesGeometryString;
-            List<string> archesGeometryCollection = new List<string>();
+            ArcGIS.Core.Geometry.Geometry selectedGeometry;
+            string selectedGeometryString;
+            List<string> selectedGeometryCollection = new List<string>();
 
             var args = await QueuedTask.Run(() =>
             {
                 var selectedFeatures = ArcGIS.Desktop.Mapping.MapView.Active.Map.GetSelection();
+
                 foreach (var selectedFeature in selectedFeatures)
                 {
                     foreach (var selected in selectedFeature.Value)
                     {
-                        var archesInspector = new ArcGIS.Desktop.Editing.Attributes.Inspector();
-                        archesInspector.Load(selectedFeature.Key, selected);
-                        archesGeometry = archesInspector.Shape;
-                        if (archesGeometry.SpatialReference.Wkid == 4326)
+                        var selectedInspector = new ArcGIS.Desktop.Editing.Attributes.Inspector();
+                        selectedInspector.Load(selectedFeature.Key, selected);
+                        selectedGeometry = selectedInspector.Shape;
+                        if (selectedGeometry.SpatialReference.Wkid == 4326)
                         {
-                            archesGeometryCollection.Add(archesGeometry.ToJson());
+                            selectedGeometryCollection.Add(selectedGeometry.ToJson());
                         }
                         else {
-                            var reprojectedGeometry = SRTransform(archesGeometry, archesGeometry.SpatialReference.Wkid, 4326);
-                            archesGeometryCollection.Add(reprojectedGeometry.ToJson());
+                            var reprojectedGeometry = SRTransform(selectedGeometry, selectedGeometry.SpatialReference.Wkid, 4326);
+                            selectedGeometryCollection.Add(reprojectedGeometry.ToJson());
                         }
                     }
                 }
-
-                //JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-                //archesGeometryString = jsonSerializer.Serialize(archesGeometryCollection);
-                archesGeometryString = String.Join(",", archesGeometryCollection);
-                return archesGeometryString;
+                selectedGeometryString = String.Join(",", selectedGeometryCollection);
+                return selectedGeometryString;
 
             });
 
             return args;
         }
 
-        public static async Task<Dictionary<string, string>> SubmitToArches(string tileid, string nodeid, string data, string esrijson)
+        public static async Task<Dictionary<string, string>> SubmitToArches(string tileid, string nodeid, string esrijson, string geometryFormat, string submitOperation)
         {
             Dictionary<String, String> result = new Dictionary<String, String>();
-
             try
             {
                 var serializer = new JavaScriptSerializer();
@@ -140,8 +93,11 @@ namespace arches_arcgispro_addin
                     {
                         new KeyValuePair<string, string>("tileid", tileid),
                         new KeyValuePair<string, string>("nodeid", nodeid),
-                        new KeyValuePair<string, string>(data, esrijson),
+                        new KeyValuePair<string, string>("data", esrijson),
+                        new KeyValuePair<string, string>("format", geometryFormat),
+                        new KeyValuePair<string, string>("operation", submitOperation),
                     });
+
                 client.DefaultRequestHeaders.Authorization = 
                     new AuthenticationHeaderValue("Bearer", StaticVariables.myToken["access_token"]);
                 var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "api/tiles/"), stringContent);
@@ -153,11 +109,10 @@ namespace arches_arcgispro_addin
                 if (responseJSON.ContainsKey("nodegroup_id")) { result.Add("nodegroup_id", responseJSON["nodegroup_id"]); }
                 if (responseJSON.ContainsKey("resourceinstance_id")) { result.Add("resourceinstance_id", responseJSON["resourceinstance_id"]); }
                 if (responseJSON.ContainsKey("tileid")) { result.Add("tileid", responseJSON["tileid"]); }
-
             }
             catch (HttpRequestException ex)
             {
-                throw new System.ArgumentException("The nodeid cannot be retrieved from the Arches server\n" + ex.Message, ex);
+                throw new System.ArgumentException(ex.Message, ex);
             }
             return result;
         }
@@ -169,39 +124,6 @@ namespace arches_arcgispro_addin
                 MapView.Active.Redraw(true);
             });
         }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            // Check for an active mapview
-            try
-            {
-                if (MapView.Active == null)
-                {
-                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No MapView currently active. Exiting...", "Info");
-                    return;
-                }
-                GetAttribute();
-
-            }
-            catch (Exception ex)
-            {
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Exception: " + ex.Message);
-            }
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            StaticVariables.archesNodeid = "";
-            StaticVariables.archesTileid = "";
-            StaticVariables.archesResourceid = "No Resource is Registered";
-
-            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"" +
-                $"Resource ID: {StaticVariables.archesResourceid} " +
-                $"\nTile ID: {StaticVariables.archesTileid} " +
-                $"\nNode ID: {StaticVariables.archesNodeid} ");
-        }
-
-
 
         private async void Button_Click_2(object sender, RoutedEventArgs e)
         {
@@ -215,6 +137,11 @@ namespace arches_arcgispro_addin
                 if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
                 {
                     ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
+
+                    DockPane pane = FrameworkApplication.DockPaneManager.Find("arches_arcgispro_addin_MainDockpane");
+                    if (pane == null)
+                        return;
+                    pane.Activate();
                     return;
                 }
                 if (StaticVariables.archesResourceid == "" | StaticVariables.archesResourceid == null)
@@ -224,12 +151,23 @@ namespace arches_arcgispro_addin
                 }
 
                 string archesGeometryString = await GetGeometryString();
-                string archesData = "data";
-                var result = await SubmitToArches(StaticVariables.archesTileid.ToString(), StaticVariables.archesNodeid, archesData, archesGeometryString);
-                var message = result["results"];
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message +
-                    $"\n{archesGeometryString} is submitted");
-                RefreshMapView();
+                string geometryFormat = "esrijson";
+                string submitOperation = (GeometryBeReplaced) ? "replace" : "append";
+
+                MessageBoxResult messageBoxResult = ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
+                        $"Are you sure you want to {submitOperation.ToUpper()}?\n\n{archesGeometryString}",
+                        "Submit to Arches", MessageBoxButton.OKCancel, MessageBoxImage.Question);
+
+                if (messageBoxResult.ToString() == "OK") 
+                {
+                    var result = await SubmitToArches(StaticVariables.archesTileid.ToString(), StaticVariables.archesNodeid, archesGeometryString, geometryFormat, submitOperation);
+                    //var message = result["results"];
+                    RefreshMapView();
+                }
+                else
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"The submission is cancelled");
+                }
             }
             catch (Exception ex)
             {
@@ -242,6 +180,11 @@ namespace arches_arcgispro_addin
             if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
             {
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
+
+                DockPane pane = FrameworkApplication.DockPaneManager.Find("arches_arcgispro_addin_MainDockpane");
+                if (pane == null)
+                    return;
+                pane.Activate();
                 return;
             }
             if (StaticVariables.archesResourceid == "" | StaticVariables.archesResourceid == null)
@@ -252,6 +195,16 @@ namespace arches_arcgispro_addin
             string editorAddress = StaticVariables.myInstanceURL + $"resource/{StaticVariables.archesResourceid}";
             ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("opening... \n" + editorAddress);
             UI.ChromePaneViewModel.OpenChromePane(editorAddress);
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            GeometryBeReplaced = true;
+        }
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            GeometryBeReplaced = false;
         }
     }
 }

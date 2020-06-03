@@ -6,7 +6,7 @@
              xmlns:ui="clr-namespace:arches_arcgispro_addin"
              xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
              mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="300"
+             d:DesignHeight="900" d:DesignWidth="300"
              d:DataContext="{Binding Path=ui.Dockpane1ViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -30,28 +30,34 @@
                 </TextBlock.ToolTip>
           </TextBlock>
         </DockPanel>
-        <TextBlock HorizontalAlignment="Left" Margin="50,20,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
+        <TextBlock HorizontalAlignment="Left" Margin="20,20,0,0" Grid.Row="1" VerticalAlignment="Top" TextWrapping="WrapWithOverflow"
             Text="1. Select a geometry from Arches layer to register to edit and click the Get button"/>
-        <!--TextBlock HorizontalAlignment="Left" Margin="50,80,0,0" Grid.Row="1" Text="Arches Layer" VerticalAlignment="Top" Width="130"/>
-        <ComboBox HorizontalAlignment="Center" Margin="0,100,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" 
-                  ItemsSource="{Binding FeatureLayers}" DisplayMemberPath="Name" 
-                  SelectedItem="{Binding SelectedFeatureLayer}" /-->
 
-        <Button Content="Get Arches Parameters" HorizontalAlignment="Center" Margin="0,80,0,0" Grid.Row="1" VerticalAlignment="Top" Width="180" Click="Button_Click"/>
-        <TextBlock HorizontalAlignment="Left" Margin="50,120,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
+        <Button Content="Register Arches Instance to Edit" HorizontalAlignment="Center" Margin="0,70,0,0" Grid.Row="1" VerticalAlignment="Top" Height="30" Width="200" Command="{Binding ButtonClick}" />
+        <TextBlock HorizontalAlignment="Left" Margin="20,120,0,0" Grid.Row="1" VerticalAlignment="Top" TextWrapping="WrapWithOverflow"
             Text="If you want to unregister the resource being edited click the Unregister"/>
-        <Button Content="Unregister Arches Instance" HorizontalAlignment="Center" Margin="0,170,0,0" Grid.Row="1" VerticalAlignment="Top" Width="180" Click="Button_Click_1" />
+        <Button Content="Unregister Arches Instance" HorizontalAlignment="Center" Margin="0,170,0,0" Grid.Row="1" VerticalAlignment="Top" Height="30" Width="200" IsEnabled="{Binding Registered}" Command="{Binding ButtonClick1}" />
 
-        <TextBlock HorizontalAlignment="Left" Margin="50,210,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
-            Text="2. Select a geometry and click the Submit button to replace Arches geometry" />
-        <Button Content="Submit to Arches" HorizontalAlignment="Center" Margin="0,270,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" Click="Button_Click_2" RenderTransformOrigin="0.741,1.819"/>
+        <TextBlock HorizontalAlignment="Left" Margin="20,220,0,0" Grid.Row="1" VerticalAlignment="Top" TextWrapping="WrapWithOverflow"
+            Text="2. Select a geometry and click the Submit button to Add" />
+        <CheckBox Content="Replace the Exsiting Geometry?" HorizontalAlignment="Left" Margin="50,260,0,0" Grid.Row="1" VerticalAlignment="Top" Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked" />
+        <Button Content="Submit to Arches" HorizontalAlignment="Center" Margin="0,290,0,0" Grid.Row="1" VerticalAlignment="Top" Height="30" Width="200" IsEnabled="{Binding Registered}" Click="Button_Click_2"/>
 
-        <TextBlock HorizontalAlignment="Left" Margin="50,310,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
+        <TextBlock HorizontalAlignment="Left" Margin="20,340,0,0" Grid.Row="1" VerticalAlignment="Top" TextWrapping="WrapWithOverflow"
             Text="3. Continue editing attributes using Arches Resource Editor" />
-        <TextBlock HorizontalAlignment="Left" FontWeight="bold"  Margin="50,350,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
+        <Button Content="Edit using Arches Resource Editor" HorizontalAlignment="Center" Margin="0,380,0,0" Grid.Row="1" VerticalAlignment="Top" Height="30" Width="200" IsEnabled="{Binding Registered}" Click="Button_Click_3"/>
+
+        <TextBlock HorizontalAlignment="Left" FontWeight="bold"  Margin="50,420,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
                    Text="Resouce Instance ID being edited: " />
-        <TextBlock HorizontalAlignment="Left" FontWeight="bold"  Margin="50,370,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
-                   Text="{Binding ResourceIDEdited}" />
-        <Button Content="Edit using Arches Resource Editor" HorizontalAlignment="Center" Margin="0,400,0,0" Grid.Row="1" VerticalAlignment="Top" Width="180" RenderTransformOrigin="0.741,1.819" Click="Button_Click_3"/>
+        <TextBox HorizontalAlignment="Left" FontWeight="bold"  Margin="20,450,0,0" Grid.Row="1" VerticalAlignment="Top" Width="250" TextWrapping="WrapWithOverflow"
+                   Text="{Binding ResourceIdEdited}" />
+
+        <TextBlock HorizontalAlignment="Left" FontWeight="bold"  Margin="50,480,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
+                   Text="Attributes" />
+
+        <DataGrid HorizontalAlignment="Stretch" Height="Auto" Margin="0,500,0,0" Grid.Row="1" VerticalAlignment="Top" Width="Auto"
+              ItemsSource="{Binding AttributeValues}" Style="{DynamicResource Esri_DataGrid}" 
+              HeadersVisibility="None" AutoGenerateColumns="True" IsReadOnly="True" SelectionMode="Single" RowHeaderWidth="0"/>
+
     </Grid>
 </UserControl>

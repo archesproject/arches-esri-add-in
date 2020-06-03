@@ -5,12 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Input;
 using ArcGIS.Core.CIM;
 using ArcGIS.Core.Data;
 using ArcGIS.Core.Geometry;
 using ArcGIS.Desktop.Catalog;
 using ArcGIS.Desktop.Core;
 using ArcGIS.Desktop.Editing;
+using ArcGIS.Desktop.Editing.Attributes;
 using ArcGIS.Desktop.Extensions;
 using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
@@ -21,97 +23,73 @@ using ArcGIS.Desktop.Mapping.Events;
 
 namespace arches_arcgispro_addin
 {
+    public class AttributeValue
+    {
+        public string Field { get; set; }
+        public string Value { get; set; }
+        public AttributeValue(string inField, string inValue)
+        {
+            Field = inField;
+            Value = inValue;
+        }
+    }
+
     internal class SaveResourceViewModel : DockPane
     {
         private const string _dockPaneID = "arches_arcgispro_addin_SaveResource";
 
-        private FeatureLayer _selectedFeatureLayer;
+        private string _resourceIdEdited;
+        private ICommand _buttonClick;
+        private ICommand _buttonClick1;
+        private static readonly object _lockCollections = new object();
+        public static ObservableCollection<AttributeValue> _attributeValues = new ObservableCollection<AttributeValue>();
 
-        /// <summary>
-        /// used to lock collections for use by multiple threads
-        /// </summary>
-        private readonly object _lockCollections = new object();
-        /// <summary>
-        /// UI lists, read-only collections, and properties
-        /// </summary>
-        private readonly ObservableCollection<FeatureLayer> _featureLayers = new ObservableCollection<FeatureLayer>();
-        private readonly ReadOnlyObservableCollection<FeatureLayer> _readOnlyFeatureLayers;
+        private bool _registered = false;
+        public bool Registered
+        {
+            get { return _registered; }
+            set
+            {
+                SetProperty(ref _registered, value, () => Registered);
+            }
+        }
+
+        public ObservableCollection<AttributeValue> AttributeValues
+        {
+            set
+            {
+                SetProperty(ref _attributeValues, value, () => AttributeValues);
+            }
+            get { return _attributeValues; }
+        }
+
+        public void ClearAttribute()
+        {
+            StaticVariables.archesNodeid = "";
+            StaticVariables.archesTileid = "";
+            StaticVariables.archesResourceid = "No Resource is Selected";
+            ResourceIdEdited = StaticVariables.archesResourceid;
+            Registered = false;
+        }
+
+        public void ClearAttributeValues()
+        {
+            lock (_lockCollections) ;
+            _attributeValues.Clear();
+        }
+
+        public string ResourceIdEdited
+        {
+            get { return _resourceIdEdited; }
+            set
+            {
+                SetProperty(ref _resourceIdEdited, value, () => ResourceIdEdited);
+            }
+        }
 
         protected SaveResourceViewModel()
         {
-            _readOnlyFeatureLayers = new ReadOnlyObservableCollection<FeatureLayer>(_featureLayers);
-            BindingOperations.EnableCollectionSynchronization(_readOnlyFeatureLayers, _lockCollections);
-
-            ActiveMapViewChangedEvent.Subscribe(OnActiveMapViewChanged);
-        }
-
-        /// <summary>
-        /// Called when the pane is first created to give it the opportunity to initialize itself asynchronously.
-        /// </summary>
-        /// <returns>
-        /// A task that represents the work queued to execute in the ThreadPool.
-        /// </returns>
-        protected override Task InitializeAsync()
-        {
-            GetFeatureLayers();
-            return base.InitializeAsync();
-        }
-
-        /// <summary>
-        /// List of the current active map's feature layers
-        /// </summary>
-        public ReadOnlyObservableCollection<FeatureLayer> FeatureLayers
-        {
-            get { return _readOnlyFeatureLayers; }
-        }
-
-        /// <summary>
-        /// The selected feature layer
-        /// </summary>
-        public FeatureLayer SelectedFeatureLayer
-        {
-            get { return _selectedFeatureLayer; }
-            set
-            {
-                SetProperty(ref _selectedFeatureLayer, value, () => SelectedFeatureLayer);
-            }
-        }
-
-        /// <summary>
-        /// The active map view changed therefore we refresh the feature layer drop-down
-        /// </summary>
-        /// <param name="args"></param>
-        private void OnActiveMapViewChanged(ActiveMapViewChangedEventArgs args)
-        {
-            if (args.IncomingView == null) return;
-            GetFeatureLayers();
-        }
-
-        /// <summary>
-        /// This method is called to use the current active mapview and retrieve all 
-        /// feature layers that are part of the map layers in the current map view.
-        /// </summary>
-        private void GetFeatureLayers()
-        {
-            //Get the active map view.
-            var mapView = MapView.Active;
-            if (mapView == null) return;
-            var featureLayers = mapView.Map.Layers.OfType<FeatureLayer>();
-            lock (_lockCollections)
-            {
-                _featureLayers.Clear();
-                foreach (var featureLayer in featureLayers) _featureLayers.Add(featureLayer);
-            }
-            NotifyPropertyChanged(() => FeatureLayers);
-        }
-
-        public string ResourceIDEdited
-        {
-            get { return StaticVariables.archesResourceid; }
-            set
-            {
-                SetProperty(ref StaticVariables.archesResourceid, value, () => ResourceIDEdited);
-            }
+            BindingOperations.EnableCollectionSynchronization(_attributeValues, _lockCollections);
         }
 
         /// <summary>
@@ -126,10 +104,102 @@ namespace arches_arcgispro_addin
             pane.Activate();
         }
 
+        private async void GetAttribute()
+        {
+            await QueuedTask.Run(() =>
+            {
+                var selectedFeatures = MapView.Active.Map.GetSelection();
+                if (selectedFeatures.Count == 1)
+                {
+                    var firstSelectionSet = selectedFeatures.First();
+                    if (firstSelectionSet.Value.Count == 1)
+                    {
+                        var archesInspector = new Inspector();
+                        archesInspector.Load(firstSelectionSet.Key, firstSelectionSet.Value);
+                        _attributeValues.Clear();
+                        try
+                        {
+                            foreach (var attribute in archesInspector)
+                            {
+                                AttributeValue newAttribute = new AttributeValue(attribute.FieldAlias, attribute.CurrentValue.ToString());
+                                _attributeValues.Add(newAttribute);
+
+                                StaticVariables.archesResourceid = archesInspector["resourceinstanceid"].ToString();
+                                StaticVariables.archesTileid = archesInspector["tileid"].ToString();
+                                StaticVariables.archesNodeid = archesInspector["nodeid"].ToString();
+                                ResourceIdEdited = StaticVariables.archesResourceid;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            ClearAttribute();
+                            ClearAttributeValues();
+                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select a Geometry from a valid Arches Layer");
+                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(ex.Message);
+                        }
+                    }
+                    else
+                    {
+                        ClearAttribute();
+                        ClearAttributeValues();
+                        ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select ONE valid geometry");
+                    }
+                }
+                else
+                {
+                    ClearAttribute();
+                    ClearAttributeValues();
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select from ONE Arches Layer");
+                }
+            });
+        }
+        public ICommand ButtonClick
+        {
+            get
+            {
+                return _buttonClick ?? (_buttonClick = new RelayCommand(() =>
+                {
+                    try
+                    {
+                        if (MapView.Active == null)
+                        {
+                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No MapView currently active. Exiting...", "Info");
+                            return;
+                        }
+                        GetAttribute();
+                        Registered = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Exception: " + ex.Message);
+                    }
+                }, true));
+            }
+        }
+
+        public ICommand ButtonClick1
+        {
+            get
+            {
+                return _buttonClick1 ?? (_buttonClick1 = new RelayCommand(() =>
+                {
+                    try
+                    {
+                        ClearAttribute();
+                        ClearAttributeValues();
+                    }
+                    catch (Exception ex)
+                    {
+                        ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Exception: " + ex.Message);
+                    }
+                }, true));
+            }
+        }
+
         /// <summary>
         /// Text shown near the top of the DockPane.
         /// </summary>
-        private string _heading = "Save Resources";
+        private string _heading = "Edit Resources";
         public string Heading
         {
             get { return _heading; }

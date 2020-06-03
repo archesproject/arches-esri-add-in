@@ -1,5 +1,7 @@
 ﻿using ArcGIS.Core.Geometry;
 using ArcGIS.Desktop.Editing.Attributes;
+using ArcGIS.Desktop.Framework;
+using ArcGIS.Desktop.Framework.Contracts;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Mapping;
 using System;
@@ -50,7 +52,7 @@ namespace arches_arcgispro_addin
 
                 foreach (dynamic element in results)
                 {
-                    nodeidResponse.Add(new GeometryNode(element["name"], element["nodeid"]));
+                    nodeidResponse.Add(new GeometryNode(element["resourcemodelname"], element["name"], element["nodeid"]));
                 }
             }
             catch (HttpRequestException e)
@@ -73,10 +75,14 @@ namespace arches_arcgispro_addin
                 if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
                 {
                     ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
+
+                    DockPane pane = FrameworkApplication.DockPaneManager.Find("arches_arcgispro_addin_MainDockpane");
+                    if (pane == null)
+                        return;
+                    pane.Activate();
                     return;
                 }
                 StaticVariables.geometryNodes = await GetGeometryNode();
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"The 1st member: {StaticVariables.geometryNodes.ElementAt(0).Name}\nThe 1st member: {StaticVariables.geometryNodes.ElementAt(0).Id}");
                 CreateResourceViewModel.CreateNodeList();
             }
             catch (Exception ex)
@@ -97,6 +103,11 @@ namespace arches_arcgispro_addin
                 if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
                 {
                     ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
+
+                    DockPane pane = FrameworkApplication.DockPaneManager.Find("arches_arcgispro_addin_MainDockpane");
+                    if (pane == null)
+                        return;
+                    pane.Activate();
                     return;
                 }
                 if (StaticVariables.archesNodeid == "" | StaticVariables.archesNodeid == null)
@@ -108,14 +119,29 @@ namespace arches_arcgispro_addin
                 {
                     StaticVariables.archesResourceid = "";
                 }
+                
                 string archesGeometryString = await SaveResourceView.GetGeometryString();
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"{archesGeometryString} is submitted" +
-                                                                 $"\n to {StaticVariables.archesNodeid}");
-                string archesData = "data";
-                var result = await SaveResourceView.SubmitToArches(null, StaticVariables.archesNodeid, archesData, archesGeometryString);
-                StaticVariables.archesResourceid = result["resourceinstance_id"];
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"A resource id: \n{StaticVariables.archesResourceid} is assigned");
-                SaveResourceView.RefreshMapView();
+
+                MessageBoxResult messageBoxResult = ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
+                    $"Are you sure you want to submit the selected geometry to create a new resource instance?" +
+                    $"\n\n{archesGeometryString}",
+                    "Submit to Arches", MessageBoxButton.OKCancel, MessageBoxImage.Question);
+
+                if (messageBoxResult.ToString() == "OK")
+                {
+                    string geometryFormat = "esrijson";
+                    string submitOperation = "create";
+                    var result = await SaveResourceView.SubmitToArches(null, StaticVariables.archesNodeid, archesGeometryString, geometryFormat, submitOperation);
+                    StaticVariables.archesResourceid = result["resourceinstance_id"];
+                    CreateResourceViewModel.GetResourceIdsCreated();
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"A resource id: \n{StaticVariables.archesResourceid} is assigned");
+                    SaveResourceView.RefreshMapView();
+                    OpenChromiumButton.IsEnabled = true;
+                }
+                else
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("The submission is cancelled");
+                }
             }
             catch (Exception ex)
             {
@@ -123,27 +149,10 @@ namespace arches_arcgispro_addin
             }
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
-            {
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
-                return;
-            }
-            if (StaticVariables.archesResourceid == "" | StaticVariables.archesResourceid == null)
-            {
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Submit a Geometry to Arches to Create a Resource...");
-                return;
-            }
-            string editorAddress = StaticVariables.myInstanceURL + $"resource/{StaticVariables.archesResourceid}";
-            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("opening... \n" + editorAddress);
-            UI.ChromePaneViewModel.OpenChromePane(editorAddress);
-
-        }
-
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
+            CreateResourceViewModel.ClearResourceIdsCreated();
+            OpenChromiumButton.IsEnabled = false;
         }
     }
 }

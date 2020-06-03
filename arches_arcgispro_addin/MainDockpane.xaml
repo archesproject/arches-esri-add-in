@@ -30,16 +30,16 @@
                 </TextBlock.ToolTip>
             </TextBlock>
         </DockPanel>
-        <TextBox Name="InstanceURL" HorizontalAlignment="Left" Height="23" Margin="30,55,0,0" Grid.Row="1" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="250"/>
-        <TextBox Name="Username" HorizontalAlignment="Left" Height="23" Margin="30,105,0,0" Grid.Row="1" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="250"/>
-        <PasswordBox Name="Password" HorizontalAlignment="Left" Height="23" Margin="30,155,0,0" Grid.Row="1" Password="" VerticalAlignment="Top" Width="250"/>
-        <TextBlock HorizontalAlignment="Left" Margin="30,15,0,0" Grid.Row="1" Text="Instance URL" VerticalAlignment="Top" Width="250"/>
-        <TextBlock HorizontalAlignment="Left" Margin="30,35,0,0" Grid.Row="1" Text="ex) http://your.ogranization.org/" VerticalAlignment="Top" Width="250"/>
-        <TextBlock HorizontalAlignment="Left" Margin="30,85,0,0" Grid.Row="1" Text="Username" VerticalAlignment="Top" Width="250"/>
-        <TextBlock HorizontalAlignment="Left" Margin="30,135,0,0" Grid.Row="1" Text="Password" VerticalAlignment="Top" Width="250"/>
-        <Button Content="Connect" HorizontalAlignment="Left" Margin="40,200,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100" Click="Button_Click"/>
-        <Button Content="Cancel" HorizontalAlignment="Left" Margin="170,200,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100" Click="Button_Click_1"/>
-        <Button Content="Create New Resource Instance" HorizontalAlignment="Left" Margin="65,260,0,0" Grid.Row="1" VerticalAlignment="Top" Width="180" Click="Button_Click_2"/>
-        <Button Content="Edit Existing Resource Instance" HorizontalAlignment="Left" Margin="65,300,0,0" Grid.Row="1" VerticalAlignment="Top" Width="180" Click="Button_Click_3"/>
+        <TextBox Name="InstanceURL" HorizontalAlignment="Left" Height="23" Margin="20,55,0,0" Grid.Row="1" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="250"/>
+        <TextBox Name="Username" HorizontalAlignment="Left" Height="23" Margin="20,105,0,0" Grid.Row="1" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="250"/>
+        <PasswordBox Name="Password" HorizontalAlignment="Left" Height="23" Margin="20,155,0,0" Grid.Row="1" Password="" VerticalAlignment="Top" Width="250"/>
+        <TextBlock HorizontalAlignment="Left" Margin="20,15,0,0" Grid.Row="1" Text="Instance URL" VerticalAlignment="Top" Width="250"/>
+        <TextBlock HorizontalAlignment="Left" Margin="20,35,0,0" Grid.Row="1" Text="ex) http://your.ogranization.org/" VerticalAlignment="Top" Width="250"/>
+        <TextBlock HorizontalAlignment="Left" Margin="20,85,0,0" Grid.Row="1" Text="Username" VerticalAlignment="Top" Width="250"/>
+        <TextBlock HorizontalAlignment="Left" Margin="20,135,0,0" Grid.Row="1" Text="Password" VerticalAlignment="Top" Width="250"/>
+        <Button Content="Connect" HorizontalAlignment="Left" Margin="30,200,0,0" Grid.Row="1" VerticalAlignment="Top" Height="30" Width="100" Click="Button_Click"/>
+        <Button Content="Cancel" HorizontalAlignment="Left" Margin="170,200,0,0" Grid.Row="1" VerticalAlignment="Top" Height="30" Width="100" Click="Button_Click_1"/>
+        <Button Name="CreateResourceButton" Content="Create New Resource Instance" HorizontalAlignment="Left" Margin="50,260,0,0" Grid.Row="1" VerticalAlignment="Top" Height="30" Width="200" IsEnabled="False" Click="Button_Click_2"/>
+        <Button Name="EditResourceButton" Content="Edit Existing Resource Instance" HorizontalAlignment="Left" Margin="50,300,0,0" Grid.Row="1" VerticalAlignment="Top" Height="30" Width="200" IsEnabled="False" Click="Button_Click_3"/>
     </Grid>
 </UserControl>
