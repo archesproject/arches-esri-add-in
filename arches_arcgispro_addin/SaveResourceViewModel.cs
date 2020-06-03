@@ -44,6 +44,16 @@ namespace arches_arcgispro_addin
         private static readonly object _lockCollections = new object();
         public static ObservableCollection<AttributeValue> _attributeValues = new ObservableCollection<AttributeValue>();
 
+        private bool _registered = false;
+        public bool Registered
+        {
+            get { return _registered; }
+            set
+            {
+                SetProperty(ref _registered, value, () => Registered);
+            }
+        }
+
         public ObservableCollection<AttributeValue> AttributeValues
         {
             set
@@ -59,6 +69,7 @@ namespace arches_arcgispro_addin
             StaticVariables.archesTileid = "";
             StaticVariables.archesResourceid = "No Resource is Selected";
             ResourceIdEdited = StaticVariables.archesResourceid;
+            Registered = false;
         }
 
         public void ClearAttributeValues()
@@ -156,6 +167,7 @@ namespace arches_arcgispro_addin
                             return;
                         }
                         GetAttribute();
+                        Registered = true;
                     }
                     catch (Exception ex)
                     {

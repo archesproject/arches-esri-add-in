@@ -36,16 +36,16 @@
         <Button Content="Register Arches Instance to Edit" HorizontalAlignment="Center" Margin="0,70,0,0" Grid.Row="1" VerticalAlignment="Top" Height="30" Width="200" Command="{Binding ButtonClick}" />
         <TextBlock HorizontalAlignment="Left" Margin="20,120,0,0" Grid.Row="1" VerticalAlignment="Top" TextWrapping="WrapWithOverflow"
             Text="If you want to unregister the resource being edited click the Unregister"/>
-        <Button Content="Unregister Arches Instance" HorizontalAlignment="Center" Margin="0,170,0,0" Grid.Row="1" VerticalAlignment="Top" Height="30" Width="200" Command="{Binding ButtonClick1}" />
+        <Button Content="Unregister Arches Instance" HorizontalAlignment="Center" Margin="0,170,0,0" Grid.Row="1" VerticalAlignment="Top" Height="30" Width="200" IsEnabled="{Binding Registered}" Command="{Binding ButtonClick1}" />
 
         <TextBlock HorizontalAlignment="Left" Margin="20,220,0,0" Grid.Row="1" VerticalAlignment="Top" TextWrapping="WrapWithOverflow"
             Text="2. Select a geometry and click the Submit button to Add" />
         <CheckBox Content="Replace the Exsiting Geometry?" HorizontalAlignment="Left" Margin="50,260,0,0" Grid.Row="1" VerticalAlignment="Top" Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked" />
-        <Button Content="Submit to Arches" HorizontalAlignment="Center" Margin="0,290,0,0" Grid.Row="1" VerticalAlignment="Top" Height="30" Width="200" Click="Button_Click_2"/>
+        <Button Content="Submit to Arches" HorizontalAlignment="Center" Margin="0,290,0,0" Grid.Row="1" VerticalAlignment="Top" Height="30" Width="200" IsEnabled="{Binding Registered}" Click="Button_Click_2"/>
 
         <TextBlock HorizontalAlignment="Left" Margin="20,340,0,0" Grid.Row="1" VerticalAlignment="Top" TextWrapping="WrapWithOverflow"
             Text="3. Continue editing attributes using Arches Resource Editor" />
-        <Button Content="Edit using Arches Resource Editor" HorizontalAlignment="Center" Margin="0,380,0,0" Grid.Row="1" VerticalAlignment="Top" Height="30" Width="200" RenderTransformOrigin="0.741,1.819" Click="Button_Click_3"/>
+        <Button Content="Edit using Arches Resource Editor" HorizontalAlignment="Center" Margin="0,380,0,0" Grid.Row="1" VerticalAlignment="Top" Height="30" Width="200" IsEnabled="{Binding Registered}" Click="Button_Click_3"/>
 
         <TextBlock HorizontalAlignment="Left" FontWeight="bold"  Margin="50,420,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
                    Text="Resouce Instance ID being edited: " />
