@@ -29,26 +29,26 @@
                     </WrapPanel>
                 </TextBlock.ToolTip>
             </TextBlock>
-        </-->
+        </>
 
-        <Button Content="Get Geometry Node Info" HorizontalAlignment="Left" Margin="20,20,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="300" Click="Button_Click" />
+        <Button Content="Get Geometry Node Info" HorizontalAlignment="Left" Margin="20,20,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="300" Click="Button_Click" /-->
 
-        <TextBlock HorizontalAlignment="Left" Margin="20,60,0,0" Grid.Row="1" Text="Select a Resource" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Left" Margin="20,20,0,0" Grid.Row="1" Text="Select a Resource" VerticalAlignment="Top"/>
 
-        <ComboBox HorizontalAlignment="Left" Margin="20,80,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="300"
+        <ComboBox HorizontalAlignment="Left" Margin="20,40,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="300"
                 ItemsSource="{Binding GeometryNodes}" DisplayMemberPath="Name"
                 SelectedItem="{Binding SelectedGeometryNode, Mode=TwoWay}" SelectedIndex="0" />
 
-        <TextBlock HorizontalAlignment="Left" Margin="20,140,0,0" Grid.Row="1" VerticalAlignment="Top" TextWrapping="WrapWithOverflow" Width="300"
+        <TextBlock HorizontalAlignment="Left" Margin="20,100,0,0" Grid.Row="1" VerticalAlignment="Top" TextWrapping="WrapWithOverflow" Width="300"
             Text="Select a feature(s) from the map; upload to Arches to create a new Resource Instance" />
-        <Button Name="SubmitButton" Content="Upload Geometry to Arches" HorizontalAlignment="Left" Margin="20,180,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="300"
+        <Button Name="SubmitButton" Content="Upload Geometry to Arches" HorizontalAlignment="Left" Margin="20,140,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="300"
                 IsEnabled="{Binding NodeSelected}" Click="Button_Click_1" />
 
-        <TextBlock HorizontalAlignment="Left" Margin="20,245,0,0" Grid.Row="1" VerticalAlignment="Top" Width="125" TextWrapping="WrapWithOverflow"
+        <TextBlock HorizontalAlignment="Left" Margin="20,200,0,0" Grid.Row="1" VerticalAlignment="Top" Width="125" TextWrapping="WrapWithOverflow"
             Text="Uploaded Features:" />
-        <Button Content="Clear the List" HorizontalAlignment="Right" Margin="180,240,25,0" Grid.Row="1" VerticalAlignment="Top" Height="25"  Width="100" Click="Button_Click_3"/>
+        <Button Content="Clear the List" HorizontalAlignment="Right" Margin="180,190,25,0" Grid.Row="1" VerticalAlignment="Top" Height="25"  Width="100" Click="Button_Click_3"/>
 
-        <DataGrid HorizontalAlignment="Stretch" Height="Auto" Margin="0,280,0,0" Grid.Row="1" VerticalAlignment="Top" Width="Auto"
+        <DataGrid HorizontalAlignment="Stretch" Height="Auto" Margin="0,230,0,0" Grid.Row="1" VerticalAlignment="Top" Width="Auto"
               ItemsSource="{Binding ResourceIdsCreated}" Style="{DynamicResource Esri_DataGrid}" 
               HeadersVisibility="None" AutoGenerateColumns="True" IsReadOnly="True" SelectionMode="Single" RowHeaderWidth="0"/>
 

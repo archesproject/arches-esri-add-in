@@ -37,7 +37,7 @@ namespace arches_arcgispro_addin
             InitializeComponent();
         }
         static readonly HttpClient client = new HttpClient();
-        private async Task<List<GeometryNode>> GetGeometryNode()
+        public static async Task<List<GeometryNode>> GetGeometryNode()
         {
             List<GeometryNode> nodeidResponse = new List<GeometryNode>();
             try

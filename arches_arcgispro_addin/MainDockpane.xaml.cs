@@ -63,6 +63,7 @@ namespace arches_arcgispro_addin
     {
         // HttpClient is intended to be instantiated once per application, rather than per-use. See Remarks.
         static readonly HttpClient client = new HttpClient();
+        
         private async Task GetInstances()
         {
             try
@@ -236,6 +237,8 @@ namespace arches_arcgispro_addin
                 EditResourceButton.IsEnabled = true;
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Successfully Logged in to {StaticVariables.myInstanceURL}");
 
+                StaticVariables.geometryNodes = await CreateResourceView.GetGeometryNode();
+                CreateResourceViewModel.CreateNodeList();
             }
             catch (Exception ex)
             {
