@@ -22,7 +22,17 @@ namespace arches_arcgispro_addin
     {
         private const string _dockPaneID = "arches_arcgispro_addin_MainDockpane";
 
+        private string _message = "Succeeded or Failed?";
+        public string Message
+        {
+            get { return _message; }
+            set
+            {
+                SetProperty(ref _message, value, () => Message);
+            }
+        }
         protected MainDockpaneViewModel() { }
+
 
         /// <summary>
         /// Show the DockPane.

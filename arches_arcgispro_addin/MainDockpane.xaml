@@ -43,7 +43,7 @@
         <Button Content="Cancel" HorizontalAlignment="Left" Margin="175,200,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="145" Click="Button_Click_1"/>
         
         <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="85" Margin="20,250,0,0" Visibility="Visible" Grid.RowSpan="2" Stroke="DarkGray" VerticalAlignment="Top" Width="300"/>
-        <TextBlock HorizontalAlignment="Left" Margin="30,260,0,0" Grid.Row="1" Text="Binding for _message" VerticalAlignment="Top" Width="300"/>
+        <TextBlock HorizontalAlignment="Left" Margin="30,260,0,0" Grid.Row="1" Text="{Binding Message}" TextWrapping="Wrap" VerticalAlignment="Top" Width="280"/>
 
         <Button Name="CreateResourceButton" Content="Create New Resource Instance" HorizontalAlignment="Left" Margin="20,0,0,50" Grid.Row="1" VerticalAlignment="Bottom" Height="25" Width="300" IsEnabled="False" Click="Button_Click_2"/>
         <Button Name="EditResourceButton" Content="Edit Existing Resource Instance" HorizontalAlignment="Left" Margin="20,0,0,20" Grid.Row="1" VerticalAlignment="Bottom" Height="25" Width="300" IsEnabled="False" Click="Button_Click_3"/>
