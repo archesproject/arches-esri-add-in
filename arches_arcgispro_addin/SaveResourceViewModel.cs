@@ -47,6 +47,8 @@ namespace arches_arcgispro_addin
         private bool _registered = false;
         private string _registeredVisibility = "Hidden";
         private string _unregisteredVisibility = "Visible";
+        private string _message = "";
+        private string _messageBoxVisibility = "Hidden";
 
         public bool Registered
         {
@@ -75,6 +77,30 @@ namespace arches_arcgispro_addin
             }
         }
 
+        public string Message
+        {
+            get { return _message; }
+            set
+            {
+                SetProperty(ref _message, value, () => Message);
+                if (_message != "") {
+                    MessageBoxVisibility = "Visible";
+                }
+                else
+                {
+                    MessageBoxVisibility = "Hidden";
+                }
+            }
+        }
+        public string MessageBoxVisibility
+        {
+            get { return _messageBoxVisibility; }
+            set
+            {
+                SetProperty(ref _messageBoxVisibility, value, () => MessageBoxVisibility);
+            }
+        }
+
         public ObservableCollection<AttributeValue> AttributeValues
         {
             set
@@ -91,6 +117,7 @@ namespace arches_arcgispro_addin
             StaticVariables.archesResourceid = "No Resource is Selected";
             ResourceIdEdited = StaticVariables.archesResourceid;
             Registered = false;
+            Message = "";
         }
 
         public void ClearAttributeValues()
@@ -152,28 +179,28 @@ namespace arches_arcgispro_addin
                                 Registered = true;
                                 RegisteredVisibility = "Visible";
                                 UnregisteredVisibility = "Hidden";
+                                MessageBoxVisibility = "Hidden";
                             }
                         }
                         catch (Exception ex)
                         {
                             ClearAttribute();
                             ClearAttributeValues();
-                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select a Geometry from a valid Arches Layer");
-                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(ex.Message);
+                            Message = $"This feature may not exist on \n{StaticVariables.myInstanceURL}\n{ex.Message}";
                         }
                     }
                     else
                     {
                         ClearAttribute();
                         ClearAttributeValues();
-                        ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select ONE valid geometry");
+                        Message = "Make Sure to Select ONE valid geometry";
                     }
                 }
                 else
                 {
                     ClearAttribute();
                     ClearAttributeValues();
-                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select from ONE Arches Layer");
+                    Message = "Make Sure to Select from ONE Arches Layer";
                 }
             });
         }

@@ -34,7 +34,7 @@
             Text="Select a Feature to edit"/>
         <Button Content="Register Feature with Arches" HorizontalAlignment="Left" Margin="20,40,0,0" Grid.Row="1" Visibility="{Binding UnregisteredVisibility}" VerticalAlignment="Top" Height="25" Width="300" Command="{Binding ButtonClick}" />
 
-        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="66" Margin="20,90,0,0" Visibility="{Binding UnregisteredVisibility}" Grid.RowSpan="2" Stroke="DarkGray" VerticalAlignment="Top" Width="300"/>
+        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="80" Margin="20,90,0,0" Visibility="{Binding MessageBoxVisibility}" Grid.RowSpan="2" Stroke="DarkGray" VerticalAlignment="Top" Width="300"/>
         <TextBlock HorizontalAlignment="Left" Margin="30,105,0,0" Grid.Row="1" Text="{Binding Message}" Visibility="{Binding UnregisteredVisibility}" TextWrapping="Wrap" VerticalAlignment="Top" Width="280"/>
 
         <Button Content="Upload" HorizontalAlignment="Left" Margin="20,40,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Height="25" Width="145" IsEnabled="{Binding Registered}" Click="Button_Click_2"/>
