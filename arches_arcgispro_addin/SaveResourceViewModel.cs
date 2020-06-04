@@ -45,12 +45,33 @@ namespace arches_arcgispro_addin
         public static ObservableCollection<AttributeValue> _attributeValues = new ObservableCollection<AttributeValue>();
 
         private bool _registered = false;
+        private string _registeredVisibility = "Hidden";
+        private string _unregisteredVisibility = "Visible";
+
         public bool Registered
         {
             get { return _registered; }
             set
             {
                 SetProperty(ref _registered, value, () => Registered);
+            }
+        }
+
+        public string RegisteredVisibility
+        {
+            get { return _registeredVisibility; }
+            set
+            {
+                SetProperty(ref _registeredVisibility, value, () => RegisteredVisibility);
+            }
+        }
+
+        public string UnregisteredVisibility
+        {
+            get { return _unregisteredVisibility; }
+            set
+            {
+                SetProperty(ref _unregisteredVisibility, value, () => UnregisteredVisibility);
             }
         }
 
@@ -128,6 +149,9 @@ namespace arches_arcgispro_addin
                                 StaticVariables.archesTileid = archesInspector["tileid"].ToString();
                                 StaticVariables.archesNodeid = archesInspector["nodeid"].ToString();
                                 ResourceIdEdited = StaticVariables.archesResourceid;
+                                Registered = true;
+                                RegisteredVisibility = "Visible";
+                                UnregisteredVisibility = "Hidden";
                             }
                         }
                         catch (Exception ex)
@@ -167,7 +191,6 @@ namespace arches_arcgispro_addin
                             return;
                         }
                         GetAttribute();
-                        Registered = true;
                     }
                     catch (Exception ex)
                     {
@@ -187,6 +210,8 @@ namespace arches_arcgispro_addin
                     {
                         ClearAttribute();
                         ClearAttributeValues();
+                        RegisteredVisibility = "Hidden";
+                        UnregisteredVisibility = "Visible";
                     }
                     catch (Exception ex)
                     {

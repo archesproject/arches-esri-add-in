@@ -32,26 +32,26 @@
         </-->
         <TextBlock HorizontalAlignment="Left" Margin="20,20,0,0" Grid.Row="1" VerticalAlignment="Top" TextWrapping="WrapWithOverflow"
             Text="Select a Feature to edit"/>
-        <Button Content="Register Feature with Arches" HorizontalAlignment="Left" Margin="20,40,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="300" Command="{Binding ButtonClick}" />
+        <Button Content="Register Feature with Arches" HorizontalAlignment="Left" Margin="20,40,0,0" Grid.Row="1" Visibility="{Binding UnregisteredVisibility}" VerticalAlignment="Top" Height="25" Width="300" Command="{Binding ButtonClick}" />
 
-        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="66" Margin="20,90,0,0" Grid.RowSpan="2" Stroke="DarkGray" VerticalAlignment="Top" Width="300"/>
-        <TextBlock HorizontalAlignment="Left" Margin="30,105,0,0" Grid.Row="1" Text="{Binding Message}" TextWrapping="Wrap" VerticalAlignment="Top" Width="280"/>
+        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="66" Margin="20,90,0,0" Visibility="{Binding UnregisteredVisibility}" Grid.RowSpan="2" Stroke="DarkGray" VerticalAlignment="Top" Width="300"/>
+        <TextBlock HorizontalAlignment="Left" Margin="30,105,0,0" Grid.Row="1" Text="{Binding Message}" Visibility="{Binding UnregisteredVisibility}" TextWrapping="Wrap" VerticalAlignment="Top" Width="280"/>
 
-        <Button Content="Upload" HorizontalAlignment="Left" Margin="20,180,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="145" IsEnabled="{Binding Registered}" Click="Button_Click_2"/>
-        <Button Content="Cancel" HorizontalAlignment="Left" Margin="175,180,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="145" IsEnabled="{Binding Registered}" Command="{Binding ButtonClick1}" />
-        <CheckBox Content="Replace exsiting geometry?" HorizontalAlignment="Left" Margin="20,220,0,0" Grid.Row="1" VerticalAlignment="Top" Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked" />
+        <Button Content="Upload" HorizontalAlignment="Left" Margin="20,40,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Height="25" Width="145" IsEnabled="{Binding Registered}" Click="Button_Click_2"/>
+        <Button Content="Cancel" HorizontalAlignment="Left" Margin="175,40,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Height="25" Width="145" IsEnabled="{Binding Registered}" Command="{Binding ButtonClick1}" />
+        <CheckBox Content="Replace exsiting geometry?" HorizontalAlignment="Left" Margin="20,80,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked" />
 
-        <TextBlock HorizontalAlignment="Left" Margin="20,280,0,0" Grid.Row="1" VerticalAlignment="Top" Width="300" TextWrapping="WrapWithOverflow"
+        <TextBlock HorizontalAlignment="Left" Margin="20,140,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Width="300" TextWrapping="WrapWithOverflow"
                    Text="Resource Model: " />
-        <TextBlock HorizontalAlignment="Left" Margin="120,280,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
+        <TextBlock HorizontalAlignment="Left" Margin="120,140,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
                    Text="{Binding }" />
 
-        <TextBlock HorizontalAlignment="Left" Margin="20,300,0,0" Grid.Row="1" VerticalAlignment="Top" Width="72" TextWrapping="WrapWithOverflow"
+        <TextBlock HorizontalAlignment="Left" Margin="20,160,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Width="72" TextWrapping="WrapWithOverflow"
                    Text="Resource id: " />
-        <TextBlock HorizontalAlignment="Left" Margin="90,300,0,0" Grid.Row="1" VerticalAlignment="Top" Width="230" TextWrapping="WrapWithOverflow"
+        <TextBlock HorizontalAlignment="Left" Margin="90,160,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Width="230" TextWrapping="WrapWithOverflow"
                    Text="{Binding ResourceIdEdited}" />
 
-        <DataGrid HorizontalAlignment="Stretch" Height="Auto" Margin="20,320,0,0" Grid.Row="1" VerticalAlignment="Top" Width="Auto"
+        <DataGrid HorizontalAlignment="Stretch" Height="Auto" Margin="0,180,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Width="Auto"
               ItemsSource="{Binding AttributeValues}" Style="{DynamicResource Esri_DataGrid}" 
               HeadersVisibility="None" AutoGenerateColumns="True" IsReadOnly="True" SelectionMode="Single" RowHeaderWidth="0"/>
 
