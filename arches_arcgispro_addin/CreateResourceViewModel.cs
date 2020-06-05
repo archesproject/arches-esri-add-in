@@ -148,7 +148,7 @@ namespace arches_arcgispro_addin
             {
                 return _buttonClick2 ?? (_buttonClick2 = new RelayCommand(() =>
                 {
-                    if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
+                    if (StaticVariables.archesInstanceURL == "" | StaticVariables.archesInstanceURL == null)
                     {
                         ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
 
@@ -173,7 +173,7 @@ namespace arches_arcgispro_addin
                         ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Choose a Resource ID from the Dropdown");
                         return;
                     }
-                    string editorAddress = StaticVariables.myInstanceURL + $"resource/{SelectedResourceId.Id}";
+                    string editorAddress = StaticVariables.archesInstanceURL + $"resource/{SelectedResourceId.Id}";
                     ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("opening... \n" + editorAddress);
                     UI.ChromePaneViewModel.OpenChromePane(editorAddress);
 
