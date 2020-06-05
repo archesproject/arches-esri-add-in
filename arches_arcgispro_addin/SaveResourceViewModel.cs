@@ -214,14 +214,14 @@ namespace arches_arcgispro_addin
                     {
                         if (MapView.Active == null)
                         {
-                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No MapView currently active. Exiting...", "Info");
+                            Message = "No MapView currently active.";
                             return;
                         }
                         GetAttribute();
                     }
                     catch (Exception ex)
                     {
-                        ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Exception: " + ex.Message);
+                        Message = "Exception: " + ex.Message;
                     }
                 }, true));
             }
@@ -242,7 +242,7 @@ namespace arches_arcgispro_addin
                     }
                     catch (Exception ex)
                     {
-                        ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Exception: " + ex.Message);
+                        Message = "Exception: " + ex.Message;
                     }
                 }, true));
             }
