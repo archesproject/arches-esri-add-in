@@ -48,11 +48,11 @@ namespace arches_arcgispro_addin
     }
     public static class StaticVariables
     {
-        public static Dictionary<string, dynamic> myToken;
+        public static Dictionary<string, dynamic> archesToken;
         public static string myClientid;
-        public static string myInstanceURL;
-        public static string myUsername;
-        public static string myPassword;
+        public static string archesInstanceURL;
+        //public static string myUsername;
+        //public static string myPassword;
         public static string archesTileid;
         public static string archesNodeid;
         public static string archesResourceid = "No Resource is Selected";
@@ -68,7 +68,7 @@ namespace arches_arcgispro_addin
         {
             try
             {
-                HttpResponseMessage response = await client.GetAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "search/resources"));
+                HttpResponseMessage response = await client.GetAsync(System.IO.Path.Combine(StaticVariables.archesInstanceURL, "search/resources"));
 
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
@@ -101,10 +101,10 @@ namespace arches_arcgispro_addin
                 var serializer = new JavaScriptSerializer();
                 var stringContent = new FormUrlEncodedContent(new[]
                     {
-                            new KeyValuePair<string, string>("username", StaticVariables.myUsername),
-                            new KeyValuePair<string, string>("password", StaticVariables.myPassword),
-                        });
-                var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "auth/get_client_id"), stringContent);
+                        new KeyValuePair<string, string>("username", Username.Text),
+                        new KeyValuePair<string, string>("password", Password.Password),
+                    });
+                var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.archesInstanceURL, "auth/get_client_id"), stringContent);
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 dynamic responseJSON = serializer.Deserialize<dynamic>(@responseBody);
@@ -128,12 +128,12 @@ namespace arches_arcgispro_addin
                 var serializer = new JavaScriptSerializer();
                 var stringContent = new FormUrlEncodedContent(new[]
                     {
-                            new KeyValuePair<string, string>("username", StaticVariables.myUsername),
-                            new KeyValuePair<string, string>("password", StaticVariables.myPassword),
+                            new KeyValuePair<string, string>("username", Username.Text),
+                            new KeyValuePair<string, string>("password", Password.Password),
                             new KeyValuePair<string, string>("client_id", clientid),
                             new KeyValuePair<string, string>("grant_type", "password"),
                         });
-                var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "o/token/"), stringContent);
+                var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.archesInstanceURL, "o/token/"), stringContent);
 
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
@@ -163,11 +163,11 @@ namespace arches_arcgispro_addin
                 var serializer = new JavaScriptSerializer();
                 var stringContent = new FormUrlEncodedContent(new[]
                     {
-                            new KeyValuePair<string, string>("refresh_token", StaticVariables.myToken["refresh_token"]),
+                            new KeyValuePair<string, string>("refresh_token", StaticVariables.archesToken["refresh_token"]),
                             new KeyValuePair<string, string>("client_id", clientid),
                             new KeyValuePair<string, string>("grant_type", "refresh_token"),
                         });
-                var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "o/token/"), stringContent);
+                var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.archesInstanceURL, "o/token/"), stringContent);
 
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
@@ -189,9 +189,7 @@ namespace arches_arcgispro_addin
 
         private async Task<Dictionary<string, string>> GetResource(string resourceid, string token)
         {
-            StaticVariables.myInstanceURL = InstanceURL.Text;
-            StaticVariables.myUsername = Username.Text;
-            StaticVariables.myPassword = Password.Password;
+            StaticVariables.archesInstanceURL = InstanceURL.Text;
 
             Dictionary<String, String> result = new Dictionary<String, String>();
 
@@ -207,8 +205,8 @@ namespace arches_arcgispro_addin
                 {
                     Console.WriteLine("Message :{0} ", e.Message);
                 }
-                var response = await client.GetAsync(StaticVariables.myInstanceURL + $"resources/{resourceid}?format=json");
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(StaticVariables.myInstanceURL + $"resources/{resourceid}?format=json");
+                var response = await client.GetAsync(StaticVariables.archesInstanceURL + $"resources/{resourceid}?format=json");
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(StaticVariables.archesInstanceURL + $"resources/{resourceid}?format=json");
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 dynamic responseJSON = serializer.Deserialize<dynamic>(@responseBody);
@@ -227,15 +225,13 @@ namespace arches_arcgispro_addin
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             try {
-                StaticVariables.myInstanceURL = InstanceURL.Text;
-                StaticVariables.myUsername = Username.Text;
-                StaticVariables.myPassword = Password.Password;
+                StaticVariables.archesInstanceURL = InstanceURL.Text;
                 StaticVariables.myClientid = await GetClientId();
-                StaticVariables.myToken = await GetToken(StaticVariables.myClientid);
+                StaticVariables.archesToken = await GetToken(StaticVariables.myClientid);
                 FrameworkApplication.State.Activate("token_state");
                 CreateResourceButton.IsEnabled = true;
                 EditResourceButton.IsEnabled = true;
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Successfully Logged in to {StaticVariables.myInstanceURL}");
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Successfully Logged in to {StaticVariables.archesInstanceURL}");
 
                 StaticVariables.geometryNodes = await CreateResourceView.GetGeometryNode();
                 CreateResourceViewModel.CreateNodeList();
@@ -264,7 +260,7 @@ namespace arches_arcgispro_addin
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
+            if (StaticVariables.archesInstanceURL == "" | StaticVariables.archesInstanceURL == null)
             {
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
                 return;
@@ -278,7 +274,7 @@ namespace arches_arcgispro_addin
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
+            if (StaticVariables.archesInstanceURL == "" | StaticVariables.archesInstanceURL == null)
             {
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
                 return;

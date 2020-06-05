@@ -58,7 +58,7 @@ namespace arches_arcgispro_addin.UI
 
 		#region Properties
 
-		private static string _browserAddress = StaticVariables.myInstanceURL;
+		private static string _browserAddress = StaticVariables.archesInstanceURL;
 		public static void OpenChromePane(string newAddress)
 		{
 			_browserAddress = newAddress;

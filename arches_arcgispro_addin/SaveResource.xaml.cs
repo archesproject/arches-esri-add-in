@@ -88,9 +88,9 @@ namespace arches_arcgispro_addin
             Dictionary<String, String> result = new Dictionary<String, String>();
             try
             {
-                if ((DateTime.Now - StaticVariables.myToken["timestamp"]).TotalSeconds > (StaticVariables.myToken["expires_in"] - 300))
+                if ((DateTime.Now - StaticVariables.archesToken["timestamp"]).TotalSeconds > (StaticVariables.archesToken["expires_in"] - 300))
                 {
-                    StaticVariables.myToken = await MainDockpaneView.RefreshToken(StaticVariables.myClientid);
+                    StaticVariables.archesToken = await MainDockpaneView.RefreshToken(StaticVariables.myClientid);
                 }
 
                 var serializer = new JavaScriptSerializer();
@@ -104,8 +104,8 @@ namespace arches_arcgispro_addin
                     });
 
                 client.DefaultRequestHeaders.Authorization = 
-                    new AuthenticationHeaderValue("Bearer", StaticVariables.myToken["access_token"]);
-                var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "api/tiles/"), stringContent);
+                    new AuthenticationHeaderValue("Bearer", StaticVariables.archesToken["access_token"]);
+                var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.archesInstanceURL, "api/tiles/"), stringContent);
 
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
@@ -139,7 +139,7 @@ namespace arches_arcgispro_addin
                     ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No MapView currently active. Exiting...", "Info");
                     return;
                 }
-                if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
+                if (StaticVariables.archesInstanceURL == "" | StaticVariables.archesInstanceURL == null)
                 {
                     ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
 
@@ -182,7 +182,7 @@ namespace arches_arcgispro_addin
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            if (StaticVariables.myInstanceURL == "" | StaticVariables.myInstanceURL == null)
+            if (StaticVariables.archesInstanceURL == "" | StaticVariables.archesInstanceURL == null)
             {
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
 
@@ -197,7 +197,7 @@ namespace arches_arcgispro_addin
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Register the Resource to Edit...");
                 return;
             }
-            string editorAddress = StaticVariables.myInstanceURL + $"resource/{StaticVariables.archesResourceid}";
+            string editorAddress = StaticVariables.archesInstanceURL + $"resource/{StaticVariables.archesResourceid}";
             ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("opening... \n" + editorAddress);
             UI.ChromePaneViewModel.OpenChromePane(editorAddress);
         }
