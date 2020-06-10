@@ -105,7 +105,7 @@ namespace arches_arcgispro_addin
 
                 client.DefaultRequestHeaders.Authorization = 
                     new AuthenticationHeaderValue("Bearer", StaticVariables.archesToken["access_token"]);
-                var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.archesInstanceURL, "api/tiles/"), stringContent);
+                var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.archesInstanceURL, "api/node_value/"), stringContent);
 
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
