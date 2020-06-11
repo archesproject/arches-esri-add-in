@@ -41,10 +41,10 @@
         <Button Content="Cancel" HorizontalAlignment="Left" Margin="175,40,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Height="25" Width="145" IsEnabled="{Binding Registered}" Command="{Binding ButtonClick1}" />
         <CheckBox Content="Replace exsiting geometry?" HorizontalAlignment="Left" Margin="20,80,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked" />
 
-        <TextBlock HorizontalAlignment="Left" Margin="20,140,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Width="300" TextWrapping="WrapWithOverflow"
+        <TextBlock HorizontalAlignment="Left" Margin="20,140,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Width="100" TextWrapping="WrapWithOverflow"
                    Text="Resource Model: " />
         <TextBlock HorizontalAlignment="Left" Margin="120,140,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Width="200" TextWrapping="WrapWithOverflow"
-                   Text="{Binding }" />
+                   Text="{Binding LayerName}" />
 
         <TextBlock HorizontalAlignment="Left" Margin="20,160,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Width="72" TextWrapping="WrapWithOverflow"
                    Text="Resource id: " />

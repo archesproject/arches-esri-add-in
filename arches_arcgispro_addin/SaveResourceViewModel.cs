@@ -49,6 +49,7 @@ namespace arches_arcgispro_addin
         private string _unregisteredVisibility = "Visible";
         private string _message = "";
         private string _messageBoxVisibility = "Hidden";
+        private string _layerName = "";
 
         public bool Registered
         {
@@ -98,6 +99,15 @@ namespace arches_arcgispro_addin
             set
             {
                 SetProperty(ref _messageBoxVisibility, value, () => MessageBoxVisibility);
+            }
+        }
+
+        public string LayerName
+        {
+            get { return _layerName; }
+            set
+            {
+                SetProperty(ref _layerName, value, () => LayerName);
             }
         }
 
@@ -162,6 +172,7 @@ namespace arches_arcgispro_addin
                     var firstSelectionSet = selectedFeatures.First();
                     if (firstSelectionSet.Value.Count == 1)
                     {
+                        LayerName = firstSelectionSet.Key.Name;
                         var archesInspector = new Inspector();
                         archesInspector.Load(firstSelectionSet.Key, firstSelectionSet.Value);
                         _attributeValues.Clear();
@@ -171,16 +182,16 @@ namespace arches_arcgispro_addin
                             {
                                 AttributeValue newAttribute = new AttributeValue(attribute.FieldAlias, attribute.CurrentValue.ToString());
                                 _attributeValues.Add(newAttribute);
-
-                                StaticVariables.archesResourceid = archesInspector["resourceinstanceid"].ToString();
-                                StaticVariables.archesTileid = archesInspector["tileid"].ToString();
-                                StaticVariables.archesNodeid = archesInspector["nodeid"].ToString();
-                                ResourceIdEdited = StaticVariables.archesResourceid;
-                                Registered = true;
-                                RegisteredVisibility = "Visible";
-                                UnregisteredVisibility = "Hidden";
-                                MessageBoxVisibility = "Hidden";
                             }
+
+                            StaticVariables.archesResourceid = archesInspector["resourceinstanceid"].ToString();
+                            StaticVariables.archesTileid = archesInspector["tileid"].ToString();
+                            StaticVariables.archesNodeid = archesInspector["nodeid"].ToString();
+                            ResourceIdEdited = StaticVariables.archesResourceid;
+                            Registered = true;
+                            RegisteredVisibility = "Visible";
+                            UnregisteredVisibility = "Hidden";
+                            MessageBoxVisibility = "Hidden";
                         }
                         catch (Exception ex)
                         {
