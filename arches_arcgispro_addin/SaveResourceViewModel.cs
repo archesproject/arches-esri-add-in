@@ -186,7 +186,7 @@ namespace arches_arcgispro_addin
                         {
                             ClearAttribute();
                             ClearAttributeValues();
-                            Message = $"This feature may not exist on \n{StaticVariables.myInstanceURL}\n{ex.Message}";
+                            Message = $"This feature may not exist on \n{StaticVariables.archesInstanceURL}\n{ex.Message}";
                         }
                     }
                     else
