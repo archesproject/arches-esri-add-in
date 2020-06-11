@@ -33,7 +33,6 @@ namespace arches_arcgispro_addin
         }
         protected MainDockpaneViewModel() { }
 
-
         /// <summary>
         /// Show the DockPane.
         /// </summary>
