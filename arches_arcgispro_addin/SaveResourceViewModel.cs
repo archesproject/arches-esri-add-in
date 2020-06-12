@@ -45,12 +45,69 @@ namespace arches_arcgispro_addin
         public static ObservableCollection<AttributeValue> _attributeValues = new ObservableCollection<AttributeValue>();
 
         private bool _registered = false;
+        private string _registeredVisibility = "Hidden";
+        private string _unregisteredVisibility = "Visible";
+        private string _message = "";
+        private string _messageBoxVisibility = "Hidden";
+        private string _layerName = "";
+
         public bool Registered
         {
             get { return _registered; }
             set
             {
                 SetProperty(ref _registered, value, () => Registered);
+            }
+        }
+
+        public string RegisteredVisibility
+        {
+            get { return _registeredVisibility; }
+            set
+            {
+                SetProperty(ref _registeredVisibility, value, () => RegisteredVisibility);
+            }
+        }
+
+        public string UnregisteredVisibility
+        {
+            get { return _unregisteredVisibility; }
+            set
+            {
+                SetProperty(ref _unregisteredVisibility, value, () => UnregisteredVisibility);
+            }
+        }
+
+        public string Message
+        {
+            get { return _message; }
+            set
+            {
+                SetProperty(ref _message, value, () => Message);
+                if (_message != "") {
+                    MessageBoxVisibility = "Visible";
+                }
+                else
+                {
+                    MessageBoxVisibility = "Hidden";
+                }
+            }
+        }
+        public string MessageBoxVisibility
+        {
+            get { return _messageBoxVisibility; }
+            set
+            {
+                SetProperty(ref _messageBoxVisibility, value, () => MessageBoxVisibility);
+            }
+        }
+
+        public string LayerName
+        {
+            get { return _layerName; }
+            set
+            {
+                SetProperty(ref _layerName, value, () => LayerName);
             }
         }
 
@@ -70,6 +127,7 @@ namespace arches_arcgispro_addin
             StaticVariables.archesResourceid = "No Resource is Selected";
             ResourceIdEdited = StaticVariables.archesResourceid;
             Registered = false;
+            Message = "";
         }
 
         public void ClearAttributeValues()
@@ -114,6 +172,7 @@ namespace arches_arcgispro_addin
                     var firstSelectionSet = selectedFeatures.First();
                     if (firstSelectionSet.Value.Count == 1)
                     {
+                        LayerName = firstSelectionSet.Key.Name;
                         var archesInspector = new Inspector();
                         archesInspector.Load(firstSelectionSet.Key, firstSelectionSet.Value);
                         _attributeValues.Clear();
@@ -123,33 +182,36 @@ namespace arches_arcgispro_addin
                             {
                                 AttributeValue newAttribute = new AttributeValue(attribute.FieldAlias, attribute.CurrentValue.ToString());
                                 _attributeValues.Add(newAttribute);
-
-                                StaticVariables.archesResourceid = archesInspector["resourceinstanceid"].ToString();
-                                StaticVariables.archesTileid = archesInspector["tileid"].ToString();
-                                StaticVariables.archesNodeid = archesInspector["nodeid"].ToString();
-                                ResourceIdEdited = StaticVariables.archesResourceid;
                             }
+
+                            StaticVariables.archesResourceid = archesInspector["resourceinstanceid"].ToString();
+                            StaticVariables.archesTileid = archesInspector["tileid"].ToString();
+                            StaticVariables.archesNodeid = archesInspector["nodeid"].ToString();
+                            ResourceIdEdited = StaticVariables.archesResourceid;
+                            Registered = true;
+                            RegisteredVisibility = "Visible";
+                            UnregisteredVisibility = "Hidden";
+                            MessageBoxVisibility = "Hidden";
                         }
                         catch (Exception ex)
                         {
                             ClearAttribute();
                             ClearAttributeValues();
-                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select a Geometry from a valid Arches Layer");
-                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(ex.Message);
+                            Message = $"This feature may not exist on \n{StaticVariables.archesInstanceURL}\n{ex.Message}";
                         }
                     }
                     else
                     {
                         ClearAttribute();
                         ClearAttributeValues();
-                        ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select ONE valid geometry");
+                        Message = "Make Sure to Select ONE valid geometry";
                     }
                 }
                 else
                 {
                     ClearAttribute();
                     ClearAttributeValues();
-                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Make Sure to Select from ONE Arches Layer");
+                    Message = "Make Sure to Select from ONE Arches Layer";
                 }
             });
         }
@@ -163,15 +225,14 @@ namespace arches_arcgispro_addin
                     {
                         if (MapView.Active == null)
                         {
-                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No MapView currently active. Exiting...", "Info");
+                            Message = "No MapView currently active.";
                             return;
                         }
                         GetAttribute();
-                        Registered = true;
                     }
                     catch (Exception ex)
                     {
-                        ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Exception: " + ex.Message);
+                        Message = "Exception: " + ex.Message;
                     }
                 }, true));
             }
@@ -187,10 +248,12 @@ namespace arches_arcgispro_addin
                     {
                         ClearAttribute();
                         ClearAttributeValues();
+                        RegisteredVisibility = "Hidden";
+                        UnregisteredVisibility = "Visible";
                     }
                     catch (Exception ex)
                     {
-                        ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Exception: " + ex.Message);
+                        Message = "Exception: " + ex.Message;
                     }
                 }, true));
             }

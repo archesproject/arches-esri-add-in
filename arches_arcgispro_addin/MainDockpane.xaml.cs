@@ -31,6 +31,8 @@ namespace arches_arcgispro_addin
     {
         public string Name { get; set; }
         public string Id { get; set; }
+
+        public string Model { get; set; }
         public GeometryNode(string inId)
         {
             Id = inId;
@@ -42,6 +44,7 @@ namespace arches_arcgispro_addin
         }
         public GeometryNode(string inModel, string inName, string inId)
         {
+            Model = inModel;
             Name = String.Format("{0} - {1}", inModel, inName);
             Id = inId;
         }
@@ -63,6 +66,7 @@ namespace arches_arcgispro_addin
     {
         // HttpClient is intended to be instantiated once per application, rather than per-use. See Remarks.
         static readonly HttpClient client = new HttpClient();
+
         private async Task GetInstances()
         {
             try
@@ -228,10 +232,14 @@ namespace arches_arcgispro_addin
                 StaticVariables.myClientid = await GetClientId();
                 StaticVariables.archesToken = await GetToken(StaticVariables.myClientid);
                 FrameworkApplication.State.Activate("token_state");
-                CreateResourceButton.IsEnabled = true;
-                EditResourceButton.IsEnabled = true;
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Successfully Logged in to {StaticVariables.archesInstanceURL}");
+                //CreateResourceButton.IsEnabled = true;
+                //EditResourceButton.IsEnabled = true;
+                FailMessage.Visibility = Visibility.Hidden;
+                SucceedMessage.Visibility = Visibility.Visible;
+                //ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Successfully Logged in to {StaticVariables.archesInstanceURL}");
 
+                StaticVariables.geometryNodes = await CreateResourceView.GetGeometryNode();
+                CreateResourceViewModel.CreateNodeList();
             }
             catch (Exception ex)
             {
@@ -251,8 +259,10 @@ namespace arches_arcgispro_addin
             Password.Password = "";
 
             FrameworkApplication.State.Deactivate("token_state");
-            CreateResourceButton.IsEnabled = false;
-            EditResourceButton.IsEnabled = false;
+            FailMessage.Visibility = Visibility.Visible;
+            SucceedMessage.Visibility = Visibility.Hidden;
+            //CreateResourceButton.IsEnabled = false;
+            //EditResourceButton.IsEnabled = false;
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
@@ -262,7 +272,7 @@ namespace arches_arcgispro_addin
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
                 return;
             }
-            
+
             DockPane pane = FrameworkApplication.DockPaneManager.Find("arches_arcgispro_addin_CreateResource");
             if (pane == null)
                 return;
@@ -276,7 +286,7 @@ namespace arches_arcgispro_addin
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
                 return;
             }
-            
+
             DockPane pane = FrameworkApplication.DockPaneManager.Find("arches_arcgispro_addin_SaveResource");
             if (pane == null)
                 return;
