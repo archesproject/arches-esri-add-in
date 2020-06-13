@@ -125,20 +125,16 @@ namespace arches_arcgispro_addin
             get { return _attributeValues; }
         }
 
-        public void ClearAttribute()
+        public void ClearAttributeValues()
         {
+            lock (_lockCollections) ;
+            _attributeValues.Clear();
             StaticVariables.archesNodeid = "";
             StaticVariables.archesTileid = "";
             StaticVariables.archesResourceid = "No Resource is Selected";
             ResourceIdEdited = StaticVariables.archesResourceid;
             Registered = false;
             Message = "";
-        }
-
-        public void ClearAttributeValues()
-        {
-            lock (_lockCollections) ;
-            _attributeValues.Clear();
         }
 
         public string ResourceIdEdited
@@ -233,7 +229,6 @@ namespace arches_arcgispro_addin
                         }
                         catch (Exception ex)
                         {
-                            ClearAttribute();
                             ClearAttributeValues();
                             Message = $"This feature may not exist at \n{StaticVariables.archesInstanceURL}\n{ex.Message}";
                             return;
@@ -244,7 +239,6 @@ namespace arches_arcgispro_addin
                             string result = await CheckInstancePermission(StaticVariables.archesResourceid);
                             if (result == "false")
                             {
-                                ClearAttribute();
                                 ClearAttributeValues();
                                 Message = "You do not have a permission to edit this Resource Instance";
                                 Registered = false;
@@ -263,14 +257,12 @@ namespace arches_arcgispro_addin
                     }
                     else
                     {
-                        ClearAttribute();
                         ClearAttributeValues();
                         Message = "Make Sure to Select ONE valid geometry";
                     }
                 }
                 else
                 {
-                    ClearAttribute();
                     ClearAttributeValues();
                     Message = "Make Sure to Select from ONE Arches Layer";
                 }
@@ -307,7 +299,6 @@ namespace arches_arcgispro_addin
                 {
                     try
                     {
-                        ClearAttribute();
                         ClearAttributeValues();
                         RegisteredVisibility = "Hidden";
                         UnregisteredVisibility = "Visible";
