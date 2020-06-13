@@ -178,16 +178,8 @@ namespace arches_arcgispro_addin
                 }
 
                 string PERMS = "change_resourceinstance";
-                /*var serializer = new JavaScriptSerializer();
-                var stringContent = new FormUrlEncodedContent(new[]
-                    {
-                        new KeyValuePair<string, string>("perms", PERMS),
-                        new KeyValuePair<string, string>("resourceinstanceid", resourceInstanceID),
-                    });
-                */
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", StaticVariables.archesToken["access_token"]);
-                //var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.myInstanceURL, "api/instance_permissions/"), stringContent);
                 var response = await client.GetAsync(System.IO.Path.Combine(StaticVariables.archesInstanceURL, string.Format("api/instance_permissions/?perms={0}&resourceinstanceid={1}", PERMS, resourceInstanceID)));
 
                 response.EnsureSuccessStatusCode();
@@ -243,7 +235,8 @@ namespace arches_arcgispro_addin
                         {
                             ClearAttribute();
                             ClearAttributeValues();
-                            Message = $"This feature may not exist on \n{StaticVariables.archesInstanceURL}\n{ex.Message}";
+                            Message = $"This feature may not exist at \n{StaticVariables.archesInstanceURL}\n{ex.Message}";
+                            return;
                         }
 
                         try
