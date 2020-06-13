@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 using System.Windows.Data;
 using System.Windows.Input;
 using ArcGIS.Core.CIM;
@@ -37,6 +40,8 @@ namespace arches_arcgispro_addin
     internal class SaveResourceViewModel : DockPane
     {
         private const string _dockPaneID = "arches_arcgispro_addin_SaveResource";
+
+        static readonly HttpClient client = new HttpClient();
 
         private string _resourceIdEdited;
         private ICommand _buttonClick;
@@ -120,20 +125,16 @@ namespace arches_arcgispro_addin
             get { return _attributeValues; }
         }
 
-        public void ClearAttribute()
+        public void ClearAttributeValues()
         {
+            lock (_lockCollections) ;
+            _attributeValues.Clear();
             StaticVariables.archesNodeid = "";
             StaticVariables.archesTileid = "";
             StaticVariables.archesResourceid = "No Resource is Selected";
             ResourceIdEdited = StaticVariables.archesResourceid;
             Registered = false;
             Message = "";
-        }
-
-        public void ClearAttributeValues()
-        {
-            lock (_lockCollections) ;
-            _attributeValues.Clear();
         }
 
         public string ResourceIdEdited
@@ -162,9 +163,46 @@ namespace arches_arcgispro_addin
             pane.Activate();
         }
 
+        private async Task<string> CheckInstancePermission(string resourceInstanceID)
+        {
+            string result;
+            try
+            {
+                if ((DateTime.Now - StaticVariables.archesToken["timestamp"]).TotalSeconds > (StaticVariables.archesToken["expires_in"] - 300))
+                {
+                    StaticVariables.archesToken = await MainDockpaneView.RefreshToken(StaticVariables.myClientid);
+                }
+
+                string PERMS = "change_resourceinstance";
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", StaticVariables.archesToken["access_token"]);
+                var response = await client.GetAsync(System.IO.Path.Combine(StaticVariables.archesInstanceURL, string.Format("api/instance_permissions/?perms={0}&resourceinstanceid={1}", PERMS, resourceInstanceID)));
+
+                response.EnsureSuccessStatusCode();
+                string responseBody = await response.Content.ReadAsStringAsync();
+                result = responseBody;
+            }
+            catch (HttpRequestException ex)
+            {
+                throw new System.ArgumentException(ex.Message, ex);
+            }
+            return result;
+        }
+
         private async void GetAttribute()
         {
-            await QueuedTask.Run(() =>
+            if (StaticVariables.archesInstanceURL == "" | StaticVariables.archesInstanceURL == null)
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Please, Log in to Arches Server...");
+
+                DockPane pane = FrameworkApplication.DockPaneManager.Find("arches_arcgispro_addin_MainDockpane");
+                if (pane == null)
+                    return;
+                pane.Activate();
+                return;
+            }
+
+            await QueuedTask.Run(async () =>
             {
                 var selectedFeatures = MapView.Active.Map.GetSelection();
                 if (selectedFeatures.Count == 1)
@@ -188,28 +226,43 @@ namespace arches_arcgispro_addin
                             StaticVariables.archesTileid = archesInspector["tileid"].ToString();
                             StaticVariables.archesNodeid = archesInspector["nodeid"].ToString();
                             ResourceIdEdited = StaticVariables.archesResourceid;
-                            Registered = true;
-                            RegisteredVisibility = "Visible";
-                            UnregisteredVisibility = "Hidden";
-                            MessageBoxVisibility = "Hidden";
                         }
                         catch (Exception ex)
                         {
-                            ClearAttribute();
                             ClearAttributeValues();
-                            Message = $"This feature may not exist on \n{StaticVariables.archesInstanceURL}\n{ex.Message}";
+                            Message = $"This feature may not exist at \n{StaticVariables.archesInstanceURL}\n{ex.Message}";
+                            return;
                         }
+
+                        try
+                        {
+                            string result = await CheckInstancePermission(StaticVariables.archesResourceid);
+                            if (result == "false")
+                            {
+                                ClearAttributeValues();
+                                Message = "You do not have a permission to edit this Resource Instance";
+                                Registered = false;
+                                MessageBoxVisibility = "Visible";
+                                return;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Message = $"Connection Failed \n{ex.Message}";
+                        }
+                        Registered = true;
+                        RegisteredVisibility = "Visible";
+                        UnregisteredVisibility = "Hidden";
+                        MessageBoxVisibility = "Hidden";
                     }
                     else
                     {
-                        ClearAttribute();
                         ClearAttributeValues();
                         Message = "Make Sure to Select ONE valid geometry";
                     }
                 }
                 else
                 {
-                    ClearAttribute();
                     ClearAttributeValues();
                     Message = "Make Sure to Select from ONE Arches Layer";
                 }
@@ -246,7 +299,6 @@ namespace arches_arcgispro_addin
                 {
                     try
                     {
-                        ClearAttribute();
                         ClearAttributeValues();
                         RegisteredVisibility = "Hidden";
                         UnregisteredVisibility = "Visible";
