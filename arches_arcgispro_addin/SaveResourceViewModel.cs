@@ -163,9 +163,10 @@ namespace arches_arcgispro_addin
             pane.Activate();
         }
 
-        private async Task<string> CheckInstancePermission(string resourceInstanceID)
+        private async Task<Dictionary<String, Boolean>> CheckInstancePermission(string resourceInstanceID)
         {
-            string result;
+            Dictionary<String, Boolean> result = new Dictionary<String, Boolean>();
+
             try
             {
                 if ((DateTime.Now - StaticVariables.archesToken["timestamp"]).TotalSeconds > (StaticVariables.archesToken["expires_in"] - 300))
@@ -173,14 +174,18 @@ namespace arches_arcgispro_addin
                     StaticVariables.archesToken = await MainDockpaneView.RefreshToken(StaticVariables.myClientid);
                 }
 
-                string PERMS = "change_resourceinstance";
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", StaticVariables.archesToken["access_token"]);
-                var response = await client.GetAsync(System.IO.Path.Combine(StaticVariables.archesInstanceURL, string.Format("api/instance_permissions/?perms={0}&resourceinstanceid={1}", PERMS, resourceInstanceID)));
+                var response = await client.GetAsync(System.IO.Path.Combine(StaticVariables.archesInstanceURL, string.Format("api/instance_permissions/?resourceinstanceid={0}", resourceInstanceID)));
 
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                result = responseBody;
+                var serializer = new JavaScriptSerializer();
+                dynamic results = serializer.Deserialize<dynamic>(@responseBody);
+
+                result.Add("read", results["read"]);
+                result.Add("edit", results["edit"]);
+                result.Add("delete", results["delete"]);
             }
             catch (HttpRequestException ex)
             {
@@ -236,8 +241,8 @@ namespace arches_arcgispro_addin
 
                         try
                         {
-                            string result = await CheckInstancePermission(StaticVariables.archesResourceid);
-                            if (result == "false")
+                            var result = await CheckInstancePermission(StaticVariables.archesResourceid);
+                            if (!result["edit"])
                             {
                                 ClearAttributeValues();
                                 Message = "You do not have a permission to edit this Resource Instance";
@@ -248,7 +253,9 @@ namespace arches_arcgispro_addin
                         }
                         catch (Exception ex)
                         {
+                            ClearAttributeValues();
                             Message = $"Connection Failed \n{ex.Message}";
+                            return;
                         }
                         Registered = true;
                         RegisteredVisibility = "Visible";
