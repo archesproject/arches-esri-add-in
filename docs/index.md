@@ -3,12 +3,12 @@
 ### Abstract
   The Arches Add-In for ArcGIS Pro allows Arches users to access and manage their Arches data from within ArcGIS Pro. The Add-In leverages Koop geoservices (https://github.com/archesproject/arches-koop) to display existing Arches data within ArcGIS Pro. The Add-In allows user to perform two basic operations: edit existing geometry data and create new geometry data.
   
-### [Prerequisites](#Prerequisites)
-### [Installing the Add-In](#Installing-the-Add-In)
-### [Setting Up Koop services](#Setting-Up-Koop-services)
-### [Logging Into Arches](#Logging-Into-Arches)
-### [Editing an Existing Resource](#Editing-an-Existing-Resource)
-### [Creating a New Resource](#Creating-a-New-Resource)
+### [Prerequisites](#prerequisites)
+### [Installing the Add-In](#installing-the-add-in)
+### [Setting Up Koop services](#setting-up-koop-services)
+### [Logging Into Arches](#logging-into-arches)
+### [Editing an Existing Resource](#editing-an-existing-resource)
+### [Creating a New Resource](#creating-a-new-resource)
   
   
 ### Prerequisites
