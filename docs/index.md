@@ -7,7 +7,7 @@
 ### [Installing the Add-In](#Installing-the-Add-In)
 ### [Setting Up Koop services](#Setting-Up-Koop-services)
 ### [Logging Into Arches](#Logging-Into-Arches)
-### [Editing an Existing Resource](#Editing-an-Existing-Resource)
+### [Editing an Existing Resource](#Editing an Existing Resource)
 ### [Creating a New Resource](#Creating-a-New-Resource)
   
   
