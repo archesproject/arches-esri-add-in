@@ -12,9 +12,9 @@
   
   
 ### Prerequisites
+  - ArcGIS Pro (version?)
   - Arches v5
   - A Koop service to display geometry data from your Arches instance
-  - ArcGIS Pro (version?)
   
 ### Installing the Add-In
   To install the Arches download it to the same computer you have ArcGIS Pro installed on. Double click the Add-In to automatically install it to ArcGIS Pro.
