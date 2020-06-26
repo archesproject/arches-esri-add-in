@@ -12,7 +12,7 @@
   
   
 ### Prerequisites
-  - ArcGIS Pro (version?)
+  - ArcGIS Pro (v2.5)
   - Arches v5
   - A Koop service to display geometry data from your Arches instance
   
