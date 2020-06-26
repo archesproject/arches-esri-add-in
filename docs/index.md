@@ -33,8 +33,8 @@
 ### Editing an Existing Resource
   The following steps outline how to edit an existing Arches geometry with the Arches-Esri Add-In
    1. Add your koop service layer(s) to the map, if you have not already.
-      1a. From the 'ArcGIS Pro Tools' section of the 'Arches Project' dock pane tab, select 'Add Data' -> 'Data from Path'
-      1b. On the next screen add the path of the Koop layer you would like to add. To add multiple layers you will have to repeat steps for each layer.
+      1. From the 'ArcGIS Pro Tools' section of the 'Arches Project' dock pane tab, select 'Add Data' -> 'Data from Path'
+      2. On the next screen add the path of the Koop layer you would like to add. To add multiple layers you will have to repeat steps for each layer.
    2. Click 'Edit Resource' either in the 'Arches Project' tab in the dockpane or at the bottom of the Arches Project Add-In panel.
    3. Next choose 'Select' from the 'ArcGIS Pro Tools' section of the 'Arches Project' dock pane tab.
    4. Select the an Arches resource instance from one of the Koop layers you added before. Make sure to select one and just one instance.
