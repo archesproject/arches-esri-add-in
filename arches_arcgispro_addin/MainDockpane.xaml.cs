@@ -225,7 +225,7 @@ namespace arches_arcgispro_addin
         }
 
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private async void MainConnect_Button(object sender, RoutedEventArgs e)
         {
             try {
                 StaticVariables.archesInstanceURL = InstanceURL.Text;
@@ -252,7 +252,7 @@ namespace arches_arcgispro_addin
             InitializeComponent();
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void MainCancel_Button(object sender, RoutedEventArgs e)
         {
             InstanceURL.Text = "";
             Username.Text = "";
@@ -265,7 +265,7 @@ namespace arches_arcgispro_addin
             //EditResourceButton.IsEnabled = false;
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private void MainOpenCreate_Button(object sender, RoutedEventArgs e)
         {
             if (StaticVariables.archesInstanceURL == "" | StaticVariables.archesInstanceURL == null)
             {
@@ -279,7 +279,7 @@ namespace arches_arcgispro_addin
             pane.Activate();
         }
 
-        private void Button_Click_3(object sender, RoutedEventArgs e)
+        private void MainOpenEdit_Button(object sender, RoutedEventArgs e)
         {
             if (StaticVariables.archesInstanceURL == "" | StaticVariables.archesInstanceURL == null)
             {

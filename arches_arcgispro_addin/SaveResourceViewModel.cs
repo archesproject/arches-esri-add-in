@@ -44,8 +44,8 @@ namespace arches_arcgispro_addin
         static readonly HttpClient client = new HttpClient();
 
         private string _resourceIdEdited;
-        private ICommand _buttonClick;
-        private ICommand _buttonClick1;
+        private ICommand _editRegister_Button;
+        private ICommand _editcancel_Button;
         private static readonly object _lockCollections = new object();
         public static ObservableCollection<AttributeValue> _attributeValues = new ObservableCollection<AttributeValue>();
 
@@ -275,11 +275,11 @@ namespace arches_arcgispro_addin
                 }
             });
         }
-        public ICommand ButtonClick
+        public ICommand EditRegister_Button
         {
             get
             {
-                return _buttonClick ?? (_buttonClick = new RelayCommand(() =>
+                return _editRegister_Button ?? (_editRegister_Button = new RelayCommand(() =>
                 {
                     try
                     {
@@ -298,11 +298,11 @@ namespace arches_arcgispro_addin
             }
         }
 
-        public ICommand ButtonClick1
+        public ICommand EditCancel_Button
         {
             get
             {
-                return _buttonClick1 ?? (_buttonClick1 = new RelayCommand(() =>
+                return _editcancel_Button ?? (_editcancel_Button = new RelayCommand(() =>
                 {
                     try
                     {
