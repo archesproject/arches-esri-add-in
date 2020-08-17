@@ -1,9 +1,9 @@
 ﻿<ArcGIS defaultAssembly="arches_arcgispro_addin.dll" defaultNamespace="arches_arcgispro_addin" xmlns="http://schemas.esri.com/DADF/Registry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
-  <AddInInfo id="{ef079a8b-4d20-43cd-92c7-e76e4280243a}" version="1.0" desktopVersion="2.5.22081">
+  <AddInInfo id="{ef079a8b-4d20-43cd-92c7-e76e4280243a}" version="0.5" desktopVersion="2.5.22081">
     <Name>arches_arcgispro_addin</Name>
-    <Description>arches_arcgispro_addin description</Description>
+    <Description>An ESRI add-in that will interface with a Koop.js service backed by an Arches data store</Description>
     <Image>Images\AddinDesktop32.png</Image>
-    <Author>njk</Author>
+    <Author>Farallon Geographics</Author>
     <Company>Acme</Company>
     <Date>3/17/2020 12:45:59 PM, 2020</Date>
     <Subject>Framework</Subject>
@@ -43,7 +43,7 @@
           <state id="token_state" />
         </insertCondition>
       </conditions>
-      
+
       <controls>
         <button id="arches_arcgispro_addin_MainDockpane_ShowButton" caption="Arches Connection" className="MainDockpane_ShowButton" loadOnClick="true" largeImage="Images\ArchesIcon32.png" smallImage="Images\ArchesIcon16.png">
           <tooltip heading="Arches Instance">Connect to Arches Instance<disabledText /></tooltip>
