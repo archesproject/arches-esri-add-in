@@ -69,7 +69,7 @@ namespace arches_arcgispro_addin
             return nodeidResponse;
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private async void GetNodeList_Button(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -97,7 +97,7 @@ namespace arches_arcgispro_addin
             }
         }
 
-        private async void Button_Click_1(object sender, RoutedEventArgs e)
+        private async void CreateUpload_Button(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -154,7 +154,7 @@ namespace arches_arcgispro_addin
             }
         }
 
-        private void Button_Click_3(object sender, RoutedEventArgs e)
+        private void CreateClear_Button(object sender, RoutedEventArgs e)
         {
             CreateResourceViewModel.ClearResourceIdsCreated();
             OpenChromiumButton.IsEnabled = false;

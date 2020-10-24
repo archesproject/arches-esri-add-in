@@ -140,13 +140,13 @@ namespace arches_arcgispro_addin
                 }
             }
         }
-
-        private ICommand _buttonClick2;
-        public ICommand ButtonClick2
+        
+        private ICommand _createOpenChromiumButton;
+        public ICommand CreateOpenChromiumButton
         {
             get
             {
-                return _buttonClick2 ?? (_buttonClick2 = new RelayCommand(() =>
+                return _createOpenChromiumButton ?? (_createOpenChromiumButton = new RelayCommand(() =>
                 {
                     if (StaticVariables.archesInstanceURL == "" | StaticVariables.archesInstanceURL == null)
                     {

@@ -130,7 +130,7 @@ namespace arches_arcgispro_addin
             });
         }
 
-        private async void Button_Click_2(object sender, RoutedEventArgs e)
+        private async void EditUpload_Button(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -180,7 +180,7 @@ namespace arches_arcgispro_addin
             }
         }
 
-        private void Button_Click_3(object sender, RoutedEventArgs e)
+        private void EditOpenChromium_Button(object sender, RoutedEventArgs e)
         {
             if (StaticVariables.archesInstanceURL == "" | StaticVariables.archesInstanceURL == null)
             {
@@ -201,12 +201,12 @@ namespace arches_arcgispro_addin
             UI.ChromePaneViewModel.OpenChromePane(editorAddress);
         }
 
-        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        private void ReplaceCheckBox_Checked(object sender, RoutedEventArgs e)
         {
             GeometryBeReplaced = true;
         }
 
-        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        private void ReplaceCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             GeometryBeReplaced = false;
         }

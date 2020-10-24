@@ -32,14 +32,14 @@
         </-->
         <TextBlock HorizontalAlignment="Left" Margin="20,20,0,0" Grid.Row="1" VerticalAlignment="Top" TextWrapping="WrapWithOverflow"
             Text="Select a Feature to edit"/>
-        <Button Content="Register Feature with Arches" HorizontalAlignment="Left" Margin="20,40,0,0" Grid.Row="1" Visibility="{Binding UnregisteredVisibility}" VerticalAlignment="Top" Height="25" Width="300" Command="{Binding ButtonClick}" />
+        <Button Content="Register Feature with Arches" HorizontalAlignment="Left" Margin="20,40,0,0" Grid.Row="1" Visibility="{Binding UnregisteredVisibility}" VerticalAlignment="Top" Height="25" Width="300" Command="{Binding EditRegister_Button}" />
 
         <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="80" Margin="20,90,0,0" Visibility="{Binding MessageBoxVisibility}" Grid.RowSpan="2" Stroke="DarkGray" VerticalAlignment="Top" Width="300"/>
         <TextBlock HorizontalAlignment="Left" Margin="30,105,0,0" Grid.Row="1" Text="{Binding Message}" Visibility="{Binding UnregisteredVisibility}" TextWrapping="Wrap" VerticalAlignment="Top" Width="280"/>
 
-        <Button Content="Upload" HorizontalAlignment="Left" Margin="20,40,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Height="25" Width="145" IsEnabled="{Binding Registered}" Click="Button_Click_2"/>
-        <Button Content="Cancel" HorizontalAlignment="Left" Margin="175,40,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Height="25" Width="145" IsEnabled="{Binding Registered}" Command="{Binding ButtonClick1}" />
-        <CheckBox Content="Replace exsiting geometry?" HorizontalAlignment="Left" Margin="20,80,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked" />
+        <Button Content="Upload" HorizontalAlignment="Left" Margin="20,40,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Height="25" Width="145" IsEnabled="{Binding Registered}" Click="EditUpload_Button"/>
+        <Button Content="Cancel" HorizontalAlignment="Left" Margin="175,40,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Height="25" Width="145" IsEnabled="{Binding Registered}" Command="{Binding EditCancel_Button}" />
+        <CheckBox Content="Replace exsiting geometry?" HorizontalAlignment="Left" Margin="20,80,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Unchecked="ReplaceCheckBox_Unchecked" Checked="ReplaceCheckBox_Checked" />
 
         <TextBlock HorizontalAlignment="Left" Margin="20,140,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Width="100" TextWrapping="WrapWithOverflow"
                    Text="Resource Model: " />
@@ -55,6 +55,6 @@
               ItemsSource="{Binding AttributeValues}" Style="{DynamicResource Esri_DataGrid}" 
               HeadersVisibility="None" AutoGenerateColumns="True" IsReadOnly="True" SelectionMode="Single" RowHeaderWidth="0"/>
 
-        <Button Content="Edit using Arches Resource Editor" HorizontalAlignment="Left" Margin="20,0,0,20" Grid.Row="1" VerticalAlignment="Bottom" Height="25" Width="300" IsEnabled="{Binding Registered}" Click="Button_Click_3"/>
+        <Button Content="Edit using Arches Resource Editor" HorizontalAlignment="Left" Margin="20,0,0,20" Grid.Row="1" VerticalAlignment="Bottom" Height="25" Width="300" IsEnabled="{Binding Registered}" Click="EditOpenChromium_Button"/>
     </Grid>
 </UserControl>
