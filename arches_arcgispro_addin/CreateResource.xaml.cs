@@ -36,12 +36,12 @@ namespace arches_arcgispro_addin
         {
             InitializeComponent();
         }
-        static readonly HttpClient client = new HttpClient();
         public static async Task<List<GeometryNode>> GetGeometryNode()
         {
             List<GeometryNode> nodeidResponse = new List<GeometryNode>();
             try
             {
+                HttpClient client = await ArchesHttpClient.GetHttpClient();
                 if ((DateTime.Now - StaticVariables.archesToken["timestamp"]).TotalSeconds > (StaticVariables.archesToken["expires_in"] - 300)) 
                 {
                     StaticVariables.archesToken = await MainDockpaneView.RefreshToken(StaticVariables.myClientid);

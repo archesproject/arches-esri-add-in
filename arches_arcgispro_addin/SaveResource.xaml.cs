@@ -30,7 +30,6 @@ namespace arches_arcgispro_addin
     /// </summary>
     public partial class SaveResourceView : UserControl
     {
-        static readonly HttpClient client = new HttpClient();
         public static Boolean GeometryBeReplaced;
 
         public SaveResourceView()
@@ -88,6 +87,7 @@ namespace arches_arcgispro_addin
             Dictionary<String, String> result = new Dictionary<String, String>();
             try
             {
+                HttpClient client = await ArchesHttpClient.GetHttpClient();
                 if ((DateTime.Now - StaticVariables.archesToken["timestamp"]).TotalSeconds > (StaticVariables.archesToken["expires_in"] - 300))
                 {
                     StaticVariables.archesToken = await MainDockpaneView.RefreshToken(StaticVariables.myClientid);

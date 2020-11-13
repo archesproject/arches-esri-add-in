@@ -41,7 +41,6 @@ namespace arches_arcgispro_addin
     {
         private const string _dockPaneID = "arches_arcgispro_addin_SaveResource";
 
-        static readonly HttpClient client = new HttpClient();
 
         private string _resourceIdEdited;
         private ICommand _editRegister_Button;
@@ -169,6 +168,7 @@ namespace arches_arcgispro_addin
 
             try
             {
+                HttpClient client = await ArchesHttpClient.GetHttpClient();
                 if ((DateTime.Now - StaticVariables.archesToken["timestamp"]).TotalSeconds > (StaticVariables.archesToken["expires_in"] - 300))
                 {
                     StaticVariables.archesToken = await MainDockpaneView.RefreshToken(StaticVariables.myClientid);
