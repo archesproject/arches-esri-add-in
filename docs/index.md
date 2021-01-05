@@ -46,7 +46,7 @@
 
 ### Creating a New Resource
   1. To create a new resource click 'Create Resource' in the 'Arches Project' dockpane or click the 'Create Resource' tab at the bottom of the Arches Add-In.
-  2. In the 'Create Resource' tab select resource model and node you would like to create geometry for from the 'Select a Resource' dropdown. Note: If you do not see any resource models listed, check the Arches server or your user permissions.
+  2. In the 'Create Resource' tab select resource model and node you would like to create geometry for from the 'Select a Resource Type' dropdown. Note: If you do not see any resource models listed, check the Arches server or your user permissions.
   3. Select a geometry/geometries from the map that you would like to assign to the new resource.
   4. Click 'Upload Geometry to Arches' to create the new resource geometry in Arches.
 
