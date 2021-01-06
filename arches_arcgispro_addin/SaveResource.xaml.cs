@@ -22,6 +22,7 @@ using System.Windows.Shapes;
 using ArcGIS.Desktop.Framework.Contracts;
 using System.Net.Http.Headers;
 using ArcGIS.Desktop.Framework;
+using System.Security.Cryptography.X509Certificates;
 
 namespace arches_arcgispro_addin
 {
@@ -47,8 +48,7 @@ namespace arches_arcgispro_addin
             outGeometry = GeometryEngine.Instance.ProjectEx(inGeometry, transformer);
             return outGeometry;
         }
-
-        public static async Task<string> GetGeometryString()
+        public static async Task<List<string>> GetGeometryString()
         {
             ArcGIS.Core.Geometry.Geometry selectedGeometry;
             string selectedGeometryString;
@@ -76,7 +76,7 @@ namespace arches_arcgispro_addin
                     }
                 }
                 selectedGeometryString = String.Join(",", selectedGeometryCollection);
-                return selectedGeometryString;
+                return selectedGeometryCollection;
 
             });
 
@@ -130,6 +130,30 @@ namespace arches_arcgispro_addin
             });
         }
 
+        public static Dictionary<string, int> GetGeometryType(List<string> geometryCollection)
+        {
+            Dictionary<string, int> geometryType = new Dictionary<string, int>();
+            geometryType.Add("point", 0);
+            geometryType.Add("line", 0);
+            geometryType.Add("polygon", 0);
+
+            foreach (var archesGeometry in geometryCollection)
+            {
+                if (archesGeometry.Contains("paths"))
+                {
+                    geometryType["line"] += 1;
+                }
+                else if (archesGeometry.Contains("rings"))
+                {
+                    geometryType["polygon"] += 1;
+                }
+                else
+                {
+                    geometryType["point"] += 1;
+                }
+            }
+            return geometryType;
+        }
         private async void EditUpload_Button(object sender, RoutedEventArgs e)
         {
             try
@@ -155,13 +179,20 @@ namespace arches_arcgispro_addin
                     return;
                 }
 
-                string archesGeometryString = await GetGeometryString();
+                List<string> archesGeometryCollection = await GetGeometryString();
+                string archesGeometryString = String.Join(",", archesGeometryCollection);
                 string geometryFormat = "esrijson";
                 string submitOperation = (GeometryBeReplaced) ? "replace" : "append";
 
+                Dictionary<string, int> archesGeometryType = GetGeometryType(archesGeometryCollection);
+
                 MessageBoxResult messageBoxResult = ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
-                        $"Are you sure you want to {submitOperation.ToUpper()}?\n\n{archesGeometryString}",
-                        "Submit to Arches", MessageBoxButton.OKCancel, MessageBoxImage.Question);
+                    $"Are you sure you want to {submitOperation.ToUpper()}?\n\n" +
+                    $"Total {archesGeometryCollection.Count} geometries will be submitted\n" +
+                    $"{archesGeometryType["point"]} point(s)\n" +
+                    $"{archesGeometryType["line"]} line(s)\n" +
+                    $"{archesGeometryType["polygon"]} polygon(s)",
+                    "Submit to Arches", MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
                 if (messageBoxResult.ToString() == "OK") 
                 {
