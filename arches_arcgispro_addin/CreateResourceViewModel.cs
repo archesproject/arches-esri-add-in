@@ -63,8 +63,46 @@ namespace arches_arcgispro_addin
             }
         }
 
+        private bool _featureSelected = false;
+        public bool FeatureSelected
+        {
+            get { return _featureSelected; }
+            set
+            {
+                SetProperty(ref _featureSelected, value, () => FeatureSelected);
+            }
+        }
+
+        private bool _canUpload = false;
+        public bool CanUpload
+        {
+            get { return _canUpload; }
+            set
+            {
+                SetProperty(ref _canUpload, value, () => CanUpload);
+            }
+        }
+
+        private void OnMapSelectionChanged(MapSelectionChangedEventArgs args)
+        {
+            var selection = args.Selection;
+            if (selection.Count() == 0)
+            {
+                FeatureSelected = false;
+                CanUpload = false;
+            }
+            else
+            {
+                FeatureSelected = true;
+                if (NodeSelected) {
+                    CanUpload = true;
+                }
+            }
+        }
+
         protected CreateResourceViewModel()
         {
+            MapSelectionChangedEvent.Subscribe(OnMapSelectionChanged);
             BindingOperations.EnableCollectionSynchronization(_resourceIdsCreated, _lockCollections);
         }
 
@@ -111,7 +149,7 @@ namespace arches_arcgispro_addin
             }
         }
 
-    public ObservableCollection<GeometryNode> GeometryNodes
+        public ObservableCollection<GeometryNode> GeometryNodes
         {
             set
             {
@@ -121,6 +159,8 @@ namespace arches_arcgispro_addin
             get { return _geometryNodes; }
 
         }
+
+
 
         private GeometryNode _selectedGeometryNode = new GeometryNode("");
         public GeometryNode SelectedGeometryNode
@@ -132,11 +172,16 @@ namespace arches_arcgispro_addin
                 if (_selectedGeometryNode == null)
                 {
                     NodeSelected = false;
+                    CanUpload = false;
                 }
                 else
                 {
                     StaticVariables.archesNodeid = _selectedGeometryNode.Id;
                     NodeSelected = true;
+                    if (FeatureSelected)
+                    {
+                        CanUpload = true;
+                    }
                 }
             }
         }
