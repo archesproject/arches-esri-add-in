@@ -33,7 +33,7 @@
 
         <Button Content="Get Geometry Node Info" HorizontalAlignment="Left" Margin="20,20,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="300" Click="GetNodeList_Button" /-->
 
-        <TextBlock HorizontalAlignment="Left" Margin="20,20,0,0" Grid.Row="1" Text="Select a Resource" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Left" Margin="20,20,0,0" Grid.Row="1" Text="Select a Resource Type" VerticalAlignment="Top"/>
 
         <ComboBox HorizontalAlignment="Left" Margin="20,40,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="300"
                 ItemsSource="{Binding GeometryNodes}" DisplayMemberPath="Name"
