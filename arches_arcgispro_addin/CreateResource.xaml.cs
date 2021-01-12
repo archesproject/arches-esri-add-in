@@ -125,12 +125,17 @@ namespace arches_arcgispro_addin
                 {
                     StaticVariables.archesResourceid = "";
                 }
-                
-                string archesGeometryString = await SaveResourceView.GetGeometryString();
+
+                List<string> archesGeometryCollection = await SaveResourceView.GetGeometryString();
+                string archesGeometryString = String.Join(",", archesGeometryCollection);
+                Dictionary<string, int> archesGeometryType = SaveResourceView.GetGeometryType(archesGeometryCollection);
 
                 MessageBoxResult messageBoxResult = ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
-                    $"Are you sure you want to submit the selected geometry to create a new resource instance?" +
-                    $"\n\n{archesGeometryString}",
+                    $"Are you sure you want to submit the selected geometry to create a new resource instance?\n\n" +
+                    $"Total {archesGeometryCollection.Count} geometries will be submitted\n" +
+                    $"{archesGeometryType["point"]} point(s)\n" +
+                    $"{archesGeometryType["line"]} line(s)\n" +
+                    $"{archesGeometryType["polygon"]} polygon(s)",
                     "Submit to Arches", MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
                 if (messageBoxResult.ToString() == "OK")
