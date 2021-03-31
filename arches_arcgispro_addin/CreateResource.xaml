@@ -33,7 +33,7 @@
 
         <Button Content="Get Geometry Node Info" HorizontalAlignment="Left" Margin="20,20,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="300" Click="GetNodeList_Button" /-->
 
-        <TextBlock HorizontalAlignment="Left" Margin="20,20,0,0" Grid.Row="1" Text="Select a Resource" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Left" Margin="20,20,0,0" Grid.Row="1" Text="Select a Resource Type" VerticalAlignment="Top"/>
 
         <ComboBox HorizontalAlignment="Left" Margin="20,40,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="300"
                 ItemsSource="{Binding GeometryNodes}" DisplayMemberPath="Name"
@@ -42,7 +42,7 @@
         <TextBlock HorizontalAlignment="Left" Margin="20,100,0,0" Grid.Row="1" VerticalAlignment="Top" TextWrapping="WrapWithOverflow" Width="300"
             Text="Select a feature(s) from the map; upload to Arches to create a new Resource Instance" />
         <Button Name="SubmitButton" Content="Upload Geometry to Arches" HorizontalAlignment="Left" Margin="20,140,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="300"
-                IsEnabled="{Binding NodeSelected}" Click="CreateUpload_Button" />
+                IsEnabled="{Binding CanUpload}" Click="CreateUpload_Button" />
 
         <TextBlock HorizontalAlignment="Left" Margin="20,200,0,0" Grid.Row="1" VerticalAlignment="Top" Width="125" TextWrapping="WrapWithOverflow"
             Text="Uploaded Features:" />
