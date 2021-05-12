@@ -24,8 +24,60 @@ using ArcGIS.Core.Data.UtilityNetwork.Trace;
 namespace arches_arcgispro_addin
 {
     /// <summary>
-    /// Interaction logic for MainDockpaneView.xaml
+    /// HttpClient Singleton across the addin. Handles proxy detection
     /// </summary>
+    public static class ArchesHttpClient
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        private static HttpClient _client;
+        public static async Task<HttpClient> GetHttpClient()
+        {
+            if (_client == null)
+            {
+                _client = new HttpClient();
+            }
+
+            try
+            {
+                //test for proxy
+                HttpResponseMessage response = await _client.GetAsync(StaticVariables.archesInstanceURL);
+                response.EnsureSuccessStatusCode();
+            }
+            catch(Exception ex)
+            {
+                //annoyingly 407 triggers an exception rather than letting me check the reponse code.
+                if (ex.InnerException.Message.Contains("407"))
+                {
+                    try
+                    {
+                        var proxy = new HttpClientHandler
+                        {
+                            UseProxy = true,
+                            Proxy = null, // use system proxy
+                            DefaultProxyCredentials = CredentialCache.DefaultNetworkCredentials
+                        };
+
+                        //need to rebuild the static HttpClient using the handler
+                        _client = new HttpClient(proxy);
+                        HttpResponseMessage response = await _client.GetAsync(StaticVariables.archesInstanceURL);
+                        response.EnsureSuccessStatusCode();
+
+                    }
+                    catch (Exception innerEx)
+                    {
+                        throw new System.ArgumentException("Unable to connect to Arches instance", innerEx);
+                    }
+                }
+                else
+                {
+                    throw new System.ArgumentException("Unable to connect to Arches instance", ex);
+                }
+            }
+            return _client;
+        }
+    }
 
     public class GeometryNode
     {
@@ -62,15 +114,20 @@ namespace arches_arcgispro_addin
         public static ArcGIS.Core.Geometry.Geometry archesGeometry;
         public static List<GeometryNode> geometryNodes = new List<GeometryNode>();
     };
+
+    /// <summary>
+    /// Interaction logic for MainDockpaneView.xaml
+    /// </summary>
     public partial class MainDockpaneView : UserControl
     {
-        // HttpClient is intended to be instantiated once per application, rather than per-use. See Remarks.
-        static readonly HttpClient client = new HttpClient();
+
+     
 
         private async Task GetInstances()
         {
             try
             {
+                HttpClient client = await ArchesHttpClient.GetHttpClient();
                 HttpResponseMessage response = await client.GetAsync(System.IO.Path.Combine(StaticVariables.archesInstanceURL, "search/resources"));
 
                 response.EnsureSuccessStatusCode();
@@ -97,10 +154,12 @@ namespace arches_arcgispro_addin
 
         private async Task<string> GetClientId()
         {
+
             string clientid = "";
 
             try
             {
+                HttpClient client = await ArchesHttpClient.GetHttpClient();
                 var serializer = new JavaScriptSerializer();
                 var stringContent = new FormUrlEncodedContent(new[]
                     {
@@ -128,6 +187,7 @@ namespace arches_arcgispro_addin
 
             try
             {
+                HttpClient client = await ArchesHttpClient.GetHttpClient();
                 var serializer = new JavaScriptSerializer();
                 var stringContent = new FormUrlEncodedContent(new[]
                     {
@@ -163,6 +223,7 @@ namespace arches_arcgispro_addin
 
             try
             {
+                HttpClient client = await ArchesHttpClient.GetHttpClient();
                 var serializer = new JavaScriptSerializer();
                 var stringContent = new FormUrlEncodedContent(new[]
                     {
@@ -198,6 +259,7 @@ namespace arches_arcgispro_addin
 
             try
             {
+                HttpClient client = await ArchesHttpClient.GetHttpClient();
                 var serializer = new JavaScriptSerializer();
                 string header = "Bearer " + token;
                 try
