@@ -10,9 +10,9 @@ Arches-Koop
 ## How to install and use the Arches-Esri addin
 
 ### Download and install Arches-Esri add-in
-1. Select the branch that corresponds with the version of the plugin you would like to download (stable/1.0.x as of writing).
-2. Download the .esriAddinX file from arches_arcgispro_addin/dist folder
-3. Once downloaded, double click the add in to install or follow the instructions found here: https://pro.arcgis.com/en/pro-app/latest/get-started/manage-add-ins.htm
+1. Select the branch that corresponds with the version of the plugin you would like to install.
+2. Download the .esriAddinX file from `arches_arcgispro_addin/dist` folder
+3. Once downloaded, double click the add in to install or follow the instructions found [here](https://pro.arcgis.com/en/pro-app/latest/get-started/manage-add-ins.htm)
 4. Follow instructions to install and configure koop on your Arches server.
 
 ### Installing koop on your Arches server
