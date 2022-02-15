@@ -1,4 +1,5 @@
-﻿<ArcGIS defaultAssembly="arches_arcgispro_addin.dll" defaultNamespace="arches_arcgispro_addin" xmlns="http://schemas.esri.com/DADF/Registry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArcGIS defaultAssembly="arches_arcgispro_addin.dll" defaultNamespace="arches_arcgispro_addin" xmlns="http://schemas.esri.com/DADF/Registry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
   <AddInInfo id="{ef079a8b-4d20-43cd-92c7-e76e4280243a}" version="0.5" desktopVersion="2.5.22081">
     <Name>arches_arcgispro_addin</Name>
     <Description>An ESRI add-in that will interface with a Koop.js service backed by an Arches data store</Description>
@@ -37,22 +38,19 @@
           <button refID="arches_arcgispro_addin_UI_ChromePane_OpenButton" size="large" />
         </group>
       </groups>
-
       <conditions>
         <insertCondition id="token_condition" caption="token state">
           <state id="token_state" />
         </insertCondition>
       </conditions>
-
       <controls>
         <button id="arches_arcgispro_addin_MainDockpane_ShowButton" caption="Arches Connection" className="MainDockpane_ShowButton" loadOnClick="true" largeImage="Images\ArchesIcon32.png" smallImage="Images\ArchesIcon16.png">
           <tooltip heading="Arches Instance">Connect to Arches Instance<disabledText /></tooltip>
         </button>
-        <button id="arches_arcgispro_addin_SaveResource_ShowButton" caption="Edit Resources" className="SaveResource_ShowButton" loadOnClick="true" largeImage="Images\AddinDesktop32.png" smallImage="Images\AddinDesktop16.png" condition = "token_condition">
-          <tooltip heading="Edit Resources">Save Geometry to the selected reousrce instance<disabledText />
-          </tooltip>
+        <button id="arches_arcgispro_addin_SaveResource_ShowButton" caption="Edit Resources" className="SaveResource_ShowButton" loadOnClick="true" largeImage="Images\AddinDesktop32.png" smallImage="Images\AddinDesktop16.png" condition="token_condition">
+          <tooltip heading="Edit Resources">Save Geometry to the selected reousrce instance<disabledText /></tooltip>
         </button>
-        <button id="arches_arcgispro_addin_CreateResource_ShowButton" caption="Create Resources" className="CreateResource_ShowButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple32.png" condition = "token_condition">
+        <button id="arches_arcgispro_addin_CreateResource_ShowButton" caption="Create Resources" className="CreateResource_ShowButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple32.png" condition="token_condition">
           <tooltip heading="Create Resources">Create a New Resource<disabledText /></tooltip>
         </button>
         <button id="arches_arcgispro_addin_UI_ChromePane_OpenButton" caption="Open Chromium Pane" className="arches_arcgispro_addin.UI.ChromePane_OpenButton" loadOnClick="true" smallImage="Images\chromium16.png" largeImage="Images\chromium32.png">

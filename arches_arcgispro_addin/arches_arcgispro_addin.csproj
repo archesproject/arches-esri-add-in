@@ -63,15 +63,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CefSharp">
-      <HintPath>..\..\..\..\..\..\Program Files\ArcGIS\Pro\bin\cef\CefSharp.dll</HintPath>
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\cef\CefSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="CefSharp.Core">
-      <HintPath>..\..\..\..\..\..\Program Files\ArcGIS\Pro\bin\cef\CefSharp.Core.dll</HintPath>
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\cef\CefSharp.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="CefSharp.Wpf">
-      <HintPath>..\..\..\..\..\..\Program Files\ArcGIS\Pro\bin\cef\CefSharp.Wpf.dll</HintPath>
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\cef\CefSharp.Wpf.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
