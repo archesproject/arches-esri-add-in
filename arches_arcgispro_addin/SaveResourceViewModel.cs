@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
+//using System.Web.Script.Serialization;
 using System.Windows.Data;
 using System.Windows.Input;
 using ArcGIS.Core.CIM;
@@ -23,6 +23,7 @@ using ArcGIS.Desktop.Framework.Dialogs;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Mapping;
 using ArcGIS.Desktop.Mapping.Events;
+using Newtonsoft.Json;
 
 namespace arches_arcgispro_addin
 {
@@ -180,8 +181,8 @@ namespace arches_arcgispro_addin
 
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                var serializer = new JavaScriptSerializer();
-                dynamic results = serializer.Deserialize<dynamic>(@responseBody);
+                //var serializer = new JavaScriptSerializer();
+                dynamic results = JsonConvert.DeserializeObject<dynamic>(responseBody);  // serializer.Deserialize<dynamic>(@responseBody);
 
                 result.Add("read", results["read"]);
                 result.Add("edit", results["edit"]);
@@ -209,7 +210,7 @@ namespace arches_arcgispro_addin
 
             await QueuedTask.Run(async () =>
             {
-                var selectedFeatures = MapView.Active.Map.GetSelection();
+                var selectedFeatures = MapView.Active.Map.GetSelection().ToDictionary();
                 if (selectedFeatures.Count == 1)
                 {
                     var firstSelectionSet = selectedFeatures.First();

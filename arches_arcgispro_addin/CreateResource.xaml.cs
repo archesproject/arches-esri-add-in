@@ -13,7 +13,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
+//using System.Web.Script.Serialization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -23,6 +23,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Newtonsoft.Json;
 
 
 namespace arches_arcgispro_addin
@@ -53,8 +54,8 @@ namespace arches_arcgispro_addin
 
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                var serializer = new JavaScriptSerializer();
-                dynamic results = serializer.Deserialize<dynamic>(@responseBody);
+                //var serializer = new JavaScriptSerializer();
+                dynamic results = JsonConvert.DeserializeObject<dynamic>(responseBody);  // serializer.Deserialize<dynamic>(@responseBody);
 
                 foreach (dynamic element in results)
                 {

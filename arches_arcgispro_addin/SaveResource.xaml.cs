@@ -9,7 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
+//using System.Web.Script.Serialization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -23,6 +23,7 @@ using ArcGIS.Desktop.Framework.Contracts;
 using System.Net.Http.Headers;
 using ArcGIS.Desktop.Framework;
 using System.Security.Cryptography.X509Certificates;
+using Newtonsoft.Json;
 
 namespace arches_arcgispro_addin
 {
@@ -55,7 +56,7 @@ namespace arches_arcgispro_addin
 
             var args = await QueuedTask.Run(() =>
             {
-                var selectedFeatures = ArcGIS.Desktop.Mapping.MapView.Active.Map.GetSelection();
+                var selectedFeatures = ArcGIS.Desktop.Mapping.MapView.Active.Map.GetSelection().ToDictionary();
 
                 foreach (var selectedFeature in selectedFeatures)
                 {
@@ -93,7 +94,7 @@ namespace arches_arcgispro_addin
                     StaticVariables.archesToken = await MainDockpaneView.RefreshToken(StaticVariables.myClientid);
                 }
 
-                var serializer = new JavaScriptSerializer();
+                //var serializer = new JavaScriptSerializer();
                 var stringContent = new FormUrlEncodedContent(new[]
                     {
                         new KeyValuePair<string, string>("tileid", tileid),
@@ -109,7 +110,7 @@ namespace arches_arcgispro_addin
 
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                dynamic responseJSON = serializer.Deserialize<dynamic>(@responseBody);
+                dynamic responseJSON = JsonConvert.DeserializeObject<dynamic>(@responseBody);
 
                 if (responseJSON.ContainsKey("nodegroup_id")) { result.Add("nodegroup_id", responseJSON["nodegroup_id"]); }
                 if (responseJSON.ContainsKey("resourceinstance_id")) { result.Add("resourceinstance_id", responseJSON["resourceinstance_id"]); }

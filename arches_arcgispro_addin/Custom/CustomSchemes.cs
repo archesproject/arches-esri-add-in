@@ -16,7 +16,7 @@
    limitations under the License.
 
 */
-using CefSharp;
+//using CefSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -67,45 +67,45 @@ namespace arches_arcgispro_addin.Custom
 	/// stored as resources in the sample add-in assembly
 	/// </summary>
 	/// <remarks>The custom scheme name is &quot;resource&quot;</remarks>
-	public class ImageResourceSchemeHandler : ResourceHandler
-	{
-		public ImageResourceSchemeHandler()
-		{
+	//public class ImageResourceSchemeHandler : ResourceHandler
+	//{
+	//	public ImageResourceSchemeHandler()
+	//	{
 
-		}
-		public override CefReturnValue ProcessRequestAsync(IRequest request, ICallback callback)
-		{
-			using (callback)
-			{
-				var url = request.Url;
-				var image_path = url.Replace(@"/", "").Replace(@"resource:", "");
-				MimeType = ResourceHandler.GetMimeType(System.IO.Path.GetExtension(image_path));
+	//	}
+	//	public override CefReturnValue ProcessRequestAsync(IRequest request, ICallback callback)
+	//	{
+	//		using (callback)
+	//		{
+	//			var url = request.Url;
+	//			var image_path = url.Replace(@"/", "").Replace(@"resource:", "");
+	//			MimeType = ResourceHandler.GetMimeType(System.IO.Path.GetExtension(image_path));
 
-				var asm_name = Assembly.GetExecutingAssembly().GetName().Name;
-				var bitmap = new BitmapImage(new Uri(
-	         $"pack://application:,,,/{asm_name};component/Images/{image_path}", UriKind.Absolute));
+	//			var asm_name = Assembly.GetExecutingAssembly().GetName().Name;
+	//			var bitmap = new BitmapImage(new Uri(
+	//         $"pack://application:,,,/{asm_name};component/Images/{image_path}", UriKind.Absolute));
 
-				//make image a little bigger (just for purposes of visibility)
-				var scale = new ScaleTransform()
-				{
-					ScaleX = 2,
-					ScaleY = 2
-				};
-				var transformBmp = new TransformedBitmap(bitmap, scale);
+	//			//make image a little bigger (just for purposes of visibility)
+	//			var scale = new ScaleTransform()
+	//			{
+	//				ScaleX = 2,
+	//				ScaleY = 2
+	//			};
+	//			var transformBmp = new TransformedBitmap(bitmap, scale);
 
-				var encoder = new PngBitmapEncoder();
-				encoder.Frames.Add(BitmapFrame.Create(transformBmp));
-				MemoryStream mem_stream = new MemoryStream();
-				encoder.Save(mem_stream);
-				mem_stream.Position = 0;
+	//			var encoder = new PngBitmapEncoder();
+	//			encoder.Frames.Add(BitmapFrame.Create(transformBmp));
+	//			MemoryStream mem_stream = new MemoryStream();
+	//			encoder.Save(mem_stream);
+	//			mem_stream.Position = 0;
 
-				Stream = mem_stream;
-				StatusCode = (int)HttpStatusCode.OK;
-				callback.Continue();
-			}
-			return CefReturnValue.Continue;
-		}
-	}
+	//			Stream = mem_stream;
+	//			StatusCode = (int)HttpStatusCode.OK;
+	//			callback.Continue();
+	//		}
+	//		return CefReturnValue.Continue;
+	//	}
+	//}
 
 	/// <summary>
 	/// Custom scheme to load embedded resources. This sample loads an html page that has been
@@ -117,33 +117,33 @@ namespace arches_arcgispro_addin.Custom
 	/// In other words, just because you embedd a particular file within your add-in 
 	/// doesn't necessarily mean that Chrome can display it.
 	/// </remarks>
-	public class EmbeddedResourceSchemeHandler : ResourceHandler
-	{
-		public EmbeddedResourceSchemeHandler()
-		{
+	//public class EmbeddedResourceSchemeHandler : ResourceHandler
+	//{
+	//	public EmbeddedResourceSchemeHandler()
+	//	{
 
-		}
+	//	}
 
-		public override CefReturnValue ProcessRequestAsync(IRequest request, ICallback callback)
-		{
-			using (callback)
-			{
-				var url = request.Url;
-				var content_path = url.Replace(@"/", "").Replace(@"embeddedresource:", "");
-				var asm_name = Assembly.GetExecutingAssembly().GetName().Name;
-				var resource_path = $@"{asm_name}.Content.{content_path}";
+	//	public override CefReturnValue ProcessRequestAsync(IRequest request, ICallback callback)
+	//	{
+	//		using (callback)
+	//		{
+	//			var url = request.Url;
+	//			var content_path = url.Replace(@"/", "").Replace(@"embeddedresource:", "");
+	//			var asm_name = Assembly.GetExecutingAssembly().GetName().Name;
+	//			var resource_path = $@"{asm_name}.Content.{content_path}";
 
-				var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource_path);
-				if (stream != null)
-				{
-					MimeType = ResourceHandler.GetMimeType(System.IO.Path.GetExtension(content_path));
-					Stream = stream;
-					ResponseLength = stream.Length;
-					StatusCode = (int)System.Net.HttpStatusCode.OK;
-					callback.Continue();
-				}
-			}
-			return CefReturnValue.Continue;
-		}
-	}
+	//			var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource_path);
+	//			if (stream != null)
+	//			{
+	//				MimeType = ResourceHandler.GetMimeType(System.IO.Path.GetExtension(content_path));
+	//				Stream = stream;
+	//				ResponseLength = stream.Length;
+	//				StatusCode = (int)System.Net.HttpStatusCode.OK;
+	//				callback.Continue();
+	//			}
+	//		}
+	//		return CefReturnValue.Continue;
+	//	}
+	//}
 }

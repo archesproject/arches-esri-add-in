@@ -15,11 +15,13 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Net;
 using System.Net.Http;
-using System.Web.Script.Serialization;
+//using System.Web.Script.Serialization;
 using ArcGIS.Desktop.Framework.Contracts;
 using ArcGIS.Desktop.Framework;
 using System.Collections.ObjectModel;
 using ArcGIS.Core.Data.UtilityNetwork.Trace;
+using Newtonsoft.Json;
+using ArcGIS.Core.CIM;
 
 namespace arches_arcgispro_addin
 {
@@ -132,9 +134,9 @@ namespace arches_arcgispro_addin
 
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                var serializer = new JavaScriptSerializer();
-                dynamic responseJSON = serializer.Deserialize<dynamic>(@responseBody);
-                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                //var serializer = new JavaScriptSerializer();
+                dynamic responseJSON = JsonConvert.DeserializeObject<dynamic>(responseBody);  // serializer.Deserialize<dynamic>(@responseBody);
+                //JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
                 dynamic results = responseJSON["results"]["hits"]["hits"];
                 int count = 0;
                 string names = "";
@@ -160,7 +162,7 @@ namespace arches_arcgispro_addin
             try
             {
                 HttpClient client = await ArchesHttpClient.GetHttpClient();
-                var serializer = new JavaScriptSerializer();
+                //var serializer = new JavaScriptSerializer();
                 var stringContent = new FormUrlEncodedContent(new[]
                     {
                         new KeyValuePair<string, string>("username", Username.Text),
@@ -169,7 +171,7 @@ namespace arches_arcgispro_addin
                 var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.archesInstanceURL, "auth/get_client_id"), stringContent);
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                dynamic responseJSON = serializer.Deserialize<dynamic>(@responseBody);
+                dynamic responseJSON = JsonConvert.DeserializeObject<dynamic>(responseBody);  // serializer.Deserialize<dynamic>(@responseBody);
                 dynamic results = responseJSON;
                 clientid = results["clientid"];
             }
@@ -188,7 +190,7 @@ namespace arches_arcgispro_addin
             try
             {
                 HttpClient client = await ArchesHttpClient.GetHttpClient();
-                var serializer = new JavaScriptSerializer();
+                //var serializer = new JavaScriptSerializer();
                 var stringContent = new FormUrlEncodedContent(new[]
                     {
                             new KeyValuePair<string, string>("username", Username.Text),
@@ -200,7 +202,7 @@ namespace arches_arcgispro_addin
 
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                dynamic responseJSON = serializer.Deserialize<dynamic>(@responseBody);
+                dynamic responseJSON = JsonConvert.DeserializeObject<dynamic>(responseBody);  // serializer.Deserialize<dynamic>(@responseBody);
                 dynamic results = responseJSON;
                 result.Add("access_token", results["access_token"]);
                 result.Add("refresh_token", results["refresh_token"]);
@@ -224,7 +226,7 @@ namespace arches_arcgispro_addin
             try
             {
                 HttpClient client = await ArchesHttpClient.GetHttpClient();
-                var serializer = new JavaScriptSerializer();
+                //var serializer = new JavaScriptSerializer();
                 var stringContent = new FormUrlEncodedContent(new[]
                     {
                             new KeyValuePair<string, string>("refresh_token", StaticVariables.archesToken["refresh_token"]),
@@ -235,7 +237,7 @@ namespace arches_arcgispro_addin
 
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                dynamic responseJSON = serializer.Deserialize<dynamic>(@responseBody);
+                dynamic responseJSON = JsonConvert.DeserializeObject<dynamic>(responseBody);  // serializer.Deserialize<dynamic>(@responseBody);
                 dynamic results = responseJSON;
                 result.Add("access_token", results["access_token"]);
                 result.Add("refresh_token", results["refresh_token"]);
@@ -260,7 +262,7 @@ namespace arches_arcgispro_addin
             try
             {
                 HttpClient client = await ArchesHttpClient.GetHttpClient();
-                var serializer = new JavaScriptSerializer();
+                //var serializer = new JavaScriptSerializer();
                 string header = "Bearer " + token;
                 try
                 {
@@ -274,7 +276,7 @@ namespace arches_arcgispro_addin
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(StaticVariables.archesInstanceURL + $"resources/{resourceid}?format=json");
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                dynamic responseJSON = serializer.Deserialize<dynamic>(@responseBody);
+                dynamic responseJSON = JsonConvert.DeserializeObject<dynamic>(responseBody);  // serializer.Deserialize<dynamic>(@responseBody);
                 result.Add("resourceid", responseJSON["resourceinstanceid"]);
                 result.Add("graphid", responseJSON["graph_id"]);
                 result.Add("displayname", responseJSON["displayname"]);

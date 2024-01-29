@@ -23,8 +23,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
 						 xmlns:chrome="clr-namespace:ArcGIS.Desktop.Framework.Controls;assembly=ArcGIS.Desktop.Framework"
-						 xmlns:wpf="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
-						 xmlns:cef="clr-namespace:CefSharp;assembly=CefSharp.Core"
 						 xmlns:ui="clr-namespace:arches_arcgispro_addin.UI"
 						 xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
 						 xmlns:behaviours="clr-namespace:arches_arcgispro_addin.Behaviours"
@@ -92,9 +90,9 @@
 			<Button Command="{Binding WebBrowser.ForwardCommand, ElementName=Browser}" Grid.Column="1" Style="{DynamicResource Esri_ButtonForwardSmall}" Margin="3,0,2,0"/>
 			<TextBox x:Name="txtBoxAddress" Text="{Binding Address, ElementName=Browser, FallbackValue=www.esri.com}" Grid.Column="2" FontSize="12" 
 							 BorderBrush="{DynamicResource Esri_BackgroundHoverBrush}" BorderThickness="1">
-				<i:Interaction.Behaviors>
+				<!--<i:Interaction.Behaviors>
 					<behaviours:TextBoxBindingUpdateOnEnterBehaviour />
-				</i:Interaction.Behaviors>
+				</i:Interaction.Behaviors>-->
 			</TextBox>
 
 			<tkit:DropDownButton Content="Custom..." Padding="4,4" Margin="2" VerticalAlignment="Center" Grid.Column="3"
@@ -141,11 +139,11 @@
 		</Grid>
 		
 		<Border Grid.Row="1" BorderBrush="{DynamicResource Esri_BorderHoverBrush}" BorderThickness="1,1">
-			<chrome:ChromiumWebBrowser x:Name="Browser" Address="{Binding BrowserAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+			<!--<chrome:ChromiumWebBrowser x:Name="Browser" Address="{Binding BrowserAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 				<i:Interaction.Behaviors>
 					<behaviours:HoverLinkBehaviour x:Name="HoverLinkBehaviour"/>
 				</i:Interaction.Behaviors>
-			</chrome:ChromiumWebBrowser>
+			</chrome:ChromiumWebBrowser>-->
 		</Border>
 		
 		<ProgressBar IsIndeterminate="{Binding IsLoading, ElementName=Browser}"
@@ -174,10 +172,13 @@
 			</StatusBarItem>
 			<Separator Grid.Column="1" />
 			<StatusBarItem Grid.Column="2">
-				<TextBlock HorizontalAlignment="Right" TextAlignment="Right" Grid.Column="3" VerticalAlignment="Center">
+				<!--<TextBlock HorizontalAlignment="Right" TextAlignment="Right" Grid.Column="3" VerticalAlignment="Center">
                 Chromium: <Run Text="{Binding Source={x:Static cef:Cef.ChromiumVersion}, Mode=OneTime}" />, CEF: <Run Text="{Binding Source={x:Static cef:Cef.CefVersion}, Mode=OneTime}" />, CefSharp: <Run Text="{Binding Source={x:Static cef:Cef.CefSharpVersion}, Mode=OneTime}"/>, Environment: <Run Text="x64"/>
+				</TextBlock>-->
+                <TextBlock HorizontalAlignment="Right" TextAlignment="Right" Grid.Column="3" VerticalAlignment="Center">
+                Chromium: , CEF: , CefSharp: , Environment: <Run Text="x64"/>
 				</TextBlock>
-			</StatusBarItem>
+            </StatusBarItem>
 		</StatusBar>
 	</Grid>
 </UserControl>

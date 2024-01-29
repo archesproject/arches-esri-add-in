@@ -19,7 +19,7 @@ using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Mapping;
 using ArcGIS.Desktop.Core.Events;
 using ArcGIS.Desktop.Mapping.Events;
-using System.Web.Script.Serialization;
+//using System.Web.Script.Serialization;
 using System.Net.Http;
 using System.Windows.Input;
 
@@ -86,7 +86,7 @@ namespace arches_arcgispro_addin
         private void OnMapSelectionChanged(MapSelectionChangedEventArgs args)
         {
             var selection = args.Selection;
-            if (selection.Count() == 0)
+            if (selection.Count == 0)
             {
                 FeatureSelected = false;
                 CanUpload = false;
