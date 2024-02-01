@@ -89,12 +89,11 @@ namespace arches_arcgispro_addin
             try
             {
                 HttpClient client = await ArchesHttpClient.GetHttpClient();
-                if ((DateTime.Now - StaticVariables.archesToken["timestamp"]).TotalSeconds > (StaticVariables.archesToken["expires_in"] - 300))
+                if ((int)(DateTime.Now - StaticVariables.archesToken["timestamp"]).TotalSeconds > (int)(StaticVariables.archesToken["expires_in"] - 300))
                 {
                     StaticVariables.archesToken = await MainDockpaneView.RefreshToken(StaticVariables.myClientid);
                 }
 
-                //var serializer = new JavaScriptSerializer();
                 var stringContent = new FormUrlEncodedContent(new[]
                     {
                         new KeyValuePair<string, string>("tileid", tileid),
@@ -112,9 +111,9 @@ namespace arches_arcgispro_addin
                 string responseBody = await response.Content.ReadAsStringAsync();
                 dynamic responseJSON = JsonConvert.DeserializeObject<dynamic>(@responseBody);
 
-                if (responseJSON.ContainsKey("nodegroup_id")) { result.Add("nodegroup_id", responseJSON["nodegroup_id"]); }
-                if (responseJSON.ContainsKey("resourceinstance_id")) { result.Add("resourceinstance_id", responseJSON["resourceinstance_id"]); }
-                if (responseJSON.ContainsKey("tileid")) { result.Add("tileid", responseJSON["tileid"]); }
+                if (responseJSON.ContainsKey("nodegroup_id")) { result.Add("nodegroup_id", (string)responseJSON["nodegroup_id"]); }
+                if (responseJSON.ContainsKey("resourceinstance_id")) { result.Add("resourceinstance_id", (string)responseJSON["resourceinstance_id"]); }
+                if (responseJSON.ContainsKey("tileid")) { result.Add("tileid", (string)responseJSON["tileid"]); }
             }
             catch (HttpRequestException ex)
             {

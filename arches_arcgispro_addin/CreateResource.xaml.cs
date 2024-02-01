@@ -43,7 +43,7 @@ namespace arches_arcgispro_addin
             try
             {
                 HttpClient client = await ArchesHttpClient.GetHttpClient();
-                if ((DateTime.Now - StaticVariables.archesToken["timestamp"]).TotalSeconds > (StaticVariables.archesToken["expires_in"] - 300)) 
+                if ((int)(DateTime.Now - StaticVariables.archesToken["timestamp"]).TotalSeconds > (int)(StaticVariables.archesToken["expires_in"] - 300)) 
                 {
                     StaticVariables.archesToken = await MainDockpaneView.RefreshToken(StaticVariables.myClientid);
                 }
@@ -54,12 +54,11 @@ namespace arches_arcgispro_addin
 
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                //var serializer = new JavaScriptSerializer();
-                dynamic results = JsonConvert.DeserializeObject<dynamic>(responseBody);  // serializer.Deserialize<dynamic>(@responseBody);
+                dynamic results = JsonConvert.DeserializeObject<dynamic>(@responseBody);
 
                 foreach (dynamic element in results)
                 {
-                    nodeidResponse.Add(new GeometryNode(element["resourcemodelname"], element["name"], element["nodeid"]));
+                    nodeidResponse.Add(new GeometryNode((string)element["resourcemodelname"], (string)element["name"], (string)element["nodeid"]));
                 }
             }
             catch (HttpRequestException e)
@@ -147,7 +146,6 @@ namespace arches_arcgispro_addin
                     StaticVariables.archesResourceid = result["resourceinstance_id"];
                     CreateResourceViewModel.GetResourceIdsCreated();
                     SaveResourceView.RefreshMapView();
-                    OpenChromiumButton.IsEnabled = true;
                 }
                 else
                 {
@@ -163,7 +161,6 @@ namespace arches_arcgispro_addin
         private void CreateClear_Button(object sender, RoutedEventArgs e)
         {
             CreateResourceViewModel.ClearResourceIdsCreated();
-            OpenChromiumButton.IsEnabled = false;
         }
     }
 }

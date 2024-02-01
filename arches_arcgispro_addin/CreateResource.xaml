@@ -52,8 +52,6 @@
               ItemsSource="{Binding ResourceIdsCreated}" Style="{DynamicResource Esri_DataGrid}" 
               HeadersVisibility="None" AutoGenerateColumns="True" IsReadOnly="True" SelectionMode="Single" RowHeaderWidth="0"/>
 
-        <Button Name="OpenChromiumButton" Content="Edit using Arches Resource Editor" HorizontalAlignment="Left" Margin="20,0,0,20" Grid.Row="1" VerticalAlignment="Bottom" Height="25" Width="300" 
-                IsEnabled="False" Command="{Binding CreateOpenChromiumButton}" />
         <ComboBox HorizontalAlignment="Left" Margin="20,0,0,60" Grid.Row="1" VerticalAlignment="Bottom" Height="25" Width="300"
                 ItemsSource="{Binding ResourceIdsCreated}" DisplayMemberPath="Name"
                 SelectedItem="{Binding SelectedResourceId, Mode=TwoWay}" SelectedIndex="0" />
