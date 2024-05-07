@@ -8,36 +8,20 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="340"
              d:DataContext="{Binding Path=ui.MainDockpaneViewModel}">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <extensions:DesignOnlyResourceDictionary Source="pack://application:,,,/ArcGIS.Desktop.Framework;component\Themes\Default.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!--DockPanel Grid.Row="0" LastChildFill="true" KeyboardNavigation.TabNavigation="Local" Height="30">
-            <TextBlock Grid.Column="1" Text="{Binding Heading}" Style="{DynamicResource Esri_TextBlockDockPaneHeader}">
-                <TextBlock.ToolTip>
-                    <WrapPanel Orientation="Vertical" MaxWidth="300">
-                        <TextBlock Text="{Binding Heading}" TextWrapping="Wrap"/>
-                    </WrapPanel>
-                </TextBlock.ToolTip>
-            </TextBlock>
-        </-->
         <TextBlock HorizontalAlignment="Left" Margin="20,20,0,0" Grid.Row="1" Text="Arches Server (http://myserver.com/)" VerticalAlignment="Top" Width="300"/>
-        <TextBox Name="InstanceURL" HorizontalAlignment="Left" Height="25" Margin="20,40,0,0" Grid.Row="1" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="300"/>
+        <TextBox Name="InstanceURL" HorizontalAlignment="Left" Height="25" Margin="20,40,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="300"/>
 
         <TextBlock HorizontalAlignment="Left" Margin="20,80,0,0" Grid.Row="1" Text="User Name" VerticalAlignment="Top" Width="300"/>
-        <TextBox Name="Username" HorizontalAlignment="Left" Height="25" Margin="20,100,0,0" Grid.Row="1" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="300"/>
+        <TextBox Name="Username" HorizontalAlignment="Left" Height="25" Margin="20,100,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="300"/>
 
         <TextBlock HorizontalAlignment="Left" Margin="20,140,0,0" Grid.Row="1" Text="Password" VerticalAlignment="Top" Width="300"/>
-        <PasswordBox Name="Password" HorizontalAlignment="Left" Height="25" Margin="20,160,0,0" Grid.Row="1" Password="" VerticalAlignment="Top" Width="300"/>
+        <PasswordBox Name="Password" HorizontalAlignment="Left" Height="25" Margin="20,160,0,0" Grid.Row="1" VerticalAlignment="Top" Width="300"/>
 
         <Button Content="Connect" HorizontalAlignment="Left" Margin="20,200,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="145" Click="MainConnect_Button"/>
         <Button Content="Cancel" HorizontalAlignment="Left" Margin="175,200,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="145" Click="MainCancel_Button"/>
@@ -45,8 +29,5 @@
         <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="85" Margin="20,250,0,0" Visibility="Visible" Grid.RowSpan="2" Stroke="DarkGray" VerticalAlignment="Top" Width="300"/>
         <TextBlock Name="SucceedMessage" HorizontalAlignment="Left" Margin="30,260,0,0" Grid.Row="1" Text="Connected to Arches Server" Visibility="Hidden" TextWrapping="Wrap" VerticalAlignment="Top" Width="280"/>
         <TextBlock Name="FailMessage" HorizontalAlignment="Left" Margin="30,260,0,0" Grid.Row="1" Text="Not connected" Visibility="Visible" TextWrapping="Wrap" VerticalAlignment="Top" Width="280"/>
-
-        <!--Button Name="CreateResourceButton" Content="Create New Resource Instance" HorizontalAlignment="Left" Margin="20,0,0,50" Grid.Row="1" VerticalAlignment="Bottom" Height="25" Width="300" IsEnabled="False" Click="MainOpenCreate_Button"/>
-        <Button Name="EditResourceButton" Content="Edit Existing Resource Instance" HorizontalAlignment="Left" Margin="20,0,0,20" Grid.Row="1" VerticalAlignment="Bottom" Height="25" Width="300" IsEnabled="False" Click="MainOpenEdit_Button"/-->
     </Grid>
 </UserControl>

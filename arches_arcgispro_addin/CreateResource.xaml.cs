@@ -1,30 +1,16 @@
-﻿using ArcGIS.Core.Geometry;
-using ArcGIS.Desktop.Editing.Attributes;
-using ArcGIS.Desktop.Framework;
+﻿using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
-using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Mapping;
+using arches_arcgispro_addin.Behaviours;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Data;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
-//using System.Web.Script.Serialization;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Newtonsoft.Json;
-
 
 namespace arches_arcgispro_addin
 {
@@ -58,7 +44,11 @@ namespace arches_arcgispro_addin
 
                 foreach (dynamic element in results)
                 {
-                    nodeidResponse.Add(new GeometryNode((string)element["resourcemodelname"], (string)element["name"], (string)element["nodeid"]));
+                    var name = (string)element["name"];
+                    if (name == "Geospatial Coordinates")
+                    {
+                        nodeidResponse.Add(new GeometryNode((string)element["resourcemodelname"], (string)element["name"], (string)element["nodeid"]));
+                    }
                 }
             }
             catch (HttpRequestException e)
@@ -101,6 +91,9 @@ namespace arches_arcgispro_addin
         {
             try
             {
+                StaticVariables.selectedArchesNodeid = StaticVariables.archesNodeid;
+
+
                 if (MapView.Active == null)
                 {
                     ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No MapView currently active. Exiting...", "Info");
@@ -146,6 +139,7 @@ namespace arches_arcgispro_addin
                     StaticVariables.archesResourceid = result["resourceinstance_id"];
                     CreateResourceViewModel.GetResourceIdsCreated();
                     SaveResourceView.RefreshMapView();
+                    OpenBrowserButton.IsEnabled = true;
                 }
                 else
                 {
@@ -161,6 +155,17 @@ namespace arches_arcgispro_addin
         private void CreateClear_Button(object sender, RoutedEventArgs e)
         {
             CreateResourceViewModel.ClearResourceIdsCreated();
+            OpenBrowserButton.IsEnabled = false;
         }
+
+        private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var ri = ((DataGrid)sender).SelectedItem as ResourceInstance;
+            if (!string.IsNullOrEmpty(ri.Id))
+            {
+                DefaultBrowserBehaviour.OpenBrowser(ri.URL);
+            }
+        }
+
     }
 }

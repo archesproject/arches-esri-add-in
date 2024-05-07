@@ -22,6 +22,8 @@ using ArcGIS.Core.Data.UtilityNetwork.Trace;
 using Newtonsoft.Json;
 using ArcGIS.Core.CIM;
 using System.Security.Policy;
+using Microsoft.Win32;
+using System.Security.AccessControl;
 
 namespace arches_arcgispro_addin
 {
@@ -34,6 +36,7 @@ namespace arches_arcgispro_addin
         /// 
         /// </summary>
         private static HttpClient _client;
+
         public static async Task<HttpClient> GetHttpClient()
         {
             if (_client == null)
@@ -112,9 +115,11 @@ namespace arches_arcgispro_addin
         //public static string myPassword;
         public static string archesTileid;
         public static string archesNodeid;
+        public static string selectedArchesNodeid;
         public static string archesResourceid = "No Resource is Selected";
         public static ArcGIS.Core.Geometry.Geometry archesGeometry;
         public static List<GeometryNode> geometryNodes = new List<GeometryNode>();
+        public static string registryKey = @"SOFTWARE\ArchesArcGISProAddIn";
     };
 
     /// <summary>
@@ -295,9 +300,14 @@ namespace arches_arcgispro_addin
                 FailMessage.Visibility = Visibility.Hidden;
                 SucceedMessage.Visibility = Visibility.Visible;
                 //ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Successfully Logged in to {StaticVariables.archesInstanceURL}");
+                RegistryKey key = Registry.CurrentUser.CreateSubKey(StaticVariables.registryKey);
+                key.SetValue("InstanceURL", InstanceURL.Text);
+                key.SetValue("Username", Username.Text);
+                key.Close();
 
                 StaticVariables.geometryNodes = await CreateResourceView.GetGeometryNode();
                 CreateResourceViewModel.CreateNodeList();
+
             }
             catch (Exception ex)
             {
@@ -305,9 +315,18 @@ namespace arches_arcgispro_addin
             }
         }
 
-        public MainDockpaneView()
+        protected override void OnInitialized(EventArgs e)
         {
             InitializeComponent();
+            base.OnInitialized(e);
+            RegistryKey key = Registry.CurrentUser.OpenSubKey(StaticVariables.registryKey);
+            if (key != null)
+            {
+                StaticVariables.archesInstanceURL = key.GetValue("InstanceURL") as string;
+                StaticVariables.myClientid = key.GetValue("Username") as string;
+                InstanceURL.Text = StaticVariables.archesInstanceURL;
+                Username.Text = StaticVariables.myClientid;
+            }
         }
 
         private void MainCancel_Button(object sender, RoutedEventArgs e)
@@ -315,6 +334,10 @@ namespace arches_arcgispro_addin
             InstanceURL.Text = "";
             Username.Text = "";
             Password.Password = "";
+
+            RegistryKey registryCurrentUser = Registry.CurrentUser;
+            registryCurrentUser.DeleteSubKeyTree(StaticVariables.registryKey, false);
+            registryCurrentUser.Close();
 
             FrameworkApplication.State.Deactivate("token_state");
             FailMessage.Visibility = Visibility.Visible;

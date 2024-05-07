@@ -21,18 +21,6 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!--DockPanel Grid.Row="0" LastChildFill="true" KeyboardNavigation.TabNavigation="Local" Height="25">
-            <TextBlock Grid.Column="1" Text="{Binding Heading}" Style="{DynamicResource Esri_TextBlockDockPaneHeader}">
-                <TextBlock.ToolTip>
-                    <WrapPanel Orientation="Vertical" MaxWidth="300">
-                        <TextBlock Text="{Binding Heading}" TextWrapping="Wrap"/>
-                    </WrapPanel>
-                </TextBlock.ToolTip>
-            </TextBlock>
-        </>
-
-        <Button Content="Get Geometry Node Info" HorizontalAlignment="Left" Margin="20,20,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="300" Click="GetNodeList_Button" /-->
-
         <TextBlock HorizontalAlignment="Left" Margin="20,20,0,0" Grid.Row="1" Text="Select a Resource Type" VerticalAlignment="Top"/>
 
         <ComboBox HorizontalAlignment="Left" Margin="20,40,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="300"
@@ -48,9 +36,18 @@
             Text="Uploaded Features:" />
         <Button Content="Clear the List" HorizontalAlignment="Right" Margin="180,190,25,0" Grid.Row="1" VerticalAlignment="Top" Height="25"  Width="100" Click="CreateClear_Button"/>
 
-        <DataGrid HorizontalAlignment="Stretch" Height="Auto" Margin="0,230,0,0" Grid.Row="1" VerticalAlignment="Top" Width="Auto"
+        <DataGrid HorizontalAlignment="Left" Height="Auto" Margin="0,230,0,0" Grid.Row="1" VerticalAlignment="Top" Width="Auto"
               ItemsSource="{Binding ResourceIdsCreated}" Style="{DynamicResource Esri_DataGrid}" 
-              HeadersVisibility="None" AutoGenerateColumns="True" IsReadOnly="True" SelectionMode="Single" RowHeaderWidth="0"/>
+              HeadersVisibility="None" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" RowHeaderWidth="0" MouseDoubleClick="DataGrid_MouseDoubleClick">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Name}" />
+                <DataGridTextColumn Binding="{Binding Id}" />
+                <DataGridTextColumn Binding="{Binding Model}" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Button Name="OpenBrowserButton" Content="Edit using Arches Resource Editor" HorizontalAlignment="Left" Margin="20,0,0,20" Grid.Row="1" VerticalAlignment="Bottom" Height="25" Width="300" 
+            IsEnabled="False" Command="{Binding CreateOpenDefaultWebBrowserButton}" />
 
         <ComboBox HorizontalAlignment="Left" Margin="20,0,0,60" Grid.Row="1" VerticalAlignment="Bottom" Height="25" Width="300"
                 ItemsSource="{Binding ResourceIdsCreated}" DisplayMemberPath="Name"

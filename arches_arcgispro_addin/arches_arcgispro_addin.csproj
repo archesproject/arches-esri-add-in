@@ -104,10 +104,6 @@
     <Content Include="Images\ArchesIcon32.png" />
     <Content Include="Images\Stormtrooper16.png" />
     <Content Include="Images\Stormtrooper32.png" />
-    <Content Include="Images\chrome16.png" />
-    <Content Include="Images\chrome32.png" />
-    <Content Include="Images\chromium16.png" />
-    <Content Include="Images\chromium32.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\esri_arcgis-pro-sdk_wiki.html" />

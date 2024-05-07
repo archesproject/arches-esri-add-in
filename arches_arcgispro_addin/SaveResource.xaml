@@ -54,6 +54,6 @@
         <DataGrid HorizontalAlignment="Stretch" Height="Auto" Margin="0,180,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Width="Auto"
               ItemsSource="{Binding AttributeValues}" Style="{DynamicResource Esri_DataGrid}" 
               HeadersVisibility="None" AutoGenerateColumns="True" IsReadOnly="True" SelectionMode="Single" RowHeaderWidth="0"/>
-
+        <Button Content="Edit using Arches Resource Editor" HorizontalAlignment="Left" Margin="20,0,0,20" Grid.Row="1" VerticalAlignment="Bottom" Height="25" Width="300" IsEnabled="{Binding Registered}" Click="EditOpenBrowser_Button"/>
     </Grid>
 </UserControl>

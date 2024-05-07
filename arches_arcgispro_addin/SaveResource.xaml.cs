@@ -24,6 +24,7 @@ using System.Net.Http.Headers;
 using ArcGIS.Desktop.Framework;
 using System.Security.Cryptography.X509Certificates;
 using Newtonsoft.Json;
+using arches_arcgispro_addin.Behaviours;
 
 namespace arches_arcgispro_addin
 {
@@ -211,7 +212,7 @@ namespace arches_arcgispro_addin
             }
         }
 
-        private void EditOpenChromium_Button(object sender, RoutedEventArgs e)
+        private void EditOpenBrowser_Button(object sender, RoutedEventArgs e)
         {
             if (StaticVariables.archesInstanceURL == "" | StaticVariables.archesInstanceURL == null)
             {
@@ -229,7 +230,7 @@ namespace arches_arcgispro_addin
                 return;
             }
             string editorAddress = StaticVariables.archesInstanceURL + $"resource/{StaticVariables.archesResourceid}";
-            UI.ChromePaneViewModel.OpenChromePane(editorAddress);
+            DefaultBrowserBehaviour.OpenBrowser(editorAddress);
         }
 
         private void ReplaceCheckBox_Checked(object sender, RoutedEventArgs e)
