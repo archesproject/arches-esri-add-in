@@ -44,8 +44,8 @@ namespace arches_arcgispro_addin
 
                 foreach (dynamic element in results)
                 {
-                    var name = (string)element["name"];
-                    if (name == "Geospatial Coordinates")
+                    var resourceModelName = (string)element["resourcemodelname"];
+                    if (resourceModelName != "Arches System Settings")
                     {
                         nodeidResponse.Add(new GeometryNode((string)element["resourcemodelname"], (string)element["name"], (string)element["nodeid"]));
                     }
