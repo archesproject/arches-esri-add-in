@@ -15,11 +15,15 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Net;
 using System.Net.Http;
-using System.Web.Script.Serialization;
 using ArcGIS.Desktop.Framework.Contracts;
 using ArcGIS.Desktop.Framework;
 using System.Collections.ObjectModel;
 using ArcGIS.Core.Data.UtilityNetwork.Trace;
+using Newtonsoft.Json;
+using ArcGIS.Core.CIM;
+using System.Security.Policy;
+using Microsoft.Win32;
+using System.Security.AccessControl;
 
 namespace arches_arcgispro_addin
 {
@@ -32,6 +36,7 @@ namespace arches_arcgispro_addin
         /// 
         /// </summary>
         private static HttpClient _client;
+
         public static async Task<HttpClient> GetHttpClient()
         {
             if (_client == null)
@@ -110,9 +115,11 @@ namespace arches_arcgispro_addin
         //public static string myPassword;
         public static string archesTileid;
         public static string archesNodeid;
+        public static string selectedArchesNodeid;
         public static string archesResourceid = "No Resource is Selected";
         public static ArcGIS.Core.Geometry.Geometry archesGeometry;
         public static List<GeometryNode> geometryNodes = new List<GeometryNode>();
+        public static string registryKey = @"SOFTWARE\ArchesArcGISProAddIn";
     };
 
     /// <summary>
@@ -132,9 +139,7 @@ namespace arches_arcgispro_addin
 
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                var serializer = new JavaScriptSerializer();
-                dynamic responseJSON = serializer.Deserialize<dynamic>(@responseBody);
-                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                dynamic responseJSON = JsonConvert.DeserializeObject<dynamic>(@responseBody);
                 dynamic results = responseJSON["results"]["hits"]["hits"];
                 int count = 0;
                 string names = "";
@@ -160,7 +165,6 @@ namespace arches_arcgispro_addin
             try
             {
                 HttpClient client = await ArchesHttpClient.GetHttpClient();
-                var serializer = new JavaScriptSerializer();
                 var stringContent = new FormUrlEncodedContent(new[]
                     {
                         new KeyValuePair<string, string>("username", Username.Text),
@@ -169,7 +173,7 @@ namespace arches_arcgispro_addin
                 var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.archesInstanceURL, "auth/get_client_id"), stringContent);
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                dynamic responseJSON = serializer.Deserialize<dynamic>(@responseBody);
+                dynamic responseJSON = JsonConvert.DeserializeObject<dynamic>(@responseBody);
                 dynamic results = responseJSON;
                 clientid = results["clientid"];
             }
@@ -188,7 +192,6 @@ namespace arches_arcgispro_addin
             try
             {
                 HttpClient client = await ArchesHttpClient.GetHttpClient();
-                var serializer = new JavaScriptSerializer();
                 var stringContent = new FormUrlEncodedContent(new[]
                     {
                             new KeyValuePair<string, string>("username", Username.Text),
@@ -200,13 +203,13 @@ namespace arches_arcgispro_addin
 
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                dynamic responseJSON = serializer.Deserialize<dynamic>(@responseBody);
+                dynamic responseJSON = JsonConvert.DeserializeObject<dynamic>(@responseBody);
                 dynamic results = responseJSON;
-                result.Add("access_token", results["access_token"]);
-                result.Add("refresh_token", results["refresh_token"]);
-                result.Add("expires_in", results["expires_in"]);
-                result.Add("token_type", results["token_type"]);
-                result.Add("scope", results["scope"]);
+                result.Add("access_token", (string)results["access_token"]);
+                result.Add("refresh_token", (string)results["refresh_token"]);
+                result.Add("expires_in", (double)results["expires_in"]);
+                result.Add("token_type", (string)results["token_type"]);
+                result.Add("scope", (string)results["scope"]);
                 result.Add("timestamp", DateTime.Now);
             }
             catch (Exception ex)
@@ -224,7 +227,6 @@ namespace arches_arcgispro_addin
             try
             {
                 HttpClient client = await ArchesHttpClient.GetHttpClient();
-                var serializer = new JavaScriptSerializer();
                 var stringContent = new FormUrlEncodedContent(new[]
                     {
                             new KeyValuePair<string, string>("refresh_token", StaticVariables.archesToken["refresh_token"]),
@@ -235,7 +237,7 @@ namespace arches_arcgispro_addin
 
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                dynamic responseJSON = serializer.Deserialize<dynamic>(@responseBody);
+                dynamic responseJSON = JsonConvert.DeserializeObject<dynamic>(@responseBody);
                 dynamic results = responseJSON;
                 result.Add("access_token", results["access_token"]);
                 result.Add("refresh_token", results["refresh_token"]);
@@ -260,7 +262,6 @@ namespace arches_arcgispro_addin
             try
             {
                 HttpClient client = await ArchesHttpClient.GetHttpClient();
-                var serializer = new JavaScriptSerializer();
                 string header = "Bearer " + token;
                 try
                 {
@@ -274,7 +275,7 @@ namespace arches_arcgispro_addin
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(StaticVariables.archesInstanceURL + $"resources/{resourceid}?format=json");
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                dynamic responseJSON = serializer.Deserialize<dynamic>(@responseBody);
+                dynamic responseJSON = JsonConvert.DeserializeObject<dynamic>(@responseBody);
                 result.Add("resourceid", responseJSON["resourceinstanceid"]);
                 result.Add("graphid", responseJSON["graph_id"]);
                 result.Add("displayname", responseJSON["displayname"]);
@@ -290,7 +291,7 @@ namespace arches_arcgispro_addin
         private async void MainConnect_Button(object sender, RoutedEventArgs e)
         {
             try {
-                StaticVariables.archesInstanceURL = InstanceURL.Text;
+                StaticVariables.archesInstanceURL = InstanceURL.Text.TrimEnd('/') + "/";
                 StaticVariables.myClientid = await GetClientId();
                 StaticVariables.archesToken = await GetToken(StaticVariables.myClientid);
                 FrameworkApplication.State.Activate("token_state");
@@ -299,9 +300,14 @@ namespace arches_arcgispro_addin
                 FailMessage.Visibility = Visibility.Hidden;
                 SucceedMessage.Visibility = Visibility.Visible;
                 //ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Successfully Logged in to {StaticVariables.archesInstanceURL}");
+                RegistryKey key = Registry.CurrentUser.CreateSubKey(StaticVariables.registryKey);
+                key.SetValue("InstanceURL", InstanceURL.Text);
+                key.SetValue("Username", Username.Text);
+                key.Close();
 
                 StaticVariables.geometryNodes = await CreateResourceView.GetGeometryNode();
                 CreateResourceViewModel.CreateNodeList();
+
             }
             catch (Exception ex)
             {
@@ -309,9 +315,18 @@ namespace arches_arcgispro_addin
             }
         }
 
-        public MainDockpaneView()
+        protected override void OnInitialized(EventArgs e)
         {
             InitializeComponent();
+            base.OnInitialized(e);
+            RegistryKey key = Registry.CurrentUser.OpenSubKey(StaticVariables.registryKey);
+            if (key != null)
+            {
+                StaticVariables.archesInstanceURL = key.GetValue("InstanceURL") as string;
+                StaticVariables.myClientid = key.GetValue("Username") as string;
+                InstanceURL.Text = StaticVariables.archesInstanceURL;
+                Username.Text = StaticVariables.myClientid;
+            }
         }
 
         private void MainCancel_Button(object sender, RoutedEventArgs e)
@@ -319,6 +334,10 @@ namespace arches_arcgispro_addin
             InstanceURL.Text = "";
             Username.Text = "";
             Password.Password = "";
+
+            RegistryKey registryCurrentUser = Registry.CurrentUser;
+            registryCurrentUser.DeleteSubKeyTree(StaticVariables.registryKey, false);
+            registryCurrentUser.Close();
 
             FrameworkApplication.State.Deactivate("token_state");
             FailMessage.Visibility = Visibility.Visible;

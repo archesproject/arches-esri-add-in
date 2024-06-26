@@ -9,7 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
+//using System.Web.Script.Serialization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -23,6 +23,8 @@ using ArcGIS.Desktop.Framework.Contracts;
 using System.Net.Http.Headers;
 using ArcGIS.Desktop.Framework;
 using System.Security.Cryptography.X509Certificates;
+using Newtonsoft.Json;
+using arches_arcgispro_addin.Behaviours;
 
 namespace arches_arcgispro_addin
 {
@@ -55,7 +57,7 @@ namespace arches_arcgispro_addin
 
             var args = await QueuedTask.Run(() =>
             {
-                var selectedFeatures = ArcGIS.Desktop.Mapping.MapView.Active.Map.GetSelection();
+                var selectedFeatures = ArcGIS.Desktop.Mapping.MapView.Active.Map.GetSelection().ToDictionary();
 
                 foreach (var selectedFeature in selectedFeatures)
                 {
@@ -88,12 +90,11 @@ namespace arches_arcgispro_addin
             try
             {
                 HttpClient client = await ArchesHttpClient.GetHttpClient();
-                if ((DateTime.Now - StaticVariables.archesToken["timestamp"]).TotalSeconds > (StaticVariables.archesToken["expires_in"] - 300))
+                if ((int)(DateTime.Now - StaticVariables.archesToken["timestamp"]).TotalSeconds > (int)(StaticVariables.archesToken["expires_in"] - 300))
                 {
                     StaticVariables.archesToken = await MainDockpaneView.RefreshToken(StaticVariables.myClientid);
                 }
 
-                var serializer = new JavaScriptSerializer();
                 var stringContent = new FormUrlEncodedContent(new[]
                     {
                         new KeyValuePair<string, string>("tileid", tileid),
@@ -109,11 +110,11 @@ namespace arches_arcgispro_addin
 
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                dynamic responseJSON = serializer.Deserialize<dynamic>(@responseBody);
+                dynamic responseJSON = JsonConvert.DeserializeObject<dynamic>(@responseBody);
 
-                if (responseJSON.ContainsKey("nodegroup_id")) { result.Add("nodegroup_id", responseJSON["nodegroup_id"]); }
-                if (responseJSON.ContainsKey("resourceinstance_id")) { result.Add("resourceinstance_id", responseJSON["resourceinstance_id"]); }
-                if (responseJSON.ContainsKey("tileid")) { result.Add("tileid", responseJSON["tileid"]); }
+                if (responseJSON.ContainsKey("nodegroup_id")) { result.Add("nodegroup_id", (string)responseJSON["nodegroup_id"]); }
+                if (responseJSON.ContainsKey("resourceinstance_id")) { result.Add("resourceinstance_id", (string)responseJSON["resourceinstance_id"]); }
+                if (responseJSON.ContainsKey("tileid")) { result.Add("tileid", (string)responseJSON["tileid"]); }
             }
             catch (HttpRequestException ex)
             {
@@ -211,7 +212,7 @@ namespace arches_arcgispro_addin
             }
         }
 
-        private void EditOpenChromium_Button(object sender, RoutedEventArgs e)
+        private void EditOpenBrowser_Button(object sender, RoutedEventArgs e)
         {
             if (StaticVariables.archesInstanceURL == "" | StaticVariables.archesInstanceURL == null)
             {
@@ -229,7 +230,7 @@ namespace arches_arcgispro_addin
                 return;
             }
             string editorAddress = StaticVariables.archesInstanceURL + $"resource/{StaticVariables.archesResourceid}";
-            UI.ChromePaneViewModel.OpenChromePane(editorAddress);
+            DefaultBrowserBehaviour.OpenBrowser(editorAddress);
         }
 
         private void ReplaceCheckBox_Checked(object sender, RoutedEventArgs e)

@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
+//using System.Web.Script.Serialization;
 using System.Windows.Data;
 using System.Windows.Input;
 using ArcGIS.Core.CIM;
@@ -23,6 +23,7 @@ using ArcGIS.Desktop.Framework.Dialogs;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Mapping;
 using ArcGIS.Desktop.Mapping.Events;
+using Newtonsoft.Json;
 
 namespace arches_arcgispro_addin
 {
@@ -169,7 +170,7 @@ namespace arches_arcgispro_addin
             try
             {
                 HttpClient client = await ArchesHttpClient.GetHttpClient();
-                if ((DateTime.Now - StaticVariables.archesToken["timestamp"]).TotalSeconds > (StaticVariables.archesToken["expires_in"] - 300))
+                if ((int)(DateTime.Now - StaticVariables.archesToken["timestamp"]).TotalSeconds > (int)(StaticVariables.archesToken["expires_in"] - 300))
                 {
                     StaticVariables.archesToken = await MainDockpaneView.RefreshToken(StaticVariables.myClientid);
                 }
@@ -180,12 +181,11 @@ namespace arches_arcgispro_addin
 
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                var serializer = new JavaScriptSerializer();
-                dynamic results = serializer.Deserialize<dynamic>(@responseBody);
+                dynamic results = JsonConvert.DeserializeObject<dynamic>(@responseBody);
 
-                result.Add("read", results["read"]);
-                result.Add("edit", results["edit"]);
-                result.Add("delete", results["delete"]);
+                result.Add("read", (bool)results["read"]);
+                result.Add("edit", (bool)results["edit"]);
+                result.Add("delete", (bool)results["delete"]);
             }
             catch (HttpRequestException ex)
             {
@@ -209,7 +209,7 @@ namespace arches_arcgispro_addin
 
             await QueuedTask.Run(async () =>
             {
-                var selectedFeatures = MapView.Active.Map.GetSelection();
+                var selectedFeatures = MapView.Active.Map.GetSelection().ToDictionary();
                 if (selectedFeatures.Count == 1)
                 {
                     var firstSelectionSet = selectedFeatures.First();
