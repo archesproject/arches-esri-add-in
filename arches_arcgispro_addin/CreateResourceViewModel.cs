@@ -19,9 +19,11 @@ using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Mapping;
 using ArcGIS.Desktop.Core.Events;
 using ArcGIS.Desktop.Mapping.Events;
-using System.Web.Script.Serialization;
+//using System.Web.Script.Serialization;
 using System.Net.Http;
 using System.Windows.Input;
+using System.Diagnostics;
+using arches_arcgispro_addin.Behaviours;
 
 namespace arches_arcgispro_addin
 {
@@ -30,6 +32,13 @@ namespace arches_arcgispro_addin
         public string Name { get; set; }
         public string Id { get; set; }
         public string Model { get; set; }
+        public string URL
+        {
+            get {
+                return StaticVariables.archesInstanceURL + $"resource/{Id}";
+            }
+        }
+
         public ResourceInstance(string inId)
         {
             Name = "";
@@ -86,7 +95,7 @@ namespace arches_arcgispro_addin
         private void OnMapSelectionChanged(MapSelectionChangedEventArgs args)
         {
             var selection = args.Selection;
-            if (selection.Count() == 0)
+            if (selection.Count == 0)
             {
                 FeatureSelected = false;
                 CanUpload = false;
@@ -129,7 +138,11 @@ namespace arches_arcgispro_addin
         public static void GetResourceIdsCreated()
         {
             lock(_lockCollections);
-            ResourceInstance newResourceId = new ResourceInstance("ArcGIS-" + counter_created, StaticVariables.archesResourceid, "");
+            ResourceInstance newResourceId = new ResourceInstance(
+                $"ArcGIS-{counter_created}",
+                StaticVariables.archesResourceid,
+                StaticVariables.geometryNodes.Where(gn => gn.Id == StaticVariables.selectedArchesNodeid).First().Model
+            );
             counter_created += 1;
             _resourceIdsCreated.Add(newResourceId);
         }
@@ -186,12 +199,12 @@ namespace arches_arcgispro_addin
             }
         }
         
-        private ICommand _createOpenChromiumButton;
-        public ICommand CreateOpenChromiumButton
+        private ICommand _createOpenDefaultWebBrowserButton;
+        public ICommand CreateOpenDefaultWebBrowserButton
         {
             get
             {
-                return _createOpenChromiumButton ?? (_createOpenChromiumButton = new RelayCommand(() =>
+                return _createOpenDefaultWebBrowserButton ?? (_createOpenDefaultWebBrowserButton = new RelayCommand(() =>
                 {
                     if (StaticVariables.archesInstanceURL == "" | StaticVariables.archesInstanceURL == null)
                     {
@@ -219,9 +232,19 @@ namespace arches_arcgispro_addin
                         return;
                     }
                     string editorAddress = StaticVariables.archesInstanceURL + $"resource/{SelectedResourceId.Id}";
-                    UI.ChromePaneViewModel.OpenChromePane(editorAddress);
+
+                    DefaultBrowserBehaviour.OpenBrowser(editorAddress);
+
                 }, true));
             }
+        }
+
+        private void OpenURL(string url)
+        {
+            Process process = new Process();
+            process.StartInfo.UseShellExecute = true;
+            process.StartInfo.FileName = url;
+            process.Start();
         }
 
 

@@ -1,0 +1,11 @@
+Migration Status Report
+  Migrate project: C:\Development\60852 DeskGIS to ArcPro\arches-esri-add-in\arches_arcgispro_addin\arches_arcgispro_addin.csproj
+  arches_arcgispro_addin.csproj
+   project folder: 
+   C:\Development\60852 DeskGIS to ArcPro\arches-esri-add-in\arches_arcgispro_addin\
+   C:\Development\60852 DeskGIS to ArcPro\arches-esri-add-in\arches_arcgispro_addin\
+   language: CS
+   project type: AddIn
+   project has WPF: PresentationFramework
+   Note: project might contain NuGets in packages.config, please check all NuGets for the most up-to-date .NET variant and if needed, replace with a NuGet that supports .NET 6.
+   Note: please check all NuGets for the most up-to-date .NET variant and if needed, replace with a NuGet that supports .NET 6.
