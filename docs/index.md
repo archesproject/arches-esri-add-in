@@ -1,26 +1,34 @@
 # Arches ArcGIS Pro Add-in
 
 ### Abstract
-  The Arches Add-In for ArcGIS Pro allows Arches users to access and manage their Arches data from within ArcGIS Pro. The Add-In leverages Koop geoservices (https://github.com/archesproject/arches-koop) to display existing Arches data within ArcGIS Pro. The Add-In allows user to perform two basic operations: edit existing geometry data and create new geometry data.
+  The Arches Add-In for ArcGIS Pro allows Arches users to access and manage their Arches data from within ArcGIS Pro. The Add-In works with Arches spatial views to display existing Arches data within ArcGIS Pro via direct database connections or other GIS services. The Add-In allows user to perform two basic operations: edit existing geometry data and create new geometry data.
   
 ### [Prerequisites](#prerequisites)
 ### [Installing the Add-In](#installing-the-add-in)
-### [Setting Up Koop services](#setting-up-koop-services)
+### [Adding Arches spatial layers into ArcGIS Pro](#adding-arches-spatial-layers-into-arcgis-pro)
 ### [Logging Into Arches](#logging-into-arches)
 ### [Editing an Existing Resource](#editing-an-existing-resource)
 ### [Creating a New Resource](#creating-a-new-resource)
   
   
 ### Prerequisites
-  - ArcGIS Pro (v2.5)
-  - Arches v5
-  - A Koop service to display geometry data from your Arches instance
+  - ArcGIS Pro v3.x
+  - Arches v6.0+
+  - Arches spatial views configured to provide data sources for layers in ArcGIS Pro
   
 ### Installing the Add-In
   To install the Arches download it to the same computer you have ArcGIS Pro installed on. Double click the Add-In to automatically install it to ArcGIS Pro.
   
-### Setting Up Koop services
-  The Arches-Esri Add-In relies Arches Koop to display Arches resource instance data in ArcGIS Pro. Arches Koop is a node application/server that translates Arches geojson data to an Esri geoservice that can be consumed by ArcGIS Online and ArcGIS Pro. For instructions on setting up a Koop service to serve your Arches data please visit the Arches-Koop repository here: https://github.com/archesproject/arches-koop
+### Adding Arches spatial layers into ArcGIS Pro
+  To add spatial data into ArcGIS Pro from Arches, you will firstly need to configure one or more spatial views to provide you with a data source.
+  
+  Instructions on creating these spatial views can be found in the official Arches documentation [here](https://arches.readthedocs.io/en/stable/administering/spatial-views/).
+  
+  Then in ArcGIS Pro, create a database connection to the Arches database using the credentials found [here](https://arches.readthedocs.io/en/stable/administering/spatial-views/#using-the-spatial-views). Note that if you, or your IT team have configured different credentials, you will need to use those instead.
+  
+  You should then be able to use the ArcGIS Pro Catalog to open the connection and add the data sources to the map.
+  
+  If you do not have direct database access, then it will be necessary for your IT or GIS team to provide a service that connects to that data source.
 
 ### Logging Into Arches
   In order to use the plugin the user must login to an existing deployment of Arches. Follow these step by step instructions to login to your deployment of Arches.
@@ -32,17 +40,15 @@
    
 ### Editing an Existing Resource
   The following steps outline how to edit an existing Arches geometry with the Arches-Esri Add-In
-   1. Add your koop service layer(s) to the map, if you have not already.
-      1. From the 'ArcGIS Pro Tools' section of the 'Arches Project' dock pane tab, select 'Add Data' -> 'Data from Path'
-      2. On the next screen add the path of the Koop layer you would like to add. To add multiple layers you will have to repeat steps for each layer.
+   1. Add your Arches spatial layer(s) to the map, if you have not already (see the section on Adding Arches spatial layers above).
    2. Click 'Edit Resource' either in the 'Arches Project' tab in the dockpane or at the bottom of the Arches Project Add-In panel.
    3. Next choose 'Select' from the 'ArcGIS Pro Tools' section of the 'Arches Project' dock pane tab.
-   4. Select the an Arches resource instance from one of the Koop layers you added before. Make sure to select one and just one instance.
+   4. Select an Arches resource instance from one of the Arches spatial layers you added before. Make sure to select one and just one instance.
    5. Once selected, press the 'Register Feature with Arches' button to indicate that this is the feature that you wish to edit.
    6. Now select the geometry(ies) that you wish to append to or replace the registered geometry.
-   7. By default the plugin will append the selected geometries to the registered geometry. If you would like to completely relace the registered geometry, check         the 'Replace existing geometry' checkbox.
+   7. By default the plugin will append the selected geometries to the registered geometry. If you would like to completely replace the registered geometry, check the 'Replace existing geometry' checkbox.
    8. Finally, click upload to send your new geometries to your Arches instance.
-   After editing a geometry the Koop service should refresh to reflect your changes in ArcGIS Pro. You can also view the edits immediately by clicking the 'Edit        Using Arches Resource Editor' button at the bottom of the 'Edit Resource' tab of the Add-In.
+   After editing a geometry the spatial layer should refresh to reflect your changes in ArcGIS Pro. You can also view the edits immediately by clicking the 'Edit Using Arches Resource Editor' button at the bottom of the 'Edit Resource' tab of the Add-In.
 
 ### Creating a New Resource
   1. To create a new resource click 'Create Resource' in the 'Arches Project' dockpane or click the 'Create Resource' tab at the bottom of the Arches Add-In.
