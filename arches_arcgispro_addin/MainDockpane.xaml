@@ -8,22 +8,27 @@
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="340"
              d:DataContext="{Binding Path=ui.MainDockpaneViewModel}">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <StackPanel Margin="20,20,20,20">
+        <TextBlock Text="Arches Server" FontWeight="SemiBold" Margin="0,0,0,4"/>
+        <TextBlock Name="InstanceURLDisplay" Text="(not configured)" Foreground="Gray" TextWrapping="Wrap" Margin="0,0,0,16"/>
 
-        <TextBlock HorizontalAlignment="Left" Margin="20,20,0,0" Grid.Row="1" Text="Arches Server" VerticalAlignment="Top" Width="300" FontWeight="SemiBold"/>
-        <TextBlock Name="InstanceURLDisplay" HorizontalAlignment="Left" Margin="20,40,0,0" Grid.Row="1" Text="(not configured)" VerticalAlignment="Top" Width="300" Foreground="Gray"/>
+        <Grid Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Content="Sign In" Height="25" Click="MainSignIn_Button"/>
+            <Button Grid.Column="2" Content="Sign Out" Height="25" Click="MainSignOut_Button"/>
+        </Grid>
 
-        <Button Content="Sign In" HorizontalAlignment="Left" Margin="20,80,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="145" Click="MainSignIn_Button"/>
-        <Button Content="Sign Out" HorizontalAlignment="Left" Margin="175,80,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="145" Click="MainSignOut_Button"/>
+        <TextBlock Name="SigningInMessage" Text="Opening browser for sign-in..." Visibility="Hidden" FontStyle="Italic" Foreground="Gray" Margin="0,0,0,12"/>
 
-        <TextBlock Name="SigningInMessage" HorizontalAlignment="Left" Margin="20,120,0,0" Grid.Row="1" Text="Opening browser for sign-in..." Visibility="Hidden" VerticalAlignment="Top" Width="300" FontStyle="Italic" Foreground="Gray"/>
-
-        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="85" Margin="20,150,0,0" Visibility="Visible" Grid.RowSpan="2" Stroke="DarkGray" VerticalAlignment="Top" Width="300"/>
-        <TextBlock Name="SucceedMessage" HorizontalAlignment="Left" Margin="30,160,0,0" Grid.Row="1" Text="Connected to Arches Server" Visibility="Hidden" TextWrapping="Wrap" VerticalAlignment="Top" Width="280"/>
-        <TextBlock Name="FailMessage" HorizontalAlignment="Left" Margin="30,160,0,0" Grid.Row="1" Text="Not connected" Visibility="Visible" TextWrapping="Wrap" VerticalAlignment="Top" Width="280"/>
-    </Grid>
+        <Border Background="#FFF4F4F5" BorderBrush="DarkGray" BorderThickness="1" Padding="10">
+            <Grid>
+                <TextBlock Name="SucceedMessage" Text="Connected to Arches Server" Visibility="Hidden" TextWrapping="Wrap"/>
+                <TextBlock Name="FailMessage" Text="Not connected" Visibility="Visible" TextWrapping="Wrap"/>
+            </Grid>
+        </Border>
+    </StackPanel>
 </UserControl>
