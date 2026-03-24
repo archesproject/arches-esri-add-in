@@ -92,7 +92,14 @@ namespace arches_arcgispro_addin
                 HttpClient client = await ArchesHttpClient.GetHttpClient();
                 if ((int)(DateTime.Now - StaticVariables.archesToken["timestamp"]).TotalSeconds > (int)(StaticVariables.archesToken["expires_in"] - 300))
                 {
-                    StaticVariables.archesToken = await MainDockpaneView.RefreshToken(StaticVariables.myClientid);
+                    try
+                    {
+                        StaticVariables.archesToken = await MainDockpaneView.RefreshToken(StaticVariables.myClientid);
+                    }
+                    catch
+                    {
+                        throw new ArgumentException("Session expired. Please sign in again from the Arches Connection panel.");
+                    }
                 }
 
                 var stringContent = new FormUrlEncodedContent(new[]

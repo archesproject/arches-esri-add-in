@@ -39,7 +39,7 @@
 
         <Button Content="Upload" HorizontalAlignment="Left" Margin="20,40,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Height="25" Width="145" IsEnabled="{Binding Registered}" Click="EditUpload_Button"/>
         <Button Content="Cancel" HorizontalAlignment="Left" Margin="175,40,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Height="25" Width="145" IsEnabled="{Binding Registered}" Command="{Binding EditCancel_Button}" />
-        <CheckBox Content="Replace exsiting geometry?" HorizontalAlignment="Left" Margin="20,80,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Unchecked="ReplaceCheckBox_Unchecked" Checked="ReplaceCheckBox_Checked" />
+        <CheckBox Content="Replace existing geometry?" HorizontalAlignment="Left" Margin="20,80,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Unchecked="ReplaceCheckBox_Unchecked" Checked="ReplaceCheckBox_Checked" />
 
         <TextBlock HorizontalAlignment="Left" Margin="20,140,0,0" Grid.Row="1" Visibility="{Binding RegisteredVisibility}" VerticalAlignment="Top" Width="100" TextWrapping="WrapWithOverflow"
                    Text="Resource Model: " />

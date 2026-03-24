@@ -1,11 +1,11 @@
-﻿<UserControl x:Class="arches_arcgispro_addin.MainDockpaneView"
+<UserControl x:Class="arches_arcgispro_addin.MainDockpaneView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"   
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ui="clr-namespace:arches_arcgispro_addin"
              xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="340"
              d:DataContext="{Binding Path=ui.MainDockpaneViewModel}">
     <Grid>
@@ -14,20 +14,16 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock HorizontalAlignment="Left" Margin="20,20,0,0" Grid.Row="1" Text="Arches Server (http://myserver.com/)" VerticalAlignment="Top" Width="300"/>
-        <TextBox Name="InstanceURL" HorizontalAlignment="Left" Height="25" Margin="20,40,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="300"/>
+        <TextBlock HorizontalAlignment="Left" Margin="20,20,0,0" Grid.Row="1" Text="Arches Server" VerticalAlignment="Top" Width="300" FontWeight="SemiBold"/>
+        <TextBlock Name="InstanceURLDisplay" HorizontalAlignment="Left" Margin="20,40,0,0" Grid.Row="1" Text="(not configured)" VerticalAlignment="Top" Width="300" Foreground="Gray"/>
 
-        <TextBlock HorizontalAlignment="Left" Margin="20,80,0,0" Grid.Row="1" Text="User Name" VerticalAlignment="Top" Width="300"/>
-        <TextBox Name="Username" HorizontalAlignment="Left" Height="25" Margin="20,100,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="300"/>
+        <Button Content="Sign In" HorizontalAlignment="Left" Margin="20,80,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="145" Click="MainSignIn_Button"/>
+        <Button Content="Sign Out" HorizontalAlignment="Left" Margin="175,80,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="145" Click="MainSignOut_Button"/>
 
-        <TextBlock HorizontalAlignment="Left" Margin="20,140,0,0" Grid.Row="1" Text="Password" VerticalAlignment="Top" Width="300"/>
-        <PasswordBox Name="Password" HorizontalAlignment="Left" Height="25" Margin="20,160,0,0" Grid.Row="1" VerticalAlignment="Top" Width="300"/>
+        <TextBlock Name="SigningInMessage" HorizontalAlignment="Left" Margin="20,120,0,0" Grid.Row="1" Text="Opening browser for sign-in..." Visibility="Hidden" VerticalAlignment="Top" Width="300" FontStyle="Italic" Foreground="Gray"/>
 
-        <Button Content="Connect" HorizontalAlignment="Left" Margin="20,200,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="145" Click="MainConnect_Button"/>
-        <Button Content="Cancel" HorizontalAlignment="Left" Margin="175,200,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="145" Click="MainCancel_Button"/>
-        
-        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="85" Margin="20,250,0,0" Visibility="Visible" Grid.RowSpan="2" Stroke="DarkGray" VerticalAlignment="Top" Width="300"/>
-        <TextBlock Name="SucceedMessage" HorizontalAlignment="Left" Margin="30,260,0,0" Grid.Row="1" Text="Connected to Arches Server" Visibility="Hidden" TextWrapping="Wrap" VerticalAlignment="Top" Width="280"/>
-        <TextBlock Name="FailMessage" HorizontalAlignment="Left" Margin="30,260,0,0" Grid.Row="1" Text="Not connected" Visibility="Visible" TextWrapping="Wrap" VerticalAlignment="Top" Width="280"/>
+        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="85" Margin="20,150,0,0" Visibility="Visible" Grid.RowSpan="2" Stroke="DarkGray" VerticalAlignment="Top" Width="300"/>
+        <TextBlock Name="SucceedMessage" HorizontalAlignment="Left" Margin="30,160,0,0" Grid.Row="1" Text="Connected to Arches Server" Visibility="Hidden" TextWrapping="Wrap" VerticalAlignment="Top" Width="280"/>
+        <TextBlock Name="FailMessage" HorizontalAlignment="Left" Margin="30,160,0,0" Grid.Row="1" Text="Not connected" Visibility="Visible" TextWrapping="Wrap" VerticalAlignment="Top" Width="280"/>
     </Grid>
 </UserControl>

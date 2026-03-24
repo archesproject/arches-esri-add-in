@@ -48,7 +48,7 @@
           <tooltip heading="Arches Instance">Connect to Arches Instance<disabledText /></tooltip>
         </button>
         <button id="arches_arcgispro_addin_SaveResource_ShowButton" caption="Edit Resources" className="SaveResource_ShowButton" loadOnClick="true" largeImage="Images\AddinDesktop32.png" smallImage="Images\AddinDesktop16.png" condition="token_condition">
-          <tooltip heading="Edit Resources">Save Geometry to the selected reousrce instance<disabledText /></tooltip>
+          <tooltip heading="Edit Resources">Save Geometry to the selected resource instance<disabledText /></tooltip>
         </button>
         <button id="arches_arcgispro_addin_CreateResource_ShowButton" caption="Create Resources" className="CreateResource_ShowButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple32.png" condition="token_condition">
           <tooltip heading="Create Resources">Create a New Resource<disabledText /></tooltip>
