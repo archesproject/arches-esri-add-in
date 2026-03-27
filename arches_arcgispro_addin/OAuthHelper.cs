@@ -61,8 +61,8 @@ namespace arches_arcgispro_addin
 
             if (string.IsNullOrWhiteSpace(config.InstanceUrl) ||
                 string.IsNullOrWhiteSpace(config.ClientId) ||
-                config.InstanceUrl.Contains("YOUR_") ||
-                config.ClientId.Contains("YOUR_"))
+                config.InstanceUrl.Equals("https://your-arches-server.com/", StringComparison.OrdinalIgnoreCase) ||
+                config.ClientId.Equals("YOUR_PUBLIC_CLIENT_ID", StringComparison.OrdinalIgnoreCase))
             {
                 return false;
             }
