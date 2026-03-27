@@ -114,6 +114,44 @@ namespace arches_arcgispro_addin
             return await OAuthHelper.RefreshTokenAsync();
         }
 
+        private void ShowSetupPanel()
+        {
+            SetupPanel.Visibility = Visibility.Visible;
+            ConnectionPanel.Visibility = Visibility.Collapsed;
+        }
+
+        private void ShowConnectionPanel()
+        {
+            SetupPanel.Visibility = Visibility.Collapsed;
+            ConnectionPanel.Visibility = Visibility.Visible;
+            InstanceURLDisplay.Text = StaticVariables.archesInstanceURL;
+        }
+
+        private void SaveConfig_Button(object sender, RoutedEventArgs e)
+        {
+            string instanceUrl = SetupInstanceURL.Text?.Trim();
+            string clientId = SetupClientId.Text?.Trim();
+
+            if (string.IsNullOrEmpty(instanceUrl) || string.IsNullOrEmpty(clientId))
+            {
+                SetupErrorMessage.Text = "Both Instance URL and Client ID are required.";
+                SetupErrorMessage.Visibility = Visibility.Visible;
+                return;
+            }
+
+            try
+            {
+                OAuthHelper.SaveConfig(instanceUrl, clientId);
+                SetupErrorMessage.Visibility = Visibility.Collapsed;
+                ShowConnectionPanel();
+            }
+            catch (Exception ex)
+            {
+                SetupErrorMessage.Text = "Failed to save configuration: " + ex.Message;
+                SetupErrorMessage.Visibility = Visibility.Visible;
+            }
+        }
+
         private async void MainSignIn_Button(object sender, RoutedEventArgs e)
         {
             try
@@ -121,12 +159,6 @@ namespace arches_arcgispro_addin
                 SigningInMessage.Visibility = Visibility.Visible;
                 FailMessage.Visibility = Visibility.Hidden;
                 SucceedMessage.Visibility = Visibility.Hidden;
-
-                if (string.IsNullOrEmpty(StaticVariables.archesInstanceURL))
-                {
-                    OAuthHelper.LoadConfig();
-                    InstanceURLDisplay.Text = StaticVariables.archesInstanceURL;
-                }
 
                 StaticVariables.archesToken = await OAuthHelper.AuthorizeAsync();
                 FrameworkApplication.State.Activate("token_state");
@@ -169,12 +201,18 @@ namespace arches_arcgispro_addin
             InitializeComponent();
             base.OnInitialized(e);
 
+            bool configValid = OAuthHelper.LoadConfig();
+
+            if (!configValid)
+            {
+                ShowSetupPanel();
+                return;
+            }
+
+            ShowConnectionPanel();
+
             try
             {
-                OAuthHelper.LoadConfig();
-                InstanceURLDisplay.Text = StaticVariables.archesInstanceURL;
-
-                // Attempt silent refresh from stored token
                 bool refreshed = await OAuthHelper.TrySilentRefreshAsync();
                 if (refreshed)
                 {
@@ -189,7 +227,7 @@ namespace arches_arcgispro_addin
             }
             catch
             {
-                // Config load or silent refresh failed, user will need to click Sign In
+                // Silent refresh failed, user will need to click Sign In
             }
         }
 

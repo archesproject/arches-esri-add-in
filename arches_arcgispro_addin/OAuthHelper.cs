@@ -47,31 +47,66 @@ namespace arches_arcgispro_addin
 
         /// <summary>
         /// Load instance URL and client ID from arches_config.json bundled with the add-in.
+        /// Returns true if the config is valid and ready to use, false if setup is needed.
         /// </summary>
-        public static void LoadConfig()
+        public static bool LoadConfig()
         {
-            string assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string configPath = Path.Combine(assemblyDir, "arches_config.json");
+            string configPath = GetConfigPath();
 
             if (!File.Exists(configPath))
-            {
-                throw new FileNotFoundException(
-                    "arches_config.json not found. The add-in has not been configured for your Arches instance.");
-            }
+                return false;
 
             string json = File.ReadAllText(configPath);
             var config = JsonConvert.DeserializeObject<ArchesConfig>(json);
 
-            if (string.IsNullOrWhiteSpace(config.InstanceUrl) || config.InstanceUrl.Contains("YOUR_"))
+            if (string.IsNullOrWhiteSpace(config.InstanceUrl) ||
+                string.IsNullOrWhiteSpace(config.ClientId) ||
+                config.InstanceUrl.Contains("YOUR_") ||
+                config.ClientId.Contains("YOUR_"))
             {
-                throw new InvalidOperationException(
-                    "arches_config.json has not been configured. An administrator must set the instance_url and client_id before distributing the add-in.");
+                return false;
             }
 
             StaticVariables.archesInstanceURL = config.InstanceUrl.TrimEnd('/') + "/";
             StaticVariables.myClientid = config.ClientId;
             CallbackPort = config.CallbackPort ?? DefaultCallbackPort;
             AuthTimeoutSeconds = config.AuthTimeoutSeconds ?? DefaultAuthTimeoutSeconds;
+            return true;
+        }
+
+        /// <summary>
+        /// Save instance URL and client ID to arches_config.json.
+        /// </summary>
+        public static void SaveConfig(string instanceUrl, string clientId)
+        {
+            string configPath = GetConfigPath();
+
+            // Read existing config to preserve optional settings
+            ArchesConfig config;
+            if (File.Exists(configPath))
+            {
+                string existingJson = File.ReadAllText(configPath);
+                config = JsonConvert.DeserializeObject<ArchesConfig>(existingJson);
+            }
+            else
+            {
+                config = new ArchesConfig();
+            }
+
+            config.InstanceUrl = instanceUrl;
+            config.ClientId = clientId;
+
+            string json = JsonConvert.SerializeObject(config, Formatting.Indented);
+            File.WriteAllText(configPath, json);
+
+            // Reload so static variables are set
+            LoadConfig();
+        }
+
+        private static string GetConfigPath()
+        {
+            string assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            return Path.Combine(assemblyDir, "arches_config.json");
         }
 
         /// <summary>
