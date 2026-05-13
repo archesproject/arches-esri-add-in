@@ -114,10 +114,12 @@ namespace arches_arcgispro_addin
             return await OAuthHelper.RefreshTokenAsync();
         }
 
-        private void ShowSetupPanel()
+        private void ShowSetupPanel(bool canCancel = false)
         {
             SetupPanel.Visibility = Visibility.Visible;
             ConnectionPanel.Visibility = Visibility.Collapsed;
+            CancelSetupButton.Visibility = canCancel ? Visibility.Visible : Visibility.Collapsed;
+            SetupErrorMessage.Visibility = Visibility.Collapsed;
         }
 
         private void ShowConnectionPanel()
@@ -127,7 +129,19 @@ namespace arches_arcgispro_addin
             InstanceURLDisplay.Text = StaticVariables.archesInstanceURL;
         }
 
-        private async void SaveConfig_Button(object sender, RoutedEventArgs e)
+        private void EditConfig_Button(object sender, RoutedEventArgs e)
+        {
+            SetupInstanceURL.Text = StaticVariables.archesInstanceURL;
+            SetupClientId.Text = StaticVariables.myClientid;
+            ShowSetupPanel(canCancel: true);
+        }
+
+        private void CancelSetup_Button(object sender, RoutedEventArgs e)
+        {
+            ShowConnectionPanel();
+        }
+
+        private void SaveConfig_Button(object sender, RoutedEventArgs e)
         {
             string instanceUrl = SetupInstanceURL.Text?.Trim();
             string clientId = SetupClientId.Text?.Trim();
@@ -139,33 +153,33 @@ namespace arches_arcgispro_addin
                 return;
             }
 
-            SaveConfigButton.IsEnabled = false;
-            string originalButtonText = SaveConfigButton.Content as string;
-            SaveConfigButton.Content = "Validating...";
-            SetupErrorMessage.Visibility = Visibility.Collapsed;
-
             try
             {
-                var (ok, error) = await OAuthHelper.ValidateConfigAsync(instanceUrl, clientId);
-                if (!ok)
-                {
-                    SetupErrorMessage.Text = error;
-                    SetupErrorMessage.Visibility = Visibility.Visible;
-                    return;
-                }
+                bool configChanged =
+                    !string.Equals(StaticVariables.archesInstanceURL?.TrimEnd('/'), instanceUrl.TrimEnd('/'), StringComparison.OrdinalIgnoreCase) ||
+                    !string.Equals(StaticVariables.myClientid, clientId, StringComparison.Ordinal);
 
                 OAuthHelper.SaveConfig(instanceUrl, clientId);
+
+                if (configChanged && StaticVariables.archesToken != null)
+                {
+                    // The stored refresh token is bound to the previous instance/client, so
+                    // force a fresh sign-in after the user changes either value.
+                    OAuthHelper.ClearStoredTokens();
+                    StaticVariables.archesToken = null;
+                    FrameworkApplication.State.Deactivate("token_state");
+                    FailMessage.Text = "Not connected";
+                    FailMessage.Visibility = Visibility.Visible;
+                    SucceedMessage.Visibility = Visibility.Hidden;
+                }
+
+                SetupErrorMessage.Visibility = Visibility.Collapsed;
                 ShowConnectionPanel();
             }
             catch (Exception ex)
             {
                 SetupErrorMessage.Text = "Failed to save configuration: " + ex.Message;
                 SetupErrorMessage.Visibility = Visibility.Visible;
-            }
-            finally
-            {
-                SaveConfigButton.Content = originalButtonText;
-                SaveConfigButton.IsEnabled = true;
             }
         }
 
