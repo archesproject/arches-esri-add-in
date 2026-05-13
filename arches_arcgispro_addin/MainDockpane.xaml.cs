@@ -127,7 +127,7 @@ namespace arches_arcgispro_addin
             InstanceURLDisplay.Text = StaticVariables.archesInstanceURL;
         }
 
-        private void SaveConfig_Button(object sender, RoutedEventArgs e)
+        private async void SaveConfig_Button(object sender, RoutedEventArgs e)
         {
             string instanceUrl = SetupInstanceURL.Text?.Trim();
             string clientId = SetupClientId.Text?.Trim();
@@ -139,16 +139,33 @@ namespace arches_arcgispro_addin
                 return;
             }
 
+            SaveConfigButton.IsEnabled = false;
+            string originalButtonText = SaveConfigButton.Content as string;
+            SaveConfigButton.Content = "Validating...";
+            SetupErrorMessage.Visibility = Visibility.Collapsed;
+
             try
             {
+                var (ok, error) = await OAuthHelper.ValidateConfigAsync(instanceUrl, clientId);
+                if (!ok)
+                {
+                    SetupErrorMessage.Text = error;
+                    SetupErrorMessage.Visibility = Visibility.Visible;
+                    return;
+                }
+
                 OAuthHelper.SaveConfig(instanceUrl, clientId);
-                SetupErrorMessage.Visibility = Visibility.Collapsed;
                 ShowConnectionPanel();
             }
             catch (Exception ex)
             {
                 SetupErrorMessage.Text = "Failed to save configuration: " + ex.Message;
                 SetupErrorMessage.Visibility = Visibility.Visible;
+            }
+            finally
+            {
+                SaveConfigButton.Content = originalButtonText;
+                SaveConfigButton.IsEnabled = true;
             }
         }
 

@@ -34,59 +34,85 @@ namespace arches_arcgispro_addin
         private const int DefaultCallbackPort = 53821;
         private const int DefaultAuthTimeoutSeconds = 180;
         private const string TokenFileName = "arches_addin_tokens.json";
+        private const string ConfigFileName = "arches_config.json";
+        private const string PlaceholderInstanceUrl = "https://your-arches-server.com/";
+        private const string PlaceholderClientId = "YOUR_PUBLIC_CLIENT_ID";
 
         private static int CallbackPort = DefaultCallbackPort;
         private static int AuthTimeoutSeconds = DefaultAuthTimeoutSeconds;
         private static string RedirectUri => $"http://127.0.0.1:{CallbackPort}/callback/";
 
-        private static string TokenFilePath => Path.Combine(
+        private static string AppDataDir => Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "ArchesArcGISProAddIn",
-            TokenFileName
+            "ArchesArcGISProAddIn"
         );
 
+        private static string TokenFilePath => Path.Combine(AppDataDir, TokenFileName);
+
+        // User-written config lives in LocalAppData (writable per-user, survives reinstalls).
+        private static string UserConfigPath => Path.Combine(AppDataDir, ConfigFileName);
+
+        // Bundled template ships next to the assembly; used as a default if no user config exists.
+        private static string BundledConfigPath => Path.Combine(
+            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+            ConfigFileName
+        );
+
+        private static bool IsPlaceholder(string instanceUrl, string clientId)
+        {
+            return string.IsNullOrWhiteSpace(instanceUrl) ||
+                   string.IsNullOrWhiteSpace(clientId) ||
+                   instanceUrl.Equals(PlaceholderInstanceUrl, StringComparison.OrdinalIgnoreCase) ||
+                   clientId.Equals(PlaceholderClientId, StringComparison.OrdinalIgnoreCase);
+        }
+
         /// <summary>
-        /// Load instance URL and client ID from arches_config.json bundled with the add-in.
-        /// Returns true if the config is valid and ready to use, false if setup is needed.
+        /// Load config, preferring user-written values in LocalAppData, falling back to the
+        /// bundled template. Returns true if the config is valid and ready to use.
         /// </summary>
         public static bool LoadConfig()
         {
-            string configPath = GetConfigPath();
+            string configPath = File.Exists(UserConfigPath) ? UserConfigPath
+                              : File.Exists(BundledConfigPath) ? BundledConfigPath
+                              : null;
 
-            if (!File.Exists(configPath))
+            if (configPath == null)
                 return false;
 
             string json = File.ReadAllText(configPath);
             var config = JsonConvert.DeserializeObject<ArchesConfig>(json);
 
-            if (string.IsNullOrWhiteSpace(config.InstanceUrl) ||
-                string.IsNullOrWhiteSpace(config.ClientId) ||
-                config.InstanceUrl.Equals("https://your-arches-server.com/", StringComparison.OrdinalIgnoreCase) ||
-                config.ClientId.Equals("YOUR_PUBLIC_CLIENT_ID", StringComparison.OrdinalIgnoreCase))
-            {
+            // Pick up optional settings even if the main fields are placeholders, so the
+            // setup-time validation uses the admin-configured callback_port if one was set.
+            CallbackPort = config.CallbackPort ?? DefaultCallbackPort;
+            AuthTimeoutSeconds = config.AuthTimeoutSeconds ?? DefaultAuthTimeoutSeconds;
+
+            if (IsPlaceholder(config.InstanceUrl, config.ClientId))
                 return false;
-            }
 
             StaticVariables.archesInstanceURL = config.InstanceUrl.TrimEnd('/') + "/";
             StaticVariables.myClientid = config.ClientId;
-            CallbackPort = config.CallbackPort ?? DefaultCallbackPort;
-            AuthTimeoutSeconds = config.AuthTimeoutSeconds ?? DefaultAuthTimeoutSeconds;
             return true;
         }
 
         /// <summary>
-        /// Save instance URL and client ID to arches_config.json.
+        /// Save instance URL and client ID to the user's per-user config file in LocalAppData.
         /// </summary>
         public static void SaveConfig(string instanceUrl, string clientId)
         {
-            string configPath = GetConfigPath();
+            if (!Directory.Exists(AppDataDir))
+                Directory.CreateDirectory(AppDataDir);
 
-            // Read existing config to preserve optional settings
+            // Preserve optional settings from whichever config already exists.
+            string sourcePath = File.Exists(UserConfigPath) ? UserConfigPath
+                              : File.Exists(BundledConfigPath) ? BundledConfigPath
+                              : null;
+
             ArchesConfig config;
-            if (File.Exists(configPath))
+            if (sourcePath != null)
             {
-                string existingJson = File.ReadAllText(configPath);
-                config = JsonConvert.DeserializeObject<ArchesConfig>(existingJson);
+                string existingJson = File.ReadAllText(sourcePath);
+                config = JsonConvert.DeserializeObject<ArchesConfig>(existingJson) ?? new ArchesConfig();
             }
             else
             {
@@ -97,16 +123,90 @@ namespace arches_arcgispro_addin
             config.ClientId = clientId;
 
             string json = JsonConvert.SerializeObject(config, Formatting.Indented);
-            File.WriteAllText(configPath, json);
+            File.WriteAllText(UserConfigPath, json);
 
-            // Reload so static variables are set
             LoadConfig();
         }
 
-        private static string GetConfigPath()
+        /// <summary>
+        /// Verify the instance URL is reachable and the client ID is registered on the
+        /// Arches OAuth provider, without persisting anything.
+        /// </summary>
+        public static async Task<(bool ok, string error)> ValidateConfigAsync(string instanceUrl, string clientId)
         {
-            string assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            return Path.Combine(assemblyDir, "arches_config.json");
+            if (string.IsNullOrWhiteSpace(instanceUrl) || string.IsNullOrWhiteSpace(clientId))
+                return (false, "Both Instance URL and Client ID are required.");
+
+            if (IsPlaceholder(instanceUrl, clientId))
+                return (false, "Instance URL and Client ID must be set to your real values, not the placeholders.");
+
+            if (!Uri.TryCreate(instanceUrl, UriKind.Absolute, out Uri parsed) ||
+                (parsed.Scheme != Uri.UriSchemeHttp && parsed.Scheme != Uri.UriSchemeHttps))
+            {
+                return (false, "Instance URL must be a valid http:// or https:// URL.");
+            }
+
+            string normalized = instanceUrl.TrimEnd('/') + "/";
+            string redirectUri = $"http://127.0.0.1:{CallbackPort}/callback/";
+
+            // The OAuth authorize endpoint with an invalid client_id or redirect_uri returns
+            // an HTTP 400 from django-oauth-toolkit. A valid client_id renders the login page
+            // (200) or redirects to it (3xx). Don't follow redirects — we just want the
+            // first response.
+            var handler = new HttpClientHandler
+            {
+                AllowAutoRedirect = false,
+                UseProxy = true,
+                DefaultProxyCredentials = CredentialCache.DefaultNetworkCredentials
+            };
+            using var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(15) };
+
+            string authorizeUrl =
+                $"{normalized}o/authorize/" +
+                $"?response_type=code" +
+                $"&client_id={Uri.EscapeDataString(clientId)}" +
+                $"&redirect_uri={Uri.EscapeDataString(redirectUri)}" +
+                $"&code_challenge={Uri.EscapeDataString("validation-placeholder")}" +
+                $"&code_challenge_method=S256" +
+                $"&state=validation";
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.GetAsync(authorizeUrl);
+            }
+            catch (TaskCanceledException)
+            {
+                return (false, "Connection to Arches server timed out.");
+            }
+            catch (HttpRequestException ex)
+            {
+                return (false, $"Could not reach Arches server: {ex.Message}");
+            }
+
+            int status = (int)response.StatusCode;
+            if (status >= 200 && status < 400)
+                return (true, null);
+
+            if (status == 404)
+                return (false, "OAuth endpoint not found at this URL. Check the Instance URL.");
+
+            if (status == 400)
+            {
+                string body = await response.Content.ReadAsStringAsync();
+                if (body.IndexOf("invalid_client", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    body.IndexOf("Invalid client", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return (false, "The Client ID is not registered on this Arches instance.");
+                }
+                if (body.IndexOf("redirect_uri", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return (false, $"Redirect URI mismatch. The OAuth application must allow {redirectUri}.");
+                }
+                return (false, "Arches rejected the configuration (HTTP 400).");
+            }
+
+            return (false, $"Unexpected response from Arches server (HTTP {status}).");
         }
 
         /// <summary>

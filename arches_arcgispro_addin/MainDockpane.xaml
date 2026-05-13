@@ -20,7 +20,7 @@
             <TextBlock Text="Client ID" Margin="0,0,0,4"/>
             <TextBox Name="SetupClientId" Margin="0,0,0,16"/>
 
-            <Button Content="Save Configuration" Height="25" Click="SaveConfig_Button"/>
+            <Button Name="SaveConfigButton" Content="Save Configuration" Height="25" Click="SaveConfig_Button"/>
 
             <TextBlock Name="SetupErrorMessage" Foreground="Red" TextWrapping="Wrap" Margin="0,12,0,0" Visibility="Collapsed"/>
         </StackPanel>
