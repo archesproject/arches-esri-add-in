@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,24 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Net;
 using System.Net.Http;
 using ArcGIS.Desktop.Framework.Contracts;
 using ArcGIS.Desktop.Framework;
 using System.Collections.ObjectModel;
-using ArcGIS.Core.Data.UtilityNetwork.Trace;
 using Newtonsoft.Json;
-using ArcGIS.Core.CIM;
-using System.Security.Policy;
-using Microsoft.Win32;
-using System.Security.AccessControl;
 
 namespace arches_arcgispro_addin
 {
@@ -32,9 +20,6 @@ namespace arches_arcgispro_addin
     /// </summary>
     public static class ArchesHttpClient
     {
-        /// <summary>
-        /// 
-        /// </summary>
         private static HttpClient _client;
 
         public static async Task<HttpClient> GetHttpClient()
@@ -111,15 +96,12 @@ namespace arches_arcgispro_addin
         public static Dictionary<string, dynamic> archesToken;
         public static string myClientid;
         public static string archesInstanceURL;
-        //public static string myUsername;
-        //public static string myPassword;
         public static string archesTileid;
         public static string archesNodeid;
         public static string selectedArchesNodeid;
         public static string archesResourceid = "No Resource is Selected";
         public static ArcGIS.Core.Geometry.Geometry archesGeometry;
         public static List<GeometryNode> geometryNodes = new List<GeometryNode>();
-        public static string registryKey = @"SOFTWARE\ArchesArcGISProAddIn";
     };
 
     /// <summary>
@@ -127,223 +109,157 @@ namespace arches_arcgispro_addin
     /// </summary>
     public partial class MainDockpaneView : UserControl
     {
-
-     
-
-        private async Task GetInstances()
-        {
-            try
-            {
-                HttpClient client = await ArchesHttpClient.GetHttpClient();
-                HttpResponseMessage response = await client.GetAsync(System.IO.Path.Combine(StaticVariables.archesInstanceURL, "search/resources"));
-
-                response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
-                dynamic responseJSON = JsonConvert.DeserializeObject<dynamic>(@responseBody);
-                dynamic results = responseJSON["results"]["hits"]["hits"];
-                int count = 0;
-                string names = "";
-                foreach (dynamic element in results)
-                {
-                    count++;
-                    string displayname = element["_source"]["displayname"];
-                    names += $"{count}. {displayname} \n";
-                }
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"{count} Instances:\n{names}");
-            }
-            catch (Exception ex)
-            {
-                throw new System.ArgumentException("Address is wrong", ex);
-            }
-        }
-
-        private async Task<string> GetClientId()
-        {
-
-            string clientid = "";
-
-            try
-            {
-                HttpClient client = await ArchesHttpClient.GetHttpClient();
-                var stringContent = new FormUrlEncodedContent(new[]
-                    {
-                        new KeyValuePair<string, string>("username", Username.Text),
-                        new KeyValuePair<string, string>("password", Password.Password),
-                    });
-                var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.archesInstanceURL, "auth/get_client_id"), stringContent);
-                response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
-                dynamic responseJSON = JsonConvert.DeserializeObject<dynamic>(@responseBody);
-                dynamic results = responseJSON;
-                clientid = results["clientid"];
-            }
-            catch (Exception ex)
-            {
-                throw new System.ArgumentException("Failed to get a client ID", ex);
-            }
-            return clientid;
-        }
-
-        private async Task<Dictionary<string, dynamic>> GetToken(string clientid)
-        {
-
-            Dictionary<string, dynamic> result = new Dictionary<string, dynamic>();
-
-            try
-            {
-                HttpClient client = await ArchesHttpClient.GetHttpClient();
-                var stringContent = new FormUrlEncodedContent(new[]
-                    {
-                            new KeyValuePair<string, string>("username", Username.Text),
-                            new KeyValuePair<string, string>("password", Password.Password),
-                            new KeyValuePair<string, string>("client_id", clientid),
-                            new KeyValuePair<string, string>("grant_type", "password"),
-                        });
-                var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.archesInstanceURL, "o/token/"), stringContent);
-
-                response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
-                dynamic responseJSON = JsonConvert.DeserializeObject<dynamic>(@responseBody);
-                dynamic results = responseJSON;
-                result.Add("access_token", (string)results["access_token"]);
-                result.Add("refresh_token", (string)results["refresh_token"]);
-                result.Add("expires_in", (double)results["expires_in"]);
-                result.Add("token_type", (string)results["token_type"]);
-                result.Add("scope", (string)results["scope"]);
-                result.Add("timestamp", DateTime.Now);
-            }
-            catch (Exception ex)
-            {
-                throw new System.ArgumentException($"Failed to get the Token: {ex.Message}", ex);
-            }
-            return result;
-        }
-
         public static async Task<Dictionary<string, dynamic>> RefreshToken(string clientid)
         {
+            return await OAuthHelper.RefreshTokenAsync();
+        }
 
-            Dictionary<string, dynamic> result = new Dictionary<string, dynamic>();
+        private void ShowSetupPanel(bool canCancel = false)
+        {
+            SetupPanel.Visibility = Visibility.Visible;
+            ConnectionPanel.Visibility = Visibility.Collapsed;
+            CancelSetupButton.Visibility = canCancel ? Visibility.Visible : Visibility.Collapsed;
+            SetupErrorMessage.Visibility = Visibility.Collapsed;
+        }
+
+        private void ShowConnectionPanel()
+        {
+            SetupPanel.Visibility = Visibility.Collapsed;
+            ConnectionPanel.Visibility = Visibility.Visible;
+            InstanceURLDisplay.Text = StaticVariables.archesInstanceURL;
+        }
+
+        private void EditConfig_Button(object sender, RoutedEventArgs e)
+        {
+            SetupInstanceURL.Text = StaticVariables.archesInstanceURL;
+            SetupClientId.Text = StaticVariables.myClientid;
+            ShowSetupPanel(canCancel: true);
+        }
+
+        private void CancelSetup_Button(object sender, RoutedEventArgs e)
+        {
+            ShowConnectionPanel();
+        }
+
+        private void SaveConfig_Button(object sender, RoutedEventArgs e)
+        {
+            string instanceUrl = SetupInstanceURL.Text?.Trim();
+            string clientId = SetupClientId.Text?.Trim();
+
+            if (string.IsNullOrEmpty(instanceUrl) || string.IsNullOrEmpty(clientId))
+            {
+                SetupErrorMessage.Text = "Both Instance URL and Client ID are required.";
+                SetupErrorMessage.Visibility = Visibility.Visible;
+                return;
+            }
 
             try
             {
-                HttpClient client = await ArchesHttpClient.GetHttpClient();
-                var stringContent = new FormUrlEncodedContent(new[]
-                    {
-                            new KeyValuePair<string, string>("refresh_token", StaticVariables.archesToken["refresh_token"]),
-                            new KeyValuePair<string, string>("client_id", clientid),
-                            new KeyValuePair<string, string>("grant_type", "refresh_token"),
-                        });
-                var response = await client.PostAsync(System.IO.Path.Combine(StaticVariables.archesInstanceURL, "o/token/"), stringContent);
+                bool configChanged =
+                    !string.Equals(StaticVariables.archesInstanceURL?.TrimEnd('/'), instanceUrl.TrimEnd('/'), StringComparison.OrdinalIgnoreCase) ||
+                    !string.Equals(StaticVariables.myClientid, clientId, StringComparison.Ordinal);
 
-                response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
-                dynamic responseJSON = JsonConvert.DeserializeObject<dynamic>(@responseBody);
-                dynamic results = responseJSON;
-                result.Add("access_token", results["access_token"]);
-                result.Add("refresh_token", results["refresh_token"]);
-                result.Add("expires_in", results["expires_in"]);
-                result.Add("token_type", results["token_type"]);
-                result.Add("scope", results["scope"]);
-                result.Add("timestamp", DateTime.Now);
+                OAuthHelper.SaveConfig(instanceUrl, clientId);
+
+                if (configChanged && StaticVariables.archesToken != null)
+                {
+                    // The stored refresh token is bound to the previous instance/client, so
+                    // force a fresh sign-in after the user changes either value.
+                    OAuthHelper.ClearStoredTokens();
+                    StaticVariables.archesToken = null;
+                    FrameworkApplication.State.Deactivate("token_state");
+                    FailMessage.Text = "Not connected";
+                    FailMessage.Visibility = Visibility.Visible;
+                    SucceedMessage.Visibility = Visibility.Hidden;
+                }
+
+                SetupErrorMessage.Visibility = Visibility.Collapsed;
+                ShowConnectionPanel();
             }
             catch (Exception ex)
             {
-                throw new System.ArgumentException($"Failed to refresh the Token: {ex.Message}", ex);
+                SetupErrorMessage.Text = "Failed to save configuration: " + ex.Message;
+                SetupErrorMessage.Visibility = Visibility.Visible;
             }
-            return result;
         }
 
-        private async Task<Dictionary<string, string>> GetResource(string resourceid, string token)
+        private async void MainSignIn_Button(object sender, RoutedEventArgs e)
         {
-            StaticVariables.archesInstanceURL = InstanceURL.Text;
-
-            Dictionary<String, String> result = new Dictionary<String, String>();
-
             try
             {
-                HttpClient client = await ArchesHttpClient.GetHttpClient();
-                string header = "Bearer " + token;
-                try
-                {
-                    client.DefaultRequestHeaders.Add("Authorization", header);
-                }
-                catch (System.FormatException e)
-                {
-                    Console.WriteLine("Message :{0} ", e.Message);
-                }
-                var response = await client.GetAsync(StaticVariables.archesInstanceURL + $"resources/{resourceid}?format=json");
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(StaticVariables.archesInstanceURL + $"resources/{resourceid}?format=json");
-                response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
-                dynamic responseJSON = JsonConvert.DeserializeObject<dynamic>(@responseBody);
-                result.Add("resourceid", responseJSON["resourceinstanceid"]);
-                result.Add("graphid", responseJSON["graph_id"]);
-                result.Add("displayname", responseJSON["displayname"]);
-            }
-            catch (HttpRequestException e)
-            {
-                Console.WriteLine("Message :{0} ", e.Message);
-            }
-            return result;
-        }
-
-
-        private async void MainConnect_Button(object sender, RoutedEventArgs e)
-        {
-            try {
-                StaticVariables.archesInstanceURL = InstanceURL.Text.TrimEnd('/') + "/";
-                StaticVariables.myClientid = await GetClientId();
-                StaticVariables.archesToken = await GetToken(StaticVariables.myClientid);
-                FrameworkApplication.State.Activate("token_state");
-                //CreateResourceButton.IsEnabled = true;
-                //EditResourceButton.IsEnabled = true;
+                SigningInMessage.Visibility = Visibility.Visible;
                 FailMessage.Visibility = Visibility.Hidden;
+                SucceedMessage.Visibility = Visibility.Hidden;
+
+                StaticVariables.archesToken = await OAuthHelper.AuthorizeAsync();
+                FrameworkApplication.State.Activate("token_state");
+
+                SigningInMessage.Visibility = Visibility.Hidden;
+                FailMessage.Visibility = Visibility.Hidden;
+                SucceedMessage.Text = $"Connected to {StaticVariables.archesInstanceURL}";
                 SucceedMessage.Visibility = Visibility.Visible;
-                //ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Successfully Logged in to {StaticVariables.archesInstanceURL}");
-                RegistryKey key = Registry.CurrentUser.CreateSubKey(StaticVariables.registryKey);
-                key.SetValue("InstanceURL", InstanceURL.Text);
-                key.SetValue("Username", Username.Text);
-                key.Close();
 
                 StaticVariables.geometryNodes = await CreateResourceView.GetGeometryNode();
                 CreateResourceViewModel.CreateNodeList();
-
+            }
+            catch (OperationCanceledException)
+            {
+                SigningInMessage.Visibility = Visibility.Hidden;
+                FailMessage.Text = "Sign-in timed out or was cancelled.";
+                FailMessage.Visibility = Visibility.Visible;
             }
             catch (Exception ex)
             {
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(ex.Message + "\nCheck the Instance URL and/or the Credentials");
+                SigningInMessage.Visibility = Visibility.Hidden;
+                FailMessage.Text = "Sign-in failed: " + ex.Message;
+                FailMessage.Visibility = Visibility.Visible;
             }
         }
 
-        protected override void OnInitialized(EventArgs e)
+        private void MainSignOut_Button(object sender, RoutedEventArgs e)
+        {
+            OAuthHelper.ClearStoredTokens();
+            StaticVariables.archesToken = null;
+
+            FrameworkApplication.State.Deactivate("token_state");
+            FailMessage.Text = "Not connected";
+            FailMessage.Visibility = Visibility.Visible;
+            SucceedMessage.Visibility = Visibility.Hidden;
+        }
+
+        protected override async void OnInitialized(EventArgs e)
         {
             InitializeComponent();
             base.OnInitialized(e);
-            RegistryKey key = Registry.CurrentUser.OpenSubKey(StaticVariables.registryKey);
-            if (key != null)
+
+            bool configValid = OAuthHelper.LoadConfig();
+
+            if (!configValid)
             {
-                StaticVariables.archesInstanceURL = key.GetValue("InstanceURL") as string;
-                StaticVariables.myClientid = key.GetValue("Username") as string;
-                InstanceURL.Text = StaticVariables.archesInstanceURL;
-                Username.Text = StaticVariables.myClientid;
+                ShowSetupPanel();
+                return;
             }
-        }
 
-        private void MainCancel_Button(object sender, RoutedEventArgs e)
-        {
-            InstanceURL.Text = "";
-            Username.Text = "";
-            Password.Password = "";
+            ShowConnectionPanel();
 
-            RegistryKey registryCurrentUser = Registry.CurrentUser;
-            registryCurrentUser.DeleteSubKeyTree(StaticVariables.registryKey, false);
-            registryCurrentUser.Close();
+            try
+            {
+                bool refreshed = await OAuthHelper.TrySilentRefreshAsync();
+                if (refreshed)
+                {
+                    FrameworkApplication.State.Activate("token_state");
+                    FailMessage.Visibility = Visibility.Hidden;
+                    SucceedMessage.Text = $"Connected to {StaticVariables.archesInstanceURL}";
+                    SucceedMessage.Visibility = Visibility.Visible;
 
-            FrameworkApplication.State.Deactivate("token_state");
-            FailMessage.Visibility = Visibility.Visible;
-            SucceedMessage.Visibility = Visibility.Hidden;
-            //CreateResourceButton.IsEnabled = false;
-            //EditResourceButton.IsEnabled = false;
+                    StaticVariables.geometryNodes = await CreateResourceView.GetGeometryNode();
+                    CreateResourceViewModel.CreateNodeList();
+                }
+            }
+            catch
+            {
+                // Silent refresh failed, user will need to click Sign In
+            }
         }
 
         private void MainOpenCreate_Button(object sender, RoutedEventArgs e)

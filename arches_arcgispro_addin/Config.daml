@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ArcGIS defaultAssembly="arches_arcgispro_addin.dll" defaultNamespace="arches_arcgispro_addin" xmlns="http://schemas.esri.com/DADF/Registry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
-  <AddInInfo id="{ef079a8b-4d20-43cd-92c7-e76e4280243a}" version="1.0" desktopVersion="3.2.49743">
+  <AddInInfo id="{ef079a8b-4d20-43cd-92c7-e76e4280243a}" version="1.0" desktopVersion="3.3">
     <Name>arches_arcgispro_addin</Name>
     <Description>An ESRI add-in that enables editing geometries in an Arches data store.</Description>
     <Image>Images\AddinDesktop32.png</Image>
@@ -48,7 +48,7 @@
           <tooltip heading="Arches Instance">Connect to Arches Instance<disabledText /></tooltip>
         </button>
         <button id="arches_arcgispro_addin_SaveResource_ShowButton" caption="Edit Resources" className="SaveResource_ShowButton" loadOnClick="true" largeImage="Images\AddinDesktop32.png" smallImage="Images\AddinDesktop16.png" condition="token_condition">
-          <tooltip heading="Edit Resources">Save Geometry to the selected reousrce instance<disabledText /></tooltip>
+          <tooltip heading="Edit Resources">Save Geometry to the selected resource instance<disabledText /></tooltip>
         </button>
         <button id="arches_arcgispro_addin_CreateResource_ShowButton" caption="Create Resources" className="CreateResource_ShowButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple32.png" condition="token_condition">
           <tooltip heading="Create Resources">Create a New Resource<disabledText /></tooltip>
